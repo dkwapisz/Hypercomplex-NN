@@ -11,7 +11,7 @@
   Downloads the dataset file.
 
 - `--prepare_data`  
-  Unzips the dataset file.
+  Unzips the dataset file and splits it into training, validation and test sets.
 
 - `--run_training`  
   Starts the training process.
