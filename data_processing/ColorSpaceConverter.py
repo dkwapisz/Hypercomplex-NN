@@ -1,18 +1,18 @@
-import tensorflow as tf
-import numpy as np
 import cv2
+import numpy as np
+import tensorflow as tf
+
 
 def load_and_preprocess_image(image_path):
     image = tf.io.read_file(image_path)
     image = tf.image.decode_jpeg(image, channels=3)
-    image = tf.cast(image, tf.float32) / 255.0
+    image = tf.image.convert_image_dtype(image, tf.float32)
     return image
 
 
 def convert_to_hsv(image):
-    image_np = image.numpy()
-    hsv_image = cv2.cvtColor(image_np, cv2.COLOR_RGB2HSV)
-    return tf.convert_to_tensor(hsv_image, dtype=tf.float32)
+    image_np = tf.image.rgb_to_hsv(image)
+    return image_np
 
 
 def convert_to_cielab(image):
@@ -42,20 +42,25 @@ def convert_to_cmyk(image):
 
 def preprocess_image(image_path, color_space="HSV"):
     image = load_and_preprocess_image(image_path)
+
+    if color_space == "RGB":
+        return image
+
     if color_space == "HSV":
-        image = tf.py_function(convert_to_hsv, [image], Tout=tf.float32)
-    elif color_space == "CIELab":
-        image = tf.py_function(convert_to_cielab, [image], Tout=tf.float32)
-    elif color_space == "YCbCr":
-        image = tf.py_function(convert_to_ycbcr, [image], Tout=tf.float32)
-    elif color_space == "CMYK":
-        image = tf.py_function(convert_to_cmyk, [image], Tout=tf.float32)
+        image = convert_to_hsv(image)
+    else:
+        image = tf.py_function(
+            func=lambda img: convert_to_cielab(img) if color_space == "CIELab" else
+                             convert_to_ycbcr(img) if color_space == "YCbCr" else
+                             convert_to_cmyk(img),
+            inp=[image], Tout=tf.float32
+        )
     return image
 
 
 def create_dataset(image_paths, batch_size, color_space="HSV"):
     dataset = tf.data.Dataset.from_tensor_slices(image_paths)
-    dataset = dataset.map(lambda x: preprocess_image(x, color_space=color_space),
+    dataset = dataset.map(lambda x: preprocess_image(x, color_space),
                           num_parallel_calls=tf.data.AUTOTUNE)
     dataset = dataset.batch(batch_size)
     dataset = dataset.prefetch(tf.data.AUTOTUNE)
