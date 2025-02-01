@@ -1,38 +1,32 @@
 import cv2
 import numpy as np
 import tensorflow as tf
-
-
-def load_and_preprocess_image(image_path):
-    image = tf.io.read_file(image_path)
-    image = tf.image.decode_jpeg(image, channels=3)
-    image = tf.image.convert_image_dtype(image, tf.float32)
-    return image
+from keras.src.utils import image_dataset_from_directory
 
 
 def convert_to_hsv(image):
     image_np = tf.image.rgb_to_hsv(image)
     return image_np
 
-
+# TODO Fix
 def convert_to_cielab(image):
-    image_np = image.numpy()
-    cielab_image = cv2.cvtColor(image_np, cv2.COLOR_RGB2LAB)
+    image_ndarray = tf.make_ndarray(image)
+    cielab_image = cv2.cvtColor(image_ndarray, cv2.COLOR_RGB2LAB)
     return tf.convert_to_tensor(cielab_image, dtype=tf.float32)
 
-
+# TODO Fix
 def convert_to_ycbcr(image):
-    image_np = image.numpy()
-    ycbcr_image = cv2.cvtColor(image_np, cv2.COLOR_RGB2YCrCb)
+    image_ndarray = tf.make_ndarray(image)
+    ycbcr_image = cv2.cvtColor(image_ndarray, cv2.COLOR_RGB2YCrCb)
     return tf.convert_to_tensor(ycbcr_image, dtype=tf.float32)
 
-
+# TODO Fix
 def convert_to_cmyk(image):
-    image_np = image.numpy()
-    K = 1 - np.max(image_np, axis=2)
-    C = (1 - image_np[..., 0] - K) / (1 - K + 1e-10)
-    M = (1 - image_np[..., 1] - K) / (1 - K + 1e-10)
-    Y = (1 - image_np[..., 2] - K) / (1 - K + 1e-10)
+    image_ndarray = tf.make_ndarray(image)
+    K = 1 - np.max(image_ndarray, axis=2)
+    C = (1 - image_ndarray[..., 0] - K) / (1 - K + 1e-10)
+    M = (1 - image_ndarray[..., 1] - K) / (1 - K + 1e-10)
+    Y = (1 - image_ndarray[..., 2] - K) / (1 - K + 1e-10)
     C = np.nan_to_num(C)
     M = np.nan_to_num(M)
     Y = np.nan_to_num(Y)
@@ -40,28 +34,33 @@ def convert_to_cmyk(image):
     return tf.convert_to_tensor(cmyk_image, dtype=tf.float32)
 
 
-def preprocess_image(image_path, color_space="HSV"):
-    image = load_and_preprocess_image(image_path)
+def preprocess_image(image, color_space="HSV"):
+    image = tf.image.convert_image_dtype(image / 255.0, tf.float32)
 
-    if color_space == "RGB":
-        return image
+    match color_space:
+        case "RGB":
+            return image
+        case "HSV":
+            return convert_to_hsv(image)
+        case "CIELab":
+            return convert_to_cielab(image)
+        case "YCbCr":
+            return convert_to_ycbcr(image)
+        case "CMYK":
+            return convert_to_cmyk(image)
+        case _:
+            return image
 
-    if color_space == "HSV":
-        image = convert_to_hsv(image)
-    else:
-        image = tf.py_function(
-            func=lambda img: convert_to_cielab(img) if color_space == "CIELab" else
-                             convert_to_ycbcr(img) if color_space == "YCbCr" else
-                             convert_to_cmyk(img),
-            inp=[image], Tout=tf.float32
-        )
-    return image
 
+def create_dataset(dataset_path, image_size, color_space="RGB"):
+    dataset = image_dataset_from_directory(
+        dataset_path,
+        label_mode='categorical',
+        image_size=image_size,
+        batch_size=512
+    )
 
-def create_dataset(image_paths, batch_size, color_space="HSV"):
-    dataset = tf.data.Dataset.from_tensor_slices(image_paths)
-    dataset = dataset.map(lambda x: preprocess_image(x, color_space),
-                          num_parallel_calls=tf.data.AUTOTUNE)
-    dataset = dataset.batch(batch_size)
-    dataset = dataset.prefetch(tf.data.AUTOTUNE)
-    return dataset
+    def preprocess(image, label):
+        return preprocess_image(image, color_space), label
+
+    return dataset.map(preprocess)
