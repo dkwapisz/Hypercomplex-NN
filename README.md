@@ -22,10 +22,4 @@
 - `--num_gpus <number>`  
   Number of GPUs to use in parallel
 
-- `--training_split <number>`  
-  Percentage of data to use for training.
-
-- `--validation_split <number>`  
-  Percentage of data to use for validation.
-
 > **Note:** Test split is calculated as `100 - training_split - validation_split`.

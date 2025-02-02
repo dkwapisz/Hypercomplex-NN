@@ -58,7 +58,7 @@ models_range_to_run = get_models_range(total_model_num, num_processes, gpu_index
 for model_index in range(models_range_to_run[0], models_range_to_run[1]):
     model_name = models_to_train[model_index]
 
-    hypercomplex = model_name["type"] == "hypercomplex"
+    hypercomplex = model_name["type"] == "HyperComplex"
     color_space = model_name["color_space"]
 
     print_current_model(model_index, total_model_num, model_name)
@@ -75,9 +75,9 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
     else:
         model = CNN_Model(input_shape, num_classes, color_space)
 
-    history = model.fit(train_dataset, val_dataset, epochs=10, verbose=0)
+    history = model.fit(train_dataset, val_dataset, epochs=3, verbose=1)
     eval_result = model.evaluate(test_dataset, batch_size=64)
 
 end_time = time.time()
 
-print(f"TOTAL TIME: {(end_time - start_time):.4f} seconds")
+print(f"TOTAL TIME: {(end_time - start_time):.4f} seconds | Process: {gpu_index} | Models: {models_range_to_run}")

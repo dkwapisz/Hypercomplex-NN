@@ -27,7 +27,7 @@ def get_models_range(total_model_num, num_processes, gpu_index):
     return start_model, end_model  # (inclusive, exclusive)
 
 def print_current_model(model_index, total_model_num, model_name):
-    if model_name["type"] == "hypercomplex":
+    if model_name["type"] == "HyperComplex":
         print(f"Training model {model_index + 1}/{total_model_num}: "
               f"Type: {model_name['type']} | "
               f"Color space: {model_name['color_space']} | "

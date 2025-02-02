@@ -29,14 +29,12 @@ if [[ $# -eq 0 ]]; then
   echo "  --test_run: Run tests that checks dataset and data compatibility with models."
   echo "  --run_training: Starts the training process."
   echo "  --num_gpus <number>: Number of GPUs to use in parallel."
-  echo "  --training_split <number>: Percentage of data to use for training."
-  echo "  --validation_split <number>: Percentage of data to use for validation."
   echo "  Test split is calculated as 100 - training_split - validation_split."
   exit 0
 fi
 
-for arg in "$@"; do
-  case $arg in
+while [[ $# -gt 0 ]]; do
+  case "$1" in
     --download_data)
       download_data=true
       ;;
@@ -63,32 +61,15 @@ for arg in "$@"; do
         exit 1
       fi
       ;;
-    --training_split)
-      if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
-        training_split="$2"
-        shift
-      else
-        echo "Error: --training_split flag requires a numerical argument."
-        exit 1
-      fi
-      ;;
-    --validation_split)
-      if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
-        validation_split="$2"
-        shift
-      else
-        echo "Error: --validation_split flag requires a numerical argument."
-        exit 1
-      fi
-      ;;
     *)
-      echo "Invalid option: $arg"
+      echo "Invalid option: $1"
       exit 1
       ;;
   esac
+  shift
 done
 
-pip install -r requirements.txt --quiet
+pip install -r requirements.txt
 
 
 if [ "$download_data" = true ] && [ ! -d "$DATASET_TARGET_DIR" ]; then
