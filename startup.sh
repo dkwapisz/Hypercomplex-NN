@@ -56,16 +56,16 @@ for arg in "$@"; do
       ;;
     --num_gpus)
       if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
-        num_gpus=$2
+        num_gpus="$2"
         shift
       else
-        echo "Error: --num_processes flag requires a numerical argument."
+        echo "Error: --num_gpus flag requires a numerical argument."
         exit 1
       fi
       ;;
     --training_split)
       if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
-        training_split=$2
+        training_split="$2"
         shift
       else
         echo "Error: --training_split flag requires a numerical argument."
@@ -74,7 +74,7 @@ for arg in "$@"; do
       ;;
     --validation_split)
       if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
-        validation_split=$2
+        validation_split="$2"
         shift
       else
         echo "Error: --validation_split flag requires a numerical argument."
@@ -91,7 +91,7 @@ done
 pip install -r requirements.txt --quiet
 
 
-if [ "$download_data" = true ] && [ ! -f $DATASET_MAIN_DIR/$DATASET_ZIP_NAME ]; then
+if [ "$download_data" = true ] && [ ! -d "$DATASET_TARGET_DIR" ]; then
   mkdir -p $DATASET_MAIN_DIR
   curl -L -o $DATASET_MAIN_DIR/$DATASET_ZIP_NAME $DATASET_URL
 else
