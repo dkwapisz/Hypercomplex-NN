@@ -1,20 +1,22 @@
 #!/bin/bash
 
+# Static variables
 DATASET_MAIN_DIR="datasets"
 DATASET_MAIN_SUBDIR="Lymphoma"
 DATASET_TARGET_DIR="$DATASET_MAIN_DIR/$DATASET_MAIN_SUBDIR"
 DATASET_ZIP_NAME="multi-cancer.zip"
+TRAINING_SPLIT=80
+VALIDATION_SPLIT=10
 
 DATASET_URL="https://www.kaggle.com/api/v1/datasets/download/obulisainaren/multi-cancer"
 SEED=123
 
+# Default dynamic values
 num_gpus=1
 prepare_data=false
 download_data=false
 test_run=false
 run_training=false
-training_split=80
-validation_split=10
 
 if [ -f .env ]; then
   export "$(xargs -0 < .env)"
@@ -29,7 +31,7 @@ if [[ $# -eq 0 ]]; then
   echo "  --test_run: Run tests that checks dataset and data compatibility with models."
   echo "  --run_training: Starts the training process."
   echo "  --num_gpus <number>: Number of GPUs to use in parallel."
-  echo "  Test split is calculated as 100 - training_split - validation_split."
+  echo "  Test split is calculated as 100 - TRAINING_SPLIT - VALIDATION_SPLIT."
   exit 0
 fi
 
@@ -102,8 +104,8 @@ if [ "$prepare_data" = true ] && [ ! -d "$DATASET_TARGET_DIR" ]; then
 
     mapfile -t shuffled_files < <(printf "%s\n" "${files[@]}" | awk -v seed="$SEED" 'BEGIN { srand(seed) } {print rand(), $0}' | sort -n | cut -d' ' -f2-)
 
-    train_count=$((total_files * training_split / 100))
-    val_count=$((total_files * validation_split / 100))
+    train_count=$((total_files * TRAINING_SPLIT / 100))
+    val_count=$((total_files * VALIDATION_SPLIT / 100))
     test_count=$((total_files - train_count - val_count))
 
     mv "${shuffled_files[@]:0:train_count}" "$DATASET_TARGET_DIR/train/$class_name/"
