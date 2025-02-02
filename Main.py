@@ -28,8 +28,8 @@ set_gpu_device(gpu_index)
 # ------------------- Parameters ------------------- (probably move to properties file if possible)
 dataset_path = "datasets/Lymphoma"
 train_path = os.path.join(dataset_path, "train")
-val_path = os.path.join(dataset_path, "train")
-test_path = os.path.join(dataset_path, "train")
+val_path = os.path.join(dataset_path, "val")
+test_path = os.path.join(dataset_path, "test")
 
 color_space = "CMYK"
 img_size = (128, 128)
