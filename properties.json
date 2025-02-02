@@ -1,0 +1,61 @@
+{
+  "training_mode": {
+      "all_cnn": true,
+      "all_hypercomplex_cnn": true,
+      "custom": false
+  },
+
+  "cnn_models_preset": [
+    {"type": "CNN", "color_space": "RGB", "algebra": ""},
+    {"type": "CNN", "color_space": "HSV", "algebra": ""},
+    {"type": "CNN", "color_space": "YUV", "algebra": ""},
+    {"type": "CNN", "color_space": "YIQ", "algebra": ""},
+    {"type": "CNN", "color_space": "CMYK", "algebra": ""}
+  ],
+
+  "hypercomplex_cnn_models_preset": [
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Klein4"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Cl20"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Bicomplex"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Tessarines"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Klein4"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Cl20"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Bicomplex"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Tessarines"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Klein4"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Cl20"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Bicomplex"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Tessarines"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Klein4"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Cl20"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Bicomplex"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Tessarines"},
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Klein4"},
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Cl20"},
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Bicomplex"},
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Tessarines"}
+  ],
+
+  "custom_preset": [
+    {"type": "CNN", "color_space": "RGB", "algebra": null},
+    {"type": "CNN", "color_space": "YIQ", "algebra": null},
+    {"type": "CNN", "color_space": "CMYK", "algebra": null},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Cl11"}
+  ]
+}

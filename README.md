@@ -19,8 +19,8 @@
 - `--run_training`  
   Starts the training process.
 
-- `--num_processes <number>`  
-  Number of processes to run.
+- `--num_gpus <number>`  
+  Number of GPUs to use in parallel
 
 - `--training_split <number>`  
   Percentage of data to use for training.

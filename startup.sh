@@ -8,7 +8,7 @@ DATASET_ZIP_NAME="multi-cancer.zip"
 DATASET_URL="https://www.kaggle.com/api/v1/datasets/download/obulisainaren/multi-cancer"
 SEED=123
 
-num_processes=1
+num_gpus=1
 prepare_data=false
 download_data=false
 test_run=false
@@ -28,7 +28,7 @@ if [[ $# -eq 0 ]]; then
   echo "  --prepare_data: Unzips the dataset file."
   echo "  --test_run: Run tests that checks dataset and data compatibility with models."
   echo "  --run_training: Starts the training process."
-  echo "  --num_processes <number>: Number of processes to run."
+  echo "  --num_gpus <number>: Number of GPUs to use in parallel."
   echo "  --training_split <number>: Percentage of data to use for training."
   echo "  --validation_split <number>: Percentage of data to use for validation."
   echo "  Test split is calculated as 100 - training_split - validation_split."
@@ -54,9 +54,9 @@ for arg in "$@"; do
       download_data=true
       run_training=true
       ;;
-    --num_processes)
+    --num_gpus)
       if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
-        num_processes=$2
+        num_gpus=$2
         shift
       else
         echo "Error: --num_processes flag requires a numerical argument."
@@ -141,8 +141,8 @@ fi
 
 if [ "$run_training" = true ]; then
   i=0
-  while [ $i -lt "$num_processes" ]; do
-    python3 Main.py $i &
+  while [ $i -lt "$num_gpus" ]; do
+    python3 Main.py $i "$num_gpus" &
     pid=$!
     echo "Running process $i has PID: $pid"
     i=$((i + 1))

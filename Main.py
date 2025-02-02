@@ -1,61 +1,83 @@
 import os
 import sys
+import time
 
-from HypercomplexKeras import Algebra
 from keras.src.utils import set_random_seed
 
 from config.PropertiesResolver import PropertiesResolver
 from data_processing.ColorSpaceConverter import create_dataset_tf
-from models import ModelDefinition
+from models.CNN_Model import CNN_Model
+from models.HyperComplexCNN_Model import HyperComplexCNN_Model
+from models.ModelUtils import get_models_range, print_current_model
 from utils.GPU_Helper import check_gpu_health, set_gpu_device
 
-# ------------------- Env setup -------------------
-set_random_seed(42)
+start_time = time.time()
 
-if len(sys.argv) != 2:
-    print("Default run, taking 1 GPU")
-    gpu_num = 1
-else:
-    gpu_num = sys.argv[1]
-
-gpu_index = int()
-properties = PropertiesResolver("app.properties")
-
-check_gpu_health()
-set_gpu_device(gpu_index)
-
-
-# ------------------- Parameters ------------------- (probably move to properties file if possible)
+# ------------------- Static parameters -------------------
 dataset_path = "datasets/Lymphoma"
 train_path = os.path.join(dataset_path, "train")
 val_path = os.path.join(dataset_path, "val")
 test_path = os.path.join(dataset_path, "test")
-
-color_space = "CMYK"
 img_size = (128, 128)
 batch_size = 64
-hypercomplex = True
-input_shape = img_size + (4,) if (color_space == "CMYK" or hypercomplex) else img_size + (3,)
 num_classes = len(os.listdir(train_path))
-algebras = [Algebra.Quaternions, Algebra.Klein4, Algebra.Cl20, Algebra.Coquaternions, Algebra.Cl11, Algebra.Bicomplex,
-            Algebra.Tessarines]
 
+# ------------------- Env setup -------------------
+set_random_seed(555)
 
-# ------------------- Dataset loading -------------------
-train_dataset = create_dataset_tf(train_path, img_size, batch_size, color_space, hypercomplex)
-val_dataset = create_dataset_tf(val_path, img_size, batch_size, color_space, hypercomplex)
-test_dataset = create_dataset_tf(test_path, img_size, batch_size, color_space, hypercomplex)
+if len(sys.argv) != 3:
+    print("Attributes are wrong or not provided. Default run, taking 1 GPU and 1 process.")
+    gpu_index = 0
+    num_processes = 1
+else:
+    gpu_index = sys.argv[1]
+    num_processes = sys.argv[2]
 
-# ------------------- Basic CNN Model -------------------
-# model = ModelDefinition.get_basic_cnn_model(input_shape, num_classes)
-model = ModelDefinition.get_hypercomplex_cnn_model(input_shape, num_classes, Algebra.Quaternions)
+check_gpu_health()
+set_gpu_device(gpu_index)
 
-history = model.fit(train_dataset, validation_data=val_dataset, epochs=100)
+# ------------------- Training mode setup -------------------
+properties = PropertiesResolver("properties.json")
 
-# plt.plot(history.history['accuracy'])
-# plt.ylabel('accuracy')
-# plt.xlabel('epoch')
-# plt.show()
+training_mode = properties.get("training_mode")
 
-test_loss, test_acc = model.evaluate(test_dataset)
-print(f"Test Accuracy: {test_acc:.4f}")
+models_to_train = []
+
+if training_mode["all_cnn"]:
+    models_to_train += properties.get("cnn_models_preset", [])
+if training_mode["all_hypercomplex_cnn"]:
+    models_to_train += properties.get("hypercomplex_cnn_models_preset", [])
+if training_mode["custom"]:
+    models_to_train += properties.get("custom_preset", [])
+
+total_model_num = len(models_to_train)
+
+models_range_to_run = get_models_range(total_model_num, num_processes, gpu_index)
+
+# ------------------- Training -------------------
+for model_index in range(models_range_to_run[0], models_range_to_run[1]):
+    model_name = models_to_train[model_index]
+
+    hypercomplex = model_name["type"] == "hypercomplex"
+    color_space = model_name["color_space"]
+
+    print_current_model(model_index, total_model_num, model_name)
+
+    input_shape = img_size + (4,) if (color_space == "CMYK" or hypercomplex) else img_size + (3,)
+
+    train_dataset = create_dataset_tf(train_path, img_size, batch_size, color_space, hypercomplex)
+    val_dataset = create_dataset_tf(val_path, img_size, batch_size, color_space, hypercomplex)
+    test_dataset = create_dataset_tf(test_path, img_size, batch_size, color_space, hypercomplex)
+
+    if hypercomplex:
+        algebra_name = model_name["algebra"]
+        model = HyperComplexCNN_Model(input_shape, num_classes, color_space, algebra_name)
+    else:
+        model = CNN_Model(input_shape, num_classes, color_space)
+
+    history = model.fit(train_dataset, val_dataset, epochs=10, verbose=0)
+    eval_result = model.evaluate(test_dataset, batch_size=64)
+
+end_time = time.time()
+
+print(f"TOTAL TIME: {(end_time - start_time):.4f} seconds")
