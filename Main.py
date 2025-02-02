@@ -30,8 +30,8 @@ if len(sys.argv) != 3:
     gpu_index = 0
     num_processes = 1
 else:
-    gpu_index = sys.argv[1]
-    num_processes = sys.argv[2]
+    gpu_index = int(sys.argv[1])
+    num_processes = int(sys.argv[2])
 
 check_gpu_health()
 set_gpu_device(gpu_index)
