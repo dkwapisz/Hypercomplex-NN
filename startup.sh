@@ -11,6 +11,7 @@ SEED=123
 num_processes=1
 prepare_data=false
 download_data=false
+test_run=false
 run_training=false
 training_split=80
 validation_split=10
@@ -25,6 +26,7 @@ if [[ $# -eq 0 ]]; then
   echo "  --default: Equivalent to --prepare_data --download_data --run_training combined."
   echo "  --download_data: Downloads the dataset file."
   echo "  --prepare_data: Unzips the dataset file."
+  echo "  --test_run: Run tests that checks dataset and data compatibility with models."
   echo "  --run_training: Starts the training process."
   echo "  --num_processes <number>: Number of processes to run."
   echo "  --training_split <number>: Percentage of data to use for training."
@@ -40,6 +42,9 @@ for arg in "$@"; do
       ;;
     --download_data)
       download_data=true
+      ;;
+    --test_run)
+      test_run=true
       ;;
     --run_training)
       run_training=true
@@ -128,6 +133,10 @@ if [ "$prepare_data" = true ] && [ ! -d "$DATASET_TARGET_DIR" ]; then
   done
 else
   echo "Dataset folder already exists or preparation skipped."
+fi
+
+if [ "$test_run" = true ]; then
+  python3 Testing.py
 fi
 
 if [ "$run_training" = true ]; then
