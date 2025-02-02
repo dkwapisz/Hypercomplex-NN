@@ -7,7 +7,7 @@ def normalize_zscore(image):
   return (image - mean) / std
 
 
-def convert_color_tf(image, color_space):
+def convert_color_tf(image, color_space, hypercomplex=False):
     image = tf.image.convert_image_dtype(image, tf.float32)
 
     if color_space == "RGB":
@@ -26,15 +26,20 @@ def convert_color_tf(image, color_space):
     else:
         raise ValueError(f"{color_space} color space is not supported.")
 
-    return normalize_zscore(image)
+    image = normalize_zscore(image)
+
+    if hypercomplex and color_space != "CMYK":
+        image = tf.concat([image, tf.zeros_like(image[..., :1])], axis=-1)
+
+    return image
 
 
-def create_dataset_tf(dir_path, img_size, batch_size=32, color_space="RGB"):
+def create_dataset_tf(dir_path, img_size, batch_size=64, color_space="RGB", hypercomplex=False):
     dataset = image_dataset_from_directory(dir_path, image_size=img_size, batch_size=batch_size,
                                            label_mode="categorical")
 
     def process_image(image, label):
-        image = convert_color_tf(image, color_space)
+        image = convert_color_tf(image, color_space, hypercomplex)
         return image, label
 
     dataset = dataset.map(process_image, num_parallel_calls=tf.data.AUTOTUNE)

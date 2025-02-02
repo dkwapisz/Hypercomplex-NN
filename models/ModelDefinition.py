@@ -20,7 +20,6 @@ def get_basic_cnn_model(input_shape, num_classes) -> Sequential:
 
 
 def get_hypercomplex_cnn_model(input_shape, num_classes, algebra: Algebra) -> Sequential:
-
     model = Sequential()
     model.add(Input(shape=input_shape))
     model.add(HyperConv2D(32, (3, 3), activation='relu', algebra=algebra))

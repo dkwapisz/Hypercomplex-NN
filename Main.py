@@ -1,6 +1,7 @@
 import os
 import sys
 
+from HypercomplexKeras import Algebra
 from keras.src.utils import set_random_seed
 
 from config.PropertiesResolver import PropertiesResolver
@@ -25,23 +26,31 @@ set_gpu_device(gpu_index)
 
 
 # ------------------- Parameters ------------------- (probably move to properties file if possible)
-color_space = "YIQ"
+dataset_path = "datasets/Lymphoma"
+train_path = os.path.join(dataset_path, "train")
+val_path = os.path.join(dataset_path, "train")
+test_path = os.path.join(dataset_path, "train")
+
+color_space = "CMYK"
 img_size = (128, 128)
-batch_size = 32
-input_shape = img_size + (4,) if color_space == "CMYK" else img_size + (3,)
-num_classes = len(os.listdir("datasets/Lymphoma/train"))
+batch_size = 64
+hypercomplex = True
+input_shape = img_size + (4,) if (color_space == "CMYK" or hypercomplex) else img_size + (3,)
+num_classes = len(os.listdir(train_path))
+algebras = [Algebra.Quaternions, Algebra.Klein4, Algebra.Cl20, Algebra.Coquaternions, Algebra.Cl11, Algebra.Bicomplex,
+            Algebra.Tessarines]
 
 
 # ------------------- Dataset loading -------------------
-train_dataset = create_dataset_tf("datasets/Lymphoma/train", img_size, batch_size, color_space=color_space)
-val_dataset = create_dataset_tf("datasets/Lymphoma/val", img_size, batch_size, color_space=color_space)
-test_dataset = create_dataset_tf("datasets/Lymphoma/test", img_size, batch_size, color_space=color_space)
-
+train_dataset = create_dataset_tf(train_path, img_size, batch_size, color_space, hypercomplex)
+val_dataset = create_dataset_tf(val_path, img_size, batch_size, color_space, hypercomplex)
+test_dataset = create_dataset_tf(test_path, img_size, batch_size, color_space, hypercomplex)
 
 # ------------------- Basic CNN Model -------------------
-model = ModelDefinition.get_basic_cnn_model(input_shape=input_shape, num_classes=num_classes)
+# model = ModelDefinition.get_basic_cnn_model(input_shape, num_classes)
+model = ModelDefinition.get_hypercomplex_cnn_model(input_shape, num_classes, Algebra.Quaternions)
 
-history = model.fit(train_dataset, validation_data=val_dataset, epochs=5)
+history = model.fit(train_dataset, validation_data=val_dataset, epochs=100)
 
 # plt.plot(history.history['accuracy'])
 # plt.ylabel('accuracy')
