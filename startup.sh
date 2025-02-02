@@ -37,11 +37,11 @@ fi
 
 for arg in "$@"; do
   case $arg in
-    --prepare_data)
-      prepare_data=true
-      ;;
     --download_data)
       download_data=true
+      ;;
+    --prepare_data)
+      prepare_data=true
       ;;
     --test_run)
       test_run=true
