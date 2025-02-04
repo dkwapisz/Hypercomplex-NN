@@ -1,3 +1,5 @@
+import json
+import logging
 import os
 import sys
 import time
@@ -8,10 +10,11 @@ from config.PropertiesResolver import PropertiesResolver
 from data_processing.ColorSpaceConverter import create_dataset_tf
 from models.CNN_Model import CNN_Model
 from models.HyperComplexCNN_Model import HyperComplexCNN_Model
-from models.ModelUtils import get_models_range, print_current_model
+from models.ModelUtils import get_models_range, get_current_model_desc
 from utils.GPU_Helper import check_gpu_health, set_gpu_device
+from utils.LogsHelper import create_model_result_subdir, get_log_data, model_summary_to_dict, get_model_hyperparams
 
-start_time = time.time()
+process_start_time = time.time()
 
 # ------------------- Static parameters -------------------
 dataset_path = "datasets/Lymphoma"
@@ -20,7 +23,12 @@ val_path = os.path.join(dataset_path, "val")
 test_path = os.path.join(dataset_path, "test")
 img_size = (128, 128)
 batch_size = 64
+eval_batch_size = 32
+epochs = 3
+verbose = 0
 num_classes = len(os.listdir(train_path))
+metrics = ["accuracy", "categorical_accuracy", "AUC", "Precision", "Recall", "TruePositives", "TrueNegatives",
+           "FalsePositives", "FalseNegatives"]
 
 # ------------------- Env setup -------------------
 set_random_seed(555)
@@ -56,12 +64,17 @@ models_range_to_run = get_models_range(total_model_num, num_processes, gpu_index
 
 # ------------------- Training -------------------
 for model_index in range(models_range_to_run[0], models_range_to_run[1]):
+    results_subdir_path = create_model_result_subdir(models_to_train[model_index])
+    log_file_path = os.path.join(results_subdir_path, "training.json")
+    log_data = get_log_data(model_index, total_model_num, gpu_index, models_to_train[model_index], epochs)
+
+    model_training_start_time = time.time()
     model_name = models_to_train[model_index]
 
     hypercomplex = model_name["type"] == "HyperComplex"
     color_space = model_name["color_space"]
 
-    print_current_model(model_index, total_model_num, model_name)
+    logging.info(get_current_model_desc(model_index, total_model_num, model_name))
 
     input_shape = img_size + (4,) if (color_space == "CMYK" or hypercomplex) else img_size + (3,)
 
@@ -71,13 +84,29 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
 
     if hypercomplex:
         algebra_name = model_name["algebra"]
-        model = HyperComplexCNN_Model(input_shape, num_classes, color_space, algebra_name)
+        model = HyperComplexCNN_Model(input_shape, num_classes, color_space, metrics, algebra_name)
     else:
-        model = CNN_Model(input_shape, num_classes, color_space)
+        model = CNN_Model(input_shape, num_classes, color_space, metrics)
 
-    history = model.fit(train_dataset, val_dataset, epochs=3, verbose=1)
-    eval_result = model.evaluate(test_dataset, batch_size=64)
+    log_data["model_hyperparameters"] = get_model_hyperparams(model.model)
+    log_data["model_layers_details"] = model_summary_to_dict(model.model)
 
-end_time = time.time()
+    history = model.fit(train_dataset, val_dataset, epochs=epochs, verbose=verbose)
+    model_training_end_time = time.time()
+    eval_result = model.evaluate(test_dataset, batch_size=eval_batch_size, verbose=verbose)
+    model_evaluate_end_time = time.time()
 
-print(f"TOTAL TIME: {(end_time - start_time):.4f} seconds | Process: {gpu_index} | Models: {models_range_to_run}")
+    log_data["training_history"] = history.history
+    log_data["evaluation_result"] = {"loss": eval_result[0], **{metric: value for metric, value in zip(metrics, eval_result[1:])}}
+    log_data["training_time_seconds"] = round(model_training_end_time - model_training_start_time, 4)
+    log_data["evaluate_time_seconds"] = round(model_evaluate_end_time - model_training_end_time, 4)
+
+    with open(log_file_path, "w") as log_file:
+        json.dump(log_data, log_file, indent=4)
+
+    # with open(os.path.join(results_subdir_path, "model.pkl"), "wb") as model_file:
+    #     pickle.dump(model, model_file)
+
+process_end_time = time.time()
+
+print(f"Process: {gpu_index} FINISHED. Total time: {(process_end_time - process_start_time):.4f} seconds | Models: {models_range_to_run}")

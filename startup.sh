@@ -71,6 +71,7 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
+sudo apt-get install -y zip htop nano
 pip install -r requirements.txt
 
 
@@ -123,6 +124,8 @@ if [ "$test_run" = true ]; then
 fi
 
 if [ "$run_training" = true ]; then
+  rm -rf "results"
+  mkdir "results"
   i=0
   while [ $i -lt "$num_gpus" ]; do
     python3 Main.py $i "$num_gpus" &
@@ -132,7 +135,11 @@ if [ "$run_training" = true ]; then
   done
 
   wait
-  echo "All processes completed."
+  echo "All processes completed training. Packing results..."
+
+  (cd results && zip -r results.zip .)
+
+  echo "Results packed. Processing completed. Thank you for your patience."
 else
   echo "Training skipped."
 fi

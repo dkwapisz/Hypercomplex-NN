@@ -1,8 +1,8 @@
 {
   "training_mode": {
-      "all_cnn": true,
-      "all_hypercomplex_cnn": true,
-      "custom": false
+      "all_cnn": false,
+      "all_hypercomplex_cnn": false,
+      "custom": true
   },
 
   "cnn_models_preset": [
@@ -53,9 +53,6 @@
 
   "custom_preset": [
     {"type": "CNN", "color_space": "RGB", "algebra": null},
-    {"type": "CNN", "color_space": "YIQ", "algebra": null},
-    {"type": "CNN", "color_space": "CMYK", "algebra": null},
-    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Coquaternions"},
     {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Cl11"}
   ]
 }
