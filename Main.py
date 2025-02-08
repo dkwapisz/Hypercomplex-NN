@@ -66,6 +66,7 @@ if training_mode["custom"]:
 total_model_num = len(models_to_train)
 
 models_range_to_run = get_models_range(total_model_num, num_processes, gpu_index)
+tune_model = properties.get("tune_model")
 
 # ------------------- Training -------------------
 for model_index in range(models_range_to_run[0], models_range_to_run[1]):
@@ -89,14 +90,15 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
 
     if hypercomplex:
         algebra_name = model_name["algebra"]
-        model = HyperComplexCNN_Model(input_shape, num_classes, color_space, metrics, algebra_name)
+        model = HyperComplexCNN_Model(tune_model, input_shape, num_classes, color_space, metrics, algebra_name)
     else:
-        model = CNN_Model(input_shape, num_classes, color_space, metrics)
+        model = CNN_Model(tune_model, input_shape, num_classes, color_space, metrics)
 
     # ------------------- Tuning -------------------
-    print(f"Starting hyperparameter tuning for {model_name}")
-    model.tune_model(train_dataset, val_dataset, epochs=30)
-    print("Hyperparameter tuning complete.")
+    if tune_model:
+        print(f"Starting hyperparameter tuning for {model_name}")
+        model.tune_model(train_dataset, val_dataset, epochs=30)
+        print("Hyperparameter tuning complete.")
 
     model_tuning_end_time = time.time()
 

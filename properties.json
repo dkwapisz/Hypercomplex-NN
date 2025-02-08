@@ -1,4 +1,7 @@
 {
+
+  "tune_model": false,
+
   "training_mode": {
       "all_cnn": true,
       "all_hypercomplex_cnn": true,
