@@ -100,7 +100,8 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
         model.tune_model(train_dataset, val_dataset, epochs=30)
         print("Hyperparameter tuning complete.")
 
-    model_tuning_end_time = time.time()
+        model_tuning_end_time = time.time()
+        log_data["tuning_time_seconds"] = round(model_tuning_end_time - model_training_start_time, 4)
 
     log_data["model_hyperparameters"] = get_model_hyperparams(model.get_model())
     log_data["model_layers_details"] = model_summary_to_dict(model.get_model())
@@ -122,7 +123,6 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
 
     log_data["training_history"] = history.history
     log_data["evaluation_result"] = {"loss": eval_result[0], **{metric: value for metric, value in zip(metrics, eval_result[1:])}}
-    log_data["tuning_time_seconds"] = round(model_tuning_end_time - model_training_start_time, 4)
     log_data["training_time_seconds"] = round(model_training_end_time - model_training_start_time, 4)
     log_data["evaluate_time_seconds"] = round(model_evaluate_end_time - model_training_end_time, 4)
 
