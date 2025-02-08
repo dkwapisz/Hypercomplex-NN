@@ -1,6 +1,6 @@
 import keras_tuner as kt
 from keras import Sequential, Input
-from keras.src.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+from keras.src.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, GlobalMaxPooling2D
 from keras.src.optimizers import Adam
 
 from models.ModelBase import ModelBase
@@ -37,15 +37,8 @@ def build_model(input_shape, num_classes, metrics):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    model.add(Conv2D(32, (3, 3), activation='relu'))
-    model.add(MaxPooling2D())
-
-    model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(MaxPooling2D())
-
-    model.add(Conv2D(128, (3, 3), activation='relu'))
-    model.add(MaxPooling2D())
-
+    model.add(Conv2D(100, (3, 3), activation='relu'))
+    model.add(GlobalMaxPooling2D())
     model.add(Flatten())
 
     model.add(Dense(256, activation='relu'))
