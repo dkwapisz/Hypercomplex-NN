@@ -1,9 +1,9 @@
 {
   "tune_model": false,
   "training_mode": {
-      "all_cnn": false,
-      "all_hypercomplex_cnn": false,
-      "custom": true
+      "all_cnn": true,
+      "all_hypercomplex_cnn": true,
+      "custom": false
   },
 
   "cnn_models_preset": [
