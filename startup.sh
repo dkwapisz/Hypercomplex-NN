@@ -124,8 +124,8 @@ if [ "$test_run" = true ]; then
 fi
 
 if [ "$run_training" = true ]; then
-  rm -rf "results"
-  mkdir "results"
+  rm -rf "results" "tuner_results"
+  mkdir "results" "tuner_results"
   i=0
   while [ $i -lt "$num_gpus" ]; do
     python3 Main.py $i "$num_gpus" &
@@ -137,7 +137,8 @@ if [ "$run_training" = true ]; then
   wait
   echo "All processes completed training. Packing results..."
 
-  (cd results && zip -r results.zip .)
+  zip -r results.zip results
+  zip -r tuner_results.zip tuner_results
 
   echo "Results packed. Processing completed. Thank you for your patience."
 else

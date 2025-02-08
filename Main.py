@@ -4,6 +4,7 @@ import os
 import sys
 import time
 
+from keras.src.callbacks import EarlyStopping
 from keras.src.utils import set_random_seed
 
 from config.PropertiesResolver import PropertiesResolver
@@ -24,11 +25,15 @@ test_path = os.path.join(dataset_path, "test")
 img_size = (128, 128)
 batch_size = 64
 eval_batch_size = 32
-epochs = 3
+epochs = 200
 verbose = 0
 num_classes = len(os.listdir(train_path))
 metrics = ["accuracy", "categorical_accuracy", "AUC", "Precision", "Recall", "TruePositives", "TrueNegatives",
            "FalsePositives", "FalseNegatives"]
+early_stopping = EarlyStopping(monitor='val_loss',
+                               patience=5,
+                               restore_best_weights=True,
+                               verbose=1)
 
 # ------------------- Env setup -------------------
 set_random_seed(555)
@@ -88,12 +93,27 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
     else:
         model = CNN_Model(input_shape, num_classes, color_space, metrics)
 
-    log_data["model_hyperparameters"] = get_model_hyperparams(model.model)
-    log_data["model_layers_details"] = model_summary_to_dict(model.model)
+        # ------------------- Tuning -------------------
+        logging.info(f"Starting hyperparameter tuning for {model_name}")
+        model.tune_model(train_dataset, val_dataset, epochs=30)
+        logging.info("Hyperparameter tuning complete.")
 
-    history = model.fit(train_dataset, val_dataset, epochs=epochs, verbose=verbose)
+    log_data["model_hyperparameters"] = get_model_hyperparams(model.get_model())
+    log_data["model_layers_details"] = model_summary_to_dict(model.get_model())
+
+    # ------------------- Training -------------------
+    logging.info(f"Starting training for {model_name}")
+    history = model.get_model().fit(train_dataset, validation_data=val_dataset, epochs=epochs, verbose=verbose,
+                                    early_stopping=early_stopping)
+    logging.info("Training complete.")
+
     model_training_end_time = time.time()
-    eval_result = model.evaluate(test_dataset, batch_size=eval_batch_size, verbose=verbose)
+
+    # ------------------- Evaluation -------------------
+    logging.info(f"Evaluating model {model_name}")
+    eval_result = model.get_model().evaluate(test_dataset, batch_size=eval_batch_size, verbose=verbose)
+    logging.info("Evaluation complete.")
+
     model_evaluate_end_time = time.time()
 
     log_data["training_history"] = history.history
