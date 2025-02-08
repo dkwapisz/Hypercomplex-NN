@@ -79,7 +79,7 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
     hypercomplex = model_name["type"] == "HyperComplex"
     color_space = model_name["color_space"]
 
-    logging.info(get_current_model_desc(model_index, total_model_num, model_name))
+    print(get_current_model_desc(model_index, total_model_num, model_name))
 
     input_shape = img_size + (4,) if (color_space == "CMYK" or hypercomplex) else img_size + (3,)
 
@@ -93,31 +93,34 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
     else:
         model = CNN_Model(input_shape, num_classes, color_space, metrics)
 
-        # ------------------- Tuning -------------------
-        logging.info(f"Starting hyperparameter tuning for {model_name}")
-        model.tune_model(train_dataset, val_dataset, epochs=30)
-        logging.info("Hyperparameter tuning complete.")
+    # ------------------- Tuning -------------------
+    print(f"Starting hyperparameter tuning for {model_name}")
+    model.tune_model(train_dataset, val_dataset, epochs=30)
+    print("Hyperparameter tuning complete.")
+
+    model_tuning_end_time = time.time()
 
     log_data["model_hyperparameters"] = get_model_hyperparams(model.get_model())
     log_data["model_layers_details"] = model_summary_to_dict(model.get_model())
 
     # ------------------- Training -------------------
-    logging.info(f"Starting training for {model_name}")
+    print(f"Starting training for {model_name}")
     history = model.get_model().fit(train_dataset, validation_data=val_dataset, epochs=epochs, verbose=verbose,
-                                    early_stopping=early_stopping)
-    logging.info("Training complete.")
+                                    callbacks=[early_stopping])
+    print("Training complete.")
 
     model_training_end_time = time.time()
 
     # ------------------- Evaluation -------------------
-    logging.info(f"Evaluating model {model_name}")
+    print(f"Evaluating model {model_name}")
     eval_result = model.get_model().evaluate(test_dataset, batch_size=eval_batch_size, verbose=verbose)
-    logging.info("Evaluation complete.")
+    print("Evaluation complete.")
 
     model_evaluate_end_time = time.time()
 
     log_data["training_history"] = history.history
     log_data["evaluation_result"] = {"loss": eval_result[0], **{metric: value for metric, value in zip(metrics, eval_result[1:])}}
+    log_data["tuning_time_seconds"] = round(model_tuning_end_time - model_training_start_time, 4)
     log_data["training_time_seconds"] = round(model_training_end_time - model_training_start_time, 4)
     log_data["evaluate_time_seconds"] = round(model_evaluate_end_time - model_training_end_time, 4)
 
