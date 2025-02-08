@@ -22,7 +22,7 @@
 - `--num_gpus <number>`  
   Number of GPUs to use in parallel
 
-> **Note:** Test split is calculated as `100 - training_split - validation_split`.\
+> **Note:** Test split is calculated as `100 - training_split - validation_split`.
 
 
 ### Model Training and Evaluation Schema
