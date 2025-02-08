@@ -51,11 +51,7 @@ def build_model(input_shape, num_classes, metrics):
     model.add(Dense(128, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
 
-    model.compile(
-        loss='categorical_crossentropy',
-        optimizer=Adam(),
-        metrics=metrics
-    )
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
 
     return model
 

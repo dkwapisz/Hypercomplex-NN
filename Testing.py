@@ -15,6 +15,7 @@ num_classes = len(os.listdir("datasets/Lymphoma/train"))
 train_path = "datasets/Lymphoma/train"
 val_path = "datasets/Lymphoma/val"
 test_path = "datasets/Lymphoma/test"
+metrics = ["accuracy"]
 
 algebras = ["Quaternions", "Klein4", "Cl20", "Coquaternions", "Cl11", "Bicomplex", "Tessarines"]
 
@@ -42,12 +43,12 @@ for color_space in color_spaces:
                    1:] == input_shape, f"Test dataset image shape mismatch for color space {color_space} and algebra {algebra_name}"
 
         # Expect no errors
-        model = HyperComplexCNN_Model(input_shape, num_classes, color_space, algebra_name)
+        model = HyperComplexCNN_Model(False, input_shape, num_classes, color_space, metrics, algebra_name)
 
-        history = model.fit(train_dataset, val_dataset, epochs=3, verbose=0)
+        history = model.get_model().fit(train_dataset, validation_data=val_dataset, epochs=3, verbose=0)
         assert history.history['accuracy'][-1] > 0, f"Training failed for color space {color_space}"
 
-        eval_res = model.evaluate(test_dataset, batch_size=10)
+        eval_res = model.get_model().evaluate(test_dataset, batch_size=10)
         assert eval_res[1] > 0, f"Accuracy evaluation failed for color space {color_space} and algebra {algebra_name}"
 
         print(f"--------- | Case HyperComplex: {hypercomplex} | {color_space} | {str(algebra_name)} PASSED | ---------")
@@ -73,12 +74,12 @@ for color_space in color_spaces:
         assert image.shape[1:] == input_shape, f"Test dataset image shape mismatch for color space {color_space}"
 
     # Expect no errors
-    model = CNN_Model(input_shape, num_classes, color_space)
+    model = CNN_Model(False, input_shape, num_classes, color_space, metrics)
 
-    history = model.fit(train_dataset, val_dataset, epochs=3, verbose=0)
+    history = model.get_model().fit(train_dataset, validation_data=val_dataset, epochs=3, verbose=0)
     assert history.history['accuracy'][-1] > 0, f"Training failed for color space {color_space}"
 
-    eval_res = model.evaluate(test_dataset, batch_size=10)
+    eval_res = model.get_model().evaluate(test_dataset, batch_size=10)
     assert eval_res[1] > 0, f"Accuracy evaluation failed for color space {color_space}"
 
     print(f"--------- | Case HyperComplex: {hypercomplex} | {color_space} PASSED | ---------")

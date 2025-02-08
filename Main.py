@@ -1,5 +1,4 @@
 import json
-import logging
 import os
 import sys
 import time
@@ -110,14 +109,14 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
     print(f"Starting training for {model_name}")
     history = model.get_model().fit(train_dataset, validation_data=val_dataset, epochs=epochs, verbose=verbose,
                                     callbacks=[early_stopping])
-    print("Training complete.")
+    print(f"Training complete for {model_name}")
 
     model_training_end_time = time.time()
 
     # ------------------- Evaluation -------------------
     print(f"Evaluating model {model_name}")
     eval_result = model.get_model().evaluate(test_dataset, batch_size=eval_batch_size, verbose=verbose)
-    print("Evaluation complete.")
+    print(f"Evaluation complete for {model_name}")
 
     model_evaluate_end_time = time.time()
 
