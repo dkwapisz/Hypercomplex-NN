@@ -2,13 +2,14 @@
 
 # Static variables
 DATASET_MAIN_DIR="datasets"
-DATASET_MAIN_SUBDIR="Lymphoma"
-DATASET_TARGET_DIR="$DATASET_MAIN_DIR/$DATASET_MAIN_SUBDIR"
-DATASET_ZIP_NAME="multi-cancer.zip"
+DATASET_MAIN_SUBDIR="PBC_dataset_normal_DIB_224"
+DATASET_TARGET_NAME_DIR="blood-cells"
+DATASET_TARGET_DIR="$DATASET_MAIN_DIR/$DATASET_TARGET_NAME_DIR"
+DATASET_ZIP_NAME="blood-cell.zip"
 TRAINING_SPLIT=80
 VALIDATION_SPLIT=10
 
-DATASET_URL="https://www.kaggle.com/api/v1/datasets/download/obulisainaren/multi-cancer"
+DATASET_URL="https://www.kaggle.com/api/v1/datasets/download/bzhbzh35/peripheral-blood-cell"
 SEED=123
 
 # Default dynamic values
@@ -86,11 +87,11 @@ fi
 if [ "$prepare_data" = true ] && [ ! -d "$DATASET_TARGET_DIR" ]; then
   echo "Prepare data requested"
 
-  unzip $DATASET_MAIN_DIR/$DATASET_ZIP_NAME 'Multi Cancer/Multi Cancer/Lymphoma/*' -d $DATASET_MAIN_DIR/
+  unzip $DATASET_MAIN_DIR/$DATASET_ZIP_NAME $DATASET_MAIN_SUBDIR/$DATASET_MAIN_SUBDIR/'*' -d $DATASET_MAIN_DIR/
 
   # Cleanup
-  mv $DATASET_MAIN_DIR/Multi\ Cancer/Multi\ Cancer/$DATASET_MAIN_SUBDIR $DATASET_MAIN_DIR/
-  rm -rf $DATASET_MAIN_DIR/Multi\ Cancer
+  mv $DATASET_MAIN_DIR/$DATASET_MAIN_SUBDIR/$DATASET_MAIN_SUBDIR $DATASET_MAIN_DIR/$DATASET_TARGET_NAME_DIR
+  rm -rf $DATASET_MAIN_DIR/$DATASET_MAIN_SUBDIR
   rm $DATASET_MAIN_DIR/$DATASET_ZIP_NAME
 
   for class in "$DATASET_TARGET_DIR"/*/; do

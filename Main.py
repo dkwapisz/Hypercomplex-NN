@@ -17,7 +17,7 @@ from utils.LogsHelper import create_model_result_subdir, get_log_data, model_sum
 process_start_time = time.time()
 
 # ------------------- Static parameters -------------------
-dataset_path = "datasets/Lymphoma"
+dataset_path = "datasets/blood-cells"
 train_path = os.path.join(dataset_path, "train")
 val_path = os.path.join(dataset_path, "val")
 test_path = os.path.join(dataset_path, "test")
@@ -35,7 +35,7 @@ early_stopping = EarlyStopping(monitor='val_loss',
                                verbose=1)
 
 # ------------------- Env setup -------------------
-set_random_seed(555)
+set_random_seed(123)
 
 if len(sys.argv) != 3:
     print("Attributes are wrong or not provided. Default run, taking 1 GPU and 1 process.")

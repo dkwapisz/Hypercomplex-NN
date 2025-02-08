@@ -2,14 +2,16 @@ import json, os
 import plotly.express as plt_exp
 import pandas as pd
 
+# ------------------- Static parameters -------------------
+run_dir = "run1"
+json_result_file = "training.json"
+# ---------------------------------------------------------
+
 def get_formatted_model_name(model):
     base_name = f"{model['model_name']['type']}-{model['model_name']['color_space']}"
     if model['model_name']['algebra']:
         base_name += f"-{model['model_name']['algebra']}"
     return base_name
-
-run_dir = "run1"
-json_result_file = "training.json"
 
 results_dir = os.path.join(run_dir, "results")
 

@@ -11,10 +11,10 @@ color_spaces = ["RGB", "HSV", "YUV", "YIQ", "CMYK"]
 
 img_size = (128, 128)
 batch_size = 64
-num_classes = len(os.listdir("datasets/Lymphoma/train"))
-train_path = "datasets/Lymphoma/train"
-val_path = "datasets/Lymphoma/val"
-test_path = "datasets/Lymphoma/test"
+num_classes = len(os.listdir("datasets/blood-cells/train"))
+train_path = "datasets/blood-cells/train"
+val_path = "datasets/blood-cells/val"
+test_path = "datasets/blood-cells/test"
 metrics = ["accuracy"]
 
 algebras = ["Quaternions", "Klein4", "Cl20", "Coquaternions", "Cl11", "Bicomplex", "Tessarines"]
