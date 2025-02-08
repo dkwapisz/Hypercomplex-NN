@@ -1,9 +1,9 @@
 {
   "tune_model": false,
   "training_mode": {
-      "all_cnn": true,
-      "all_hypercomplex_cnn": true,
-      "custom": false
+      "all_cnn": false,
+      "all_hypercomplex_cnn": false,
+      "custom": true
   },
 
   "cnn_models_preset": [
@@ -53,6 +53,6 @@
   ],
 
   "custom_preset": [
-    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Tessarines"}
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Cl11"}
   ]
 }
