@@ -5,22 +5,23 @@ from keras.src.layers import MaxPooling2D, Flatten, Dense
 from keras.src.optimizers import Adam
 
 from models.ModelBase import ModelBase
+from models.ModelUtils import algebras
 
 
-def build_model(hp, input_shape, num_classes, metrics):
+def build_model(hp, input_shape, num_classes, metrics, algebra):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
     filters = hp.Int('filters', min_value=16, max_value=32, step=16)
-    model.add(HyperConv2D(filters, (3, 3), activation='relu'))
+    model.add(HyperConv2D(filters, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
     filters = hp.Int('filters', min_value=32, max_value=64, step=32)
-    model.add(HyperConv2D(filters, (3, 3), activation='relu'))
+    model.add(HyperConv2D(filters, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
     filters = hp.Int('filters', min_value=64, max_value=128, step=64)
-    model.add(HyperConv2D(filters, (3, 3), activation='relu'))
+    model.add(HyperConv2D(filters, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
     model.add(Flatten())
@@ -37,9 +38,9 @@ def build_model(hp, input_shape, num_classes, metrics):
 
     return model
 
-def create_tuner(input_shape, num_classes, metrics):
+def create_tuner(input_shape, num_classes, metrics, algebra):
     return kt.Hyperband(
-        lambda hp: build_model(hp, input_shape, num_classes, metrics),
+        lambda hp: build_model(hp, input_shape, num_classes, metrics, algebra),
         objective='val_accuracy',
         max_epochs=10,
         factor=3,
@@ -47,10 +48,6 @@ def create_tuner(input_shape, num_classes, metrics):
         project_name='HyperComplex_CNN_Tuning'
     )
 
-class CNN_Model(ModelBase):
-    def __init__(self, input_shape, num_classes, color_space, metrics):
-        super().__init__(color_space, create_tuner(input_shape, num_classes, metrics))
-        self.model = None
-
-    def __str__(self):
-        return f"CNN - {self.color_space}"
+class HyperComplexCNN_Model(ModelBase):
+    def __init__(self, input_shape, num_classes, color_space, metrics, algebra: str):
+        super().__init__(color_space, create_tuner(input_shape, num_classes, metrics, algebras[algebra]))

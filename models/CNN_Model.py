@@ -49,7 +49,3 @@ def create_tuner(input_shape, num_classes, metrics):
 class CNN_Model(ModelBase):
     def __init__(self, input_shape, num_classes, color_space, metrics):
         super().__init__(color_space, create_tuner(input_shape, num_classes, metrics))
-        self.model = None
-
-    def __str__(self):
-        return f"CNN - {self.color_space}"
