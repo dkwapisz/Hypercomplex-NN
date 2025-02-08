@@ -35,7 +35,7 @@ fig = plt_exp.bar(df, x="Name", y="Value", title="Accuracy comparison",
 
 fig.update_layout(xaxis_tickangle=-45, height=600, width=1200)
 fig.show()
-fig.write_image("accuracy_bar_chart.png")
+fig.write_image(os.path.join(run_dir, "accuracy_bar_chart.png"))
 
 # -------------------------- Training time plot --------------------------
 df = pd.DataFrame({"Name": model_name, "Value": model_training_time}).sort_values(by="Value", ascending=True)
@@ -46,4 +46,4 @@ fig = plt_exp.bar(df, x="Name", y="Value", title="Training time comparison",
 
 fig.update_layout(xaxis_tickangle=-45, height=600, width=1200)
 fig.show()
-fig.write_image("training_time_bar_chart.png")
+fig.write_image(os.path.join(run_dir, "training_time_bar_chart.png"))

@@ -25,7 +25,7 @@ img_size = (128, 128)
 batch_size = 64
 eval_batch_size = 32
 epochs = 200
-verbose = 0
+verbose = 1
 num_classes = len(os.listdir(train_path))
 metrics = ["accuracy", "categorical_accuracy", "AUC", "Precision", "Recall", "TruePositives", "TrueNegatives",
            "FalsePositives", "FalseNegatives"]
