@@ -137,6 +137,8 @@ if [ "$run_training" = true ]; then
   wait
   echo "All processes completed training. Packing results..."
 
+  find tuner_results/ -type f -name 'checkpoint.weights.h5' -exec rm {} \; # Removing checkpoints to reduce zip size
+
   zip -r results.zip results
   zip -r tuner_results.zip tuner_results
 

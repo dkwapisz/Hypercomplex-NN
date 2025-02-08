@@ -1,7 +1,7 @@
 {
   "training_mode": {
       "all_cnn": true,
-      "all_hypercomplex_cnn": false,
+      "all_hypercomplex_cnn": true,
       "custom": false
   },
 
@@ -53,6 +53,7 @@
 
   "custom_preset": [
     {"type": "CNN", "color_space": "RGB", "algebra": null},
-    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Cl11"}
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Bicomplex"}
   ]
 }
