@@ -29,7 +29,7 @@ if [[ $# -eq 0 ]]; then
   echo "  --download_data: Downloads the dataset file."
   echo "  --prepare_data: Unzips the dataset file."
   echo "  --test_run: Run tests that checks dataset and data compatibility with models."
-  echo "  --run_training: Starts the training process."
+  echo "  --run_training: Starts the tuning & training process."
   echo "  --num_gpus <number>: Number of GPUs to use in parallel."
   echo "  Test split is calculated as 100 - TRAINING_SPLIT - VALIDATION_SPLIT."
   exit 0

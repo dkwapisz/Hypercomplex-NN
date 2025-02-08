@@ -17,7 +17,7 @@
   Run tests that checks dataset processing and data compatibility with models.
 
 - `--run_training`  
-  Starts the training process.
+  Starts the tuning & training process.
 
 - `--num_gpus <number>`  
   Number of GPUs to use in parallel
@@ -105,6 +105,9 @@
   - **TrueNegatives**: `integer`
   - **FalsePositives**: `integer`
   - **FalseNegatives**: `integer`
+
+- **tuning_time_seconds**: `float`  
+  - Time taken for tuning in seconds.
 
 - **training_time_seconds**: `float`  
   - Time taken for training in seconds.
