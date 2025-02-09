@@ -29,9 +29,6 @@ Start script: `./startup.sh --default --num_gpus 8`
 - `--prepare_data`  
   Unzips the dataset file and splits it into training, validation and test sets.
 
-- `--test_run`  
-  Run tests that checks dataset processing and data compatibility with models.
-
 - `--run_training`  
   Starts the tuning & training process.
 

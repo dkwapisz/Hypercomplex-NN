@@ -7,6 +7,8 @@ from utils.GPU_Helper import set_gpu_device
 
 set_gpu_device(0)
 
+# TODO Fix
+
 color_spaces = ["RGB", "HSV", "YUV", "YIQ", "CMYK"]
 
 img_size = (128, 128)
