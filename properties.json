@@ -1,9 +1,9 @@
 {
   "tune_model": false,
   "training_mode": {
-      "all_cnn": true,
-      "all_hypercomplex_cnn": true,
-      "custom": false
+      "all_cnn": false,
+      "all_hypercomplex_cnn": false,
+      "custom": true
   },
 
   "cnn_models_preset": [
@@ -53,8 +53,12 @@
   ],
 
   "custom_preset": [
-    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Quaternions"},
-    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Quaternions"},
-    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Quaternions"}
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Klein4"},
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Cl20"},
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Bicomplex"},
+    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Tessarines"}
   ]
 }

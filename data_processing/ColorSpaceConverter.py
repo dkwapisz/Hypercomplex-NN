@@ -44,6 +44,11 @@ def perform_hypercomplex_transformation(image, color_space):
         theta = tf.atan2(q, i)
         magnitude = tf.sqrt(i ** 2 + q ** 2)
         return tf.concat([y, magnitude * tf.cos(theta), magnitude * tf.sin(theta), y * tf.cos(theta)], axis=-1)
+    elif color_space == "CMYK":
+        image = 1 - image
+        k = tf.reduce_min(image, axis=-1, keepdims=True)
+        cmy = (image - k) / (1 - k + 1e-8)
+        return tf.concat([cmy, k], axis=-1)
 
 def convert_color_tf(image, color_space, hypercomplex=False):
     image = tf.image.convert_image_dtype(image, tf.float32)
