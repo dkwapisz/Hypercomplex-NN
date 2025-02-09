@@ -28,8 +28,11 @@ def convert_color_tf(image, color_space, hypercomplex=False):
 
     image = normalize_zscore(image)
 
+    # if hypercomplex and color_space != "CMYK":
+    #     image = tf.concat([tf.zeros_like(image[..., :1]), image], axis=-1) # Zeros channel as first
+
     if hypercomplex and color_space != "CMYK":
-        image = tf.concat([tf.zeros_like(image[..., :1]), image], axis=-1) # Zeros channel as first
+        image = tf.concat([image, tf.zeros_like(image[..., :1])], axis=-1)  # Zeros channel as last
 
     return image
 

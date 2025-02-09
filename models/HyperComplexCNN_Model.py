@@ -1,7 +1,7 @@
 import keras_tuner as kt
 from HypercomplexKeras.Convolutional import HyperConv2D
 from keras import Sequential, Input
-from keras.src.layers import MaxPooling2D, Flatten, Dense, Dropout, GlobalMaxPooling2D
+from keras.src.layers import MaxPooling2D, Flatten, Dense, Dropout, GlobalMaxPooling2D, BatchNormalization
 from keras.src.optimizers import Adam
 
 from models.ModelBase import ModelBase
@@ -39,14 +39,15 @@ def build_model(input_shape, num_classes, metrics, algebra):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    model.add(HyperConv2D(4, (3, 3), activation='relu', algebra=algebra))
+    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra, initializer='he_normal'))
+    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra, initializer='he_normal'))
     model.add(MaxPooling2D())
+    model.add(BatchNormalization())
 
-    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
+    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra, initializer='he_normal'))
+    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra, initializer='he_normal'))
     model.add(MaxPooling2D())
-
-    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
-    model.add(MaxPooling2D())
+    model.add(BatchNormalization())
 
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
