@@ -27,11 +27,8 @@ def perform_hypercomplex_transformation(image, color_space):
         return tf.concat([image, tf.zeros_like(image[..., :1])], axis=-1)  # Zeros channel as last
     elif color_space == "HSV":
         image = tf.image.rgb_to_hsv(image)
-        h, s, v = tf.split(image, num_or_size_splits=3, axis=-1)
-        h_rad = 2 * np.pi * h
-        h_sin = tf.sin(h_rad)
-        h_cos = tf.cos(h_rad)
-        return tf.concat([h_sin, h_cos, s, v], axis=-1)
+        h, s, v = tf.split(image, 3, axis=-1)
+        return tf.concat([s * tf.cos(h), s * tf.sin(h), v * tf.cos(h), v * tf.sin(h)], axis=-1)
     elif color_space == "YUV":
         image = tf.image.rgb_to_yuv(image)
         y, u, v = tf.split(image, 3, axis=-1)
