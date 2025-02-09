@@ -1,5 +1,5 @@
 Image size: (100, 100)
-Zeros channel as last
+Zeros channel as first
 
 def build_model(input_shape, num_classes, metrics):
     model = Sequential()
