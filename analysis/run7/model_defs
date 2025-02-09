@@ -1,0 +1,46 @@
+Image size: (100, 100)
+New color space converting approach:
+- RGB with (R, G, B, 0)
+- HSV with (S cos(H), S sin(H), V cos(H), V sin(H))
+- YIQ/YUV with (Y, ||C||_cos,||C||_sin, Y_cos)
+REDUCED DATASET - train/val/test in 10%/5%/85% proportions
+
+def build_model(input_shape, num_classes, metrics):
+    model = Sequential()
+    model.add(Input(shape=input_shape))
+
+    model.add(Conv2D(16, (3, 3), activation='relu'))
+    model.add(MaxPooling2D())
+
+    model.add(Conv2D(32, (3, 3), activation='relu'))
+    model.add(MaxPooling2D())
+
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(MaxPooling2D())
+
+    model.add(Flatten())
+    model.add(Dense(num_classes, activation='softmax'))
+
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
+
+    return model
+
+def build_model(input_shape, num_classes, metrics, algebra):
+    model = Sequential()
+    model.add(Input(shape=input_shape))
+
+    model.add(HyperConv2D(4, (3, 3), activation='relu', algebra=algebra))
+    model.add(MaxPooling2D())
+
+    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
+    model.add(MaxPooling2D())
+
+    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
+    model.add(MaxPooling2D())
+
+    model.add(Flatten())
+    model.add(Dense(num_classes, activation='softmax'))
+
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
+
+    return model
