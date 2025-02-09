@@ -39,13 +39,16 @@ def build_model(input_shape, num_classes, metrics, algebra):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    model.add(HyperConv2D(100, (3, 3), activation='relu', algebra=algebra))
-    model.add(GlobalMaxPooling2D())
+    model.add(HyperConv2D(4, (3, 3), activation='relu', algebra=algebra))
+    model.add(MaxPooling2D())
+
+    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
+    model.add(MaxPooling2D())
+
+    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
+    model.add(MaxPooling2D())
 
     model.add(Flatten())
-
-    model.add(Dense(256, activation='relu'))
-    model.add(Dropout(0.3))
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)

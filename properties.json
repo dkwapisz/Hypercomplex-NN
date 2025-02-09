@@ -53,6 +53,7 @@
   ],
 
   "custom_preset": [
-    {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Cl11"}
+        {"type": "CNN", "color_space": "RGB", "algebra": ""},
+        {"type": "HyperComplex", "color_space": "RGB", "algebra": "Quaternions"}
   ]
 }

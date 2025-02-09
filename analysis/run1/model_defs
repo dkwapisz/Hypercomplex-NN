@@ -1,3 +1,5 @@
+Image size: (64, 64)
+
 def build_model(input_shape, num_classes, metrics):
     model = Sequential()
     model.add(Input(shape=input_shape))
