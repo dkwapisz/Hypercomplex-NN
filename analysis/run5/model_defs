@@ -1,7 +1,7 @@
 Image size: (100, 100)
 New color space converting approach:
 - RGB with (R, G, B, 0)
-- HSV with (h_sin, h_cos, s, v)
+- HSV with (S cos(H), S sin(H), V cos(H), V sin(H))
 - YIQ/YUV with (Y, ||C||_cos,||C||_sin, Y_cos)
 
 def build_model(input_shape, num_classes, metrics):
