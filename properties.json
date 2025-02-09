@@ -53,7 +53,6 @@
   ],
 
   "custom_preset": [
-        {"type": "HyperComplex", "color_space": "RGB", "algebra": "Quaternions"},
-        {"type": "HyperComplex", "color_space": "HSV", "algebra": "Quaternions"}
+        {"type": "HyperComplex", "color_space": "RGB", "algebra": "Quaternions"}
   ]
 }
