@@ -1,7 +1,23 @@
-> Project is in progress. 
+> This project is part of Master Thesis regarding CNN vs HyperComplex CNN comparison
+
+## Introduction
+
+Hypercomplex-NN is an application for training and comparing classical convolutional networks (Conv2D) and their
+hypercomplex variants (HyperConv2D and others). It supports both single-GPU and multi-GPU environments, where models
+are evenly distributed across processes, with each process assigned to a dedicated GPU.
+
+The list of models to be trained is defined in [properties.json](https://github.com/dkwapisz/Hypercomplex-NN/blob/main/properties.json), 
+while their implementations can be found in:
+
+- **CNN:** [`build_model` in CNN_Model.py](https://github.com/dkwapisz/Hypercomplex-NN/blob/main/models/CNN_Model.py#L36)
+- **HyperComplex CNN:** [`build_model` in HyperComplexCNN_Model.py](https://github.com/dkwapisz/Hypercomplex-NN/blob/main/models/HyperComplexCNN_Model.py#L38)
 
 
 ### Usage: `./startup.sh [options]`
+
+#### Example usage: 
+Clone repository and make startup.sh executable: `git clone https://github.com/dkwapisz/Hypercomplex-NN.git && cd Hypercomplex-NN && chmod +x startup.sh`   
+Start script: `./startup.sh --default --num_gpus 8`
 
 #### Options:
 - `--default`  
