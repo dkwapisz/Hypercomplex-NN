@@ -37,15 +37,14 @@ def build_model(input_shape, num_classes, metrics):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    model.add(Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_normal'))
-    model.add(Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_normal'))
+    model.add(Conv2D(16, (3, 3), activation='relu'))
     model.add(MaxPooling2D())
-    model.add(BatchNormalization())
 
-    model.add(Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal'))
-    model.add(Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_normal'))
+    model.add(Conv2D(32, (3, 3), activation='relu'))
     model.add(MaxPooling2D())
-    model.add(BatchNormalization())
+
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(MaxPooling2D())
 
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))

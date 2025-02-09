@@ -1,5 +1,8 @@
 Image size: (100, 100)
-Zeros channel as first (for all color spaces)
+New color space converting approach:
+- RGB with (R, G, B, 0)
+- HSV with (h_sin, h_cos, s, v)
+- YIQ/YUV with (Y, ||C||_cos,||C||_sin, Y_cos)
 
 def build_model(input_shape, num_classes, metrics):
     model = Sequential()

@@ -1,5 +1,5 @@
 Image size: (200, 200)
-Zeros channel as last
+Zeros channel as last (for all color spaces)
 
 def build_model(input_shape, num_classes, metrics):
     model = Sequential()

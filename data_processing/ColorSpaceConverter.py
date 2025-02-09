@@ -1,3 +1,4 @@
+import numpy as np
 import tensorflow as tf
 from keras.src.utils import image_dataset_from_directory
 
@@ -6,33 +7,53 @@ def normalize_zscore(image):
   std = tf.math.reduce_std(image)
   return (image - mean) / std
 
-
-def convert_color_tf(image, color_space, hypercomplex=False):
-    image = tf.image.convert_image_dtype(image, tf.float32)
-
+def perform_basic_transformation(image, color_space):
     if color_space == "RGB":
-        pass
+        return image
     elif color_space == "HSV":
-        image = tf.image.rgb_to_hsv(image)
+        return tf.image.rgb_to_hsv(image)
     elif color_space == "YUV":
-        image = tf.image.rgb_to_yuv(image)
+        return tf.image.rgb_to_yuv(image)
     elif color_space == "YIQ":
-        image = tf.image.rgb_to_yiq(image)
+        return tf.image.rgb_to_yiq(image)
     elif color_space == "CMYK":
         image = 1 - image
         k = tf.reduce_min(image, axis=-1, keepdims=True)
         cmy = (image - k) / (1 - k + 1e-8)
-        image = tf.concat([cmy, k], axis=-1)
+        return tf.concat([cmy, k], axis=-1)
+
+def perform_hypercomplex_transformation(image, color_space):
+    if color_space == "RGB":
+        return tf.concat([image, tf.zeros_like(image[..., :1])], axis=-1)  # Zeros channel as last
+    elif color_space == "HSV":
+        image = tf.image.rgb_to_hsv(image)
+        h, s, v = tf.split(image, num_or_size_splits=3, axis=-1)
+        h_rad = 2 * np.pi * h
+        h_sin = tf.sin(h_rad)
+        h_cos = tf.cos(h_rad)
+        return tf.concat([h_sin, h_cos, s, v], axis=-1)
+    elif color_space == "YUV":
+        image = tf.image.rgb_to_yuv(image)
+        y, u, v = tf.split(image, 3, axis=-1)
+        theta = tf.atan2(v, u)
+        magnitude = tf.sqrt(u ** 2 + v ** 2)
+        return tf.concat([y, magnitude * tf.cos(theta), magnitude * tf.sin(theta), y * tf.cos(theta)], axis=-1)
+    elif color_space == "YIQ":
+        image = tf.image.rgb_to_yiq(image)
+        y, i, q = tf.split(image, 3, axis=-1)
+        theta = tf.atan2(q, i)
+        magnitude = tf.sqrt(i ** 2 + q ** 2)
+        return tf.concat([y, magnitude * tf.cos(theta), magnitude * tf.sin(theta), y * tf.cos(theta)], axis=-1)
+
+def convert_color_tf(image, color_space, hypercomplex=False):
+    image = tf.image.convert_image_dtype(image, tf.float32)
+
+    if hypercomplex:
+        image = perform_hypercomplex_transformation(image, color_space)
     else:
-        raise ValueError(f"{color_space} color space is not supported.")
+        image = perform_basic_transformation(image, color_space)
 
     image = normalize_zscore(image)
-
-    # if hypercomplex and color_space != "CMYK":
-    #     image = tf.concat([tf.zeros_like(image[..., :1]), image], axis=-1) # Zeros channel as first
-
-    if hypercomplex and color_space != "CMYK":
-        image = tf.concat([image, tf.zeros_like(image[..., :1])], axis=-1)  # Zeros channel as last
 
     return image
 
