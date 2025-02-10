@@ -28,8 +28,8 @@ def perform_hypercomplex_transformation(image, color_space):
     elif color_space == "HSV":
         image = tf.image.rgb_to_hsv(image)
         h, s, v = tf.split(image, 3, axis=-1)
-        h_rescaled = h * 2 * np.pi
-        return tf.concat([s * tf.cos(h_rescaled), s * tf.sin(h_rescaled), v * tf.cos(h_rescaled), v * tf.sin(h_rescaled)], axis=-1)
+        theta = h * 2 * np.pi
+        return tf.concat([v, s * tf.cos(theta), s * tf.sin(theta), v * tf.cos(theta)], axis=-1)
     elif color_space == "YUV":
         image = tf.image.rgb_to_yuv(image)
         y, u, v = tf.split(image, 3, axis=-1)
