@@ -37,13 +37,13 @@ def build_model(input_shape, num_classes, metrics):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    model.add(Conv2D(16, (3, 3), activation='relu'))
-    model.add(MaxPooling2D())
-
     model.add(Conv2D(32, (3, 3), activation='relu'))
     model.add(MaxPooling2D())
 
     model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(MaxPooling2D())
+
+    model.add(Conv2D(128, (3, 3), activation='relu'))
     model.add(MaxPooling2D())
 
     model.add(Flatten())

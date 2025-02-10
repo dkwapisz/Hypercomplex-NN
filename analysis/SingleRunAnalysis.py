@@ -3,7 +3,7 @@ import plotly.express as plt_exp
 import pandas as pd
 
 # ------------------- Static parameters -------------------
-run_dir = "run8"
+run_dir = "run1"
 json_result_file = "training.json"
 # ---------------------------------------------------------
 
