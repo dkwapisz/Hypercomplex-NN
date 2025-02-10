@@ -4,7 +4,7 @@ ROOT_DIR="datasets/blood-cells"
 SEED=42
 TARGET_COUNT_TRAIN=100
 TARGET_COUNT_VAL=50
-TARGET_COUNT_TEST=700
+TARGET_COUNT_TEST=1000
 
 prune_images() {
     local dir="$1"
