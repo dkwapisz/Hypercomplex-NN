@@ -6,16 +6,17 @@ DATASET_MAIN_SUBDIR="PBC_dataset_normal_DIB_224"
 DATASET_TARGET_NAME_DIR="blood-cells"
 DATASET_TARGET_DIR="$DATASET_MAIN_DIR/$DATASET_TARGET_NAME_DIR"
 DATASET_ZIP_NAME="blood-cell.zip"
-TRAINING_SPLIT=10
-VALIDATION_SPLIT=5
+TRAINING_SPLIT=1
+VALIDATION_SPLIT=1
+MAX_IMAGES_PER_CLASS=1200
 
 DATASET_URL="https://www.kaggle.com/api/v1/datasets/download/bzhbzh35/peripheral-blood-cell"
 SEED=123
 
 # Default dynamic values
 num_gpus=1
-prepare_data=false
 download_data=false
+prepare_data=false
 test_run=false
 run_training=false
 
@@ -92,6 +93,20 @@ if [ "$prepare_data" = true ] && [ ! -d "$DATASET_TARGET_DIR" ]; then
   mv $DATASET_MAIN_DIR/$DATASET_MAIN_SUBDIR/$DATASET_MAIN_SUBDIR $DATASET_MAIN_DIR/$DATASET_TARGET_NAME_DIR
   rm -rf $DATASET_MAIN_DIR/$DATASET_MAIN_SUBDIR
   rm $DATASET_MAIN_DIR/$DATASET_ZIP_NAME
+
+  for class_dir in "$DATASET_MAIN_DIR"/"$DATASET_TARGET_NAME_DIR"/*/; do
+      [ -d "$class_dir" ] || continue
+
+      file_count=$(find "$class_dir" -type f | wc -l)
+
+      if [ "$file_count" -gt "$MAX_IMAGES_PER_CLASS" ]; then
+          files_to_remove=$((file_count - MAX_IMAGES_PER_CLASS))
+          find "$class_dir" -type f | shuf | head -n "$files_to_remove" | xargs rm -f
+          echo "Removed $files_to_remove files from $class_dir"
+      else
+          echo "Cannot remove from $class_dir. It has not enough files"
+      fi
+  done
 
   for class in "$DATASET_TARGET_DIR"/*/; do
     class_name=$(basename "$class")

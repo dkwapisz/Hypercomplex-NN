@@ -3,6 +3,7 @@ import plotly.express as plt_exp
 import pandas as pd
 
 # ------------------- Static parameters -------------------
+run_phase = "phase_1"
 runs = ["run0"]
 json_result_file = "training.json"
 
@@ -19,7 +20,7 @@ def get_formatted_model_name(model):
 results_list = []
 
 for run in runs:
-    results_dir = os.path.join(run, "results")
+    results_dir = os.path.join(run_phase, run, "results")
     for single_result in os.listdir(results_dir):
         json_result_path = os.path.join(results_dir, single_result, json_result_file)
         with open(json_result_path, "r") as file:
@@ -56,7 +57,7 @@ fig_accuracy = plt_exp.bar(df_best_accuracy_sorted, x="Model", y="Accuracy", col
 
 fig_accuracy.update_layout(xaxis_tickangle=-45, height=600, width=1200)
 fig_accuracy.show()
-fig_accuracy.write_image(os.path.join("comparison", "best_accuracy_comparison.png"))
+fig_accuracy.write_image(os.path.join(run_phase, "comparison", "best_accuracy_comparison.png"))
 
 # -------------------------- F1 Score comparison plot --------------------------
 df_best_f1 = df.loc[df.groupby('Model')['F1 Score'].idxmax()]
@@ -68,7 +69,7 @@ fig_f1 = plt_exp.bar(df_best_f1_sorted, x="Model", y="F1 Score", color="Run", ti
 
 fig_f1.update_layout(xaxis_tickangle=-45, height=600, width=1200)
 fig_f1.show()
-fig_f1.write_image(os.path.join("comparison", "best_f1_score_comparison.png"))
+fig_f1.write_image(os.path.join(run_phase, "comparison", "best_f1_score_comparison.png"))
 
 # -------------------------- Training Time comparison plot --------------------------
 df_best_training_time = df.loc[df.groupby('Model')['Training Time'].idxmin()]
@@ -81,4 +82,4 @@ fig_training_time = plt_exp.bar(df_best_training_time_sorted, x="Model", y="Trai
 
 fig_training_time.update_layout(xaxis_tickangle=-45, height=600, width=1200)
 fig_training_time.show()
-fig_training_time.write_image(os.path.join("comparison", "best_training_time_comparison.png"))
+fig_training_time.write_image(os.path.join(run_phase, "comparison", "best_training_time_comparison.png"))

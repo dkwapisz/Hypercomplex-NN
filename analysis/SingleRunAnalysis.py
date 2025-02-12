@@ -3,7 +3,8 @@ import plotly.express as plt_exp
 import pandas as pd
 
 # ------------------- Static parameters -------------------
-run_dir = "run0"
+run_phase = "phase_1"
+run_dir = "run1"
 json_result_file = "training.json"
 # ---------------------------------------------------------
 
@@ -13,7 +14,7 @@ def get_formatted_model_name(model):
         base_name += f"-{model['model_name']['algebra']}"
     return base_name
 
-results_dir = os.path.join(run_dir, "results")
+results_dir = os.path.join(run_phase, run_dir, "results")
 
 results_list = []
 
@@ -47,7 +48,7 @@ fig = plt_exp.bar(df, x="Model", y="Accuracy", title="Accuracy comparison",
 
 fig.update_layout(xaxis_tickangle=-45, height=600, width=1200)
 fig.show()
-fig.write_image(os.path.join(run_dir, "accuracy_bar_chart.png"))
+fig.write_image(os.path.join(run_phase, run_dir, "accuracy_bar_chart.png"))
 
 # -------------------------- F1 Score plot --------------------------
 df = df.sort_values(by="F1 Score", ascending=True)
@@ -58,7 +59,7 @@ fig = plt_exp.bar(df, x="Model", y="F1 Score", title="F1 Score comparison",
 
 fig.update_layout(xaxis_tickangle=-45, height=600, width=1200)
 fig.show()
-fig.write_image(os.path.join(run_dir, "f1_score_bar_chart.png"))
+fig.write_image(os.path.join(run_phase, run_dir, "f1_score_bar_chart.png"))
 
 # -------------------------- Training time plot --------------------------
 df = df.sort_values(by="Training Time", ascending=True)
@@ -69,4 +70,4 @@ fig = plt_exp.bar(df, x="Model", y="Training Time", title="Training time compari
 
 fig.update_layout(xaxis_tickangle=-45, height=600, width=1200)
 fig.show()
-fig.write_image(os.path.join(run_dir, "training_time_bar_chart.png"))
+fig.write_image(os.path.join(run_phase, run_dir, "training_time_bar_chart.png"))
