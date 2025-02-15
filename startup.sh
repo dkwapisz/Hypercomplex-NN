@@ -6,8 +6,6 @@ DATASET_MAIN_SUBDIR="PBC_dataset_normal_DIB_224"
 DATASET_TARGET_NAME_DIR="blood-cells"
 DATASET_TARGET_DIR="$DATASET_MAIN_DIR/$DATASET_TARGET_NAME_DIR"
 DATASET_ZIP_NAME="blood-cell.zip"
-TRAINING_SPLIT=1
-VALIDATION_SPLIT=1
 MAX_IMAGES_PER_CLASS=1200
 
 DATASET_URL="https://www.kaggle.com/api/v1/datasets/download/bzhbzh35/peripheral-blood-cell"
@@ -15,6 +13,8 @@ SEED=123
 
 # Default dynamic values
 num_gpus=1
+training_split=1
+validation_split=1
 download_data=false
 prepare_data=false
 test_run=false
@@ -32,7 +32,9 @@ if [[ $# -eq 0 ]]; then
   echo "  --prepare_data: Unzips the dataset file."
   echo "  --run_training: Starts the tuning & training process."
   echo "  --num_gpus <number>: Number of GPUs to use in parallel."
-  echo "  Test split is calculated as 100 - TRAINING_SPLIT - VALIDATION_SPLIT."
+  echo "  --training_split <number>: Proportion of training dataset (0-100)."
+  echo "  --validation_split <number>: Proportion of validation dataset (0-100)."
+  echo "  Test split is calculated as 100 - training_split - validation_split."
   exit 0
 fi
 
@@ -61,6 +63,24 @@ while [[ $# -gt 0 ]]; do
         shift
       else
         echo "Error: --num_gpus flag requires a numerical argument."
+        exit 1
+      fi
+      ;;
+    --training_split)
+      if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+        training_split="$2"
+        shift
+      else
+        echo "Error: --training_split flag requires a numerical argument."
+        exit 1
+      fi
+      ;;
+    --validation_split)
+      if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+        validation_split="$2"
+        shift
+      else
+        echo "Error: --validation_split flag requires a numerical argument."
         exit 1
       fi
       ;;
@@ -94,6 +114,7 @@ if [ "$prepare_data" = true ] && [ ! -d "$DATASET_TARGET_DIR" ]; then
   rm -rf $DATASET_MAIN_DIR/$DATASET_MAIN_SUBDIR
   rm $DATASET_MAIN_DIR/$DATASET_ZIP_NAME
 
+  # Dataset pruning
   for class_dir in "$DATASET_MAIN_DIR"/"$DATASET_TARGET_NAME_DIR"/*/; do
       [ -d "$class_dir" ] || continue
 
@@ -120,8 +141,8 @@ if [ "$prepare_data" = true ] && [ ! -d "$DATASET_TARGET_DIR" ]; then
 
     mapfile -t shuffled_files < <(printf "%s\n" "${files[@]}" | awk -v seed="$SEED" 'BEGIN { srand(seed) } {print rand(), $0}' | sort -n | cut -d' ' -f2-)
 
-    train_count=$((total_files * TRAINING_SPLIT / 100))
-    val_count=$((total_files * VALIDATION_SPLIT / 100))
+    train_count=$((total_files * training_split / 100))
+    val_count=$((total_files * validation_split / 100))
     test_count=$((total_files - train_count - val_count))
 
     mv "${shuffled_files[@]:0:train_count}" "$DATASET_TARGET_DIR/train/$class_name/"
@@ -155,9 +176,10 @@ if [ "$run_training" = true ]; then
   find tuner_results/ -type f -name 'checkpoint.weights.h5' -exec rm {} \; # Removing checkpoints to reduce zip size
 
   zip -r results.zip results
-  zip -r tuner_results.zip tuner_results
+#  zip -r tuner_results.zip tuner_results
 
-  mv results.zip tuner_results.zip final_results/
+#  mv results.zip tuner_results.zip final_results/
+  mv results.zip final_results/
 
   echo "Results packed. Processing completed. Thank you for your patience."
 else

@@ -27,29 +27,17 @@ Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-
 #### HSV
 
 - CNN: The RGB image is converted to HSV.
-- HCNN: The channels are split into:
-    - **V** (Value)
-    - **S * cos(θ)** (where θ = H * 2π)
-    - **S * sin(θ)**
-    - **V * cos(θ)**
+- HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 #### YUV
 
 - CNN: The RGB image is converted to YUV.
-- HCNN: The U and V channels are transformed into polar coordinates:
-    - **Y (Luminance)**
-    - **Magnitude * cos(θ)**
-    - **Magnitude * sin(θ)**
-    - **Y * cos(θ)**
+- HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 #### YIQ
 
 - CNN: The RGB image is converted to YIQ.
-- HCNN: The I and Q channels are transformed into polar coordinates:
-    - **Y (Luminance)**
-    - **Magnitude * cos(θ)**
-    - **Magnitude * sin(θ)**
-    - **Y * cos(θ)**
+- HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 #### CMYK
 
