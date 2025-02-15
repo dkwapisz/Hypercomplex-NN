@@ -27,16 +27,27 @@ def perform_basic_transformation(image, color_space):
 
 def perform_hypercomplex_transformation(image, color_space):
     if color_space == "RGB":
-        return tf.concat([image, tf.zeros_like(image[..., :1])], axis=-1)  # Zeros channel as last
+        r, g, b = tf.split(image, 3, axis=-1)
+        theta = tf.atan2(b - g, r)
+        magnitude = tf.sqrt(r ** 2 + g ** 2 + b ** 2)
+        return tf.concat([r, g, b, magnitude * tf.cos(theta)], axis=-1)
     elif color_space == "HSV":
         image = tf.image.rgb_to_hsv(image)
-        return tf.concat([image, tf.zeros_like(image[..., :1])], axis=-1)
+        h, s, v = tf.split(image, 3, axis=-1)
+        theta = h * 2 * np.pi
+        return tf.concat([v, s * tf.cos(theta), s * tf.sin(theta), v * tf.cos(theta)], axis=-1)
     elif color_space == "YUV":
         image = tf.image.rgb_to_yuv(image)
-        return tf.concat([image, tf.zeros_like(image[..., :1])], axis=-1)
+        y, u, v = tf.split(image, 3, axis=-1)
+        theta = tf.atan2(v, u)
+        magnitude = tf.sqrt(u ** 2 + v ** 2)
+        return tf.concat([y, magnitude * tf.cos(theta), magnitude * tf.sin(theta), y * tf.cos(theta)], axis=-1)
     elif color_space == "YIQ":
         image = tf.image.rgb_to_yiq(image)
-        return tf.concat([image, tf.zeros_like(image[..., :1])], axis=-1)
+        y, i, q = tf.split(image, 3, axis=-1)
+        theta = tf.atan2(q, i)
+        magnitude = tf.sqrt(i ** 2 + q ** 2)
+        return tf.concat([y, magnitude * tf.cos(theta), magnitude * tf.sin(theta), y * tf.cos(theta)], axis=-1)
     elif color_space == "CMYK":
         cmy = 1 - image
         k = tf.reduce_min(cmy, axis=-1, keepdims=True)

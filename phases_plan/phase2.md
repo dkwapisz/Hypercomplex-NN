@@ -22,7 +22,12 @@ Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-
 #### RGB
 
 - CNN: The image is kept in its original RGB format.
-- HCNN: **TBD**
+- HCNN: The RGB channels are transformed into 4 dimensions:
+    - **R**
+    - **G**
+    - **B**
+    - **Magnitude * cos(θ)** (where Magnitude is sqrt(R^2 * G^2 * B^2) and θ = atan2(B - G, R)
+
 
 #### HSV
 
