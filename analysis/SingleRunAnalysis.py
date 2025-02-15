@@ -4,7 +4,7 @@ import pandas as pd
 
 # ------------------- Static parameters -------------------
 run_phase = "phase_1"
-run_dir = "run1"
+run_dir = "run10"
 json_result_file = "training.json"
 # ---------------------------------------------------------
 
@@ -47,7 +47,7 @@ fig = plt_exp.bar(df, x="Model", y="Accuracy", title="Accuracy comparison",
              text_auto=True)
 
 fig.update_layout(xaxis_tickangle=-45, height=600, width=1200)
-fig.show()
+# fig.show()
 fig.write_image(os.path.join(run_phase, run_dir, "accuracy_bar_chart.png"))
 
 # -------------------------- F1 Score plot --------------------------
@@ -58,16 +58,16 @@ fig = plt_exp.bar(df, x="Model", y="F1 Score", title="F1 Score comparison",
              text_auto=True)
 
 fig.update_layout(xaxis_tickangle=-45, height=600, width=1200)
-fig.show()
+# fig.show()
 fig.write_image(os.path.join(run_phase, run_dir, "f1_score_bar_chart.png"))
 
 # -------------------------- Training time plot --------------------------
-df = df.sort_values(by="Training Time", ascending=True)
-
-fig = plt_exp.bar(df, x="Model", y="Training Time", title="Training time comparison",
-             labels={"Model": "Model", "Training Time": "Training Time"},
-             text_auto=True)
-
-fig.update_layout(xaxis_tickangle=-45, height=600, width=1200)
-fig.show()
-fig.write_image(os.path.join(run_phase, run_dir, "training_time_bar_chart.png"))
+# df = df.sort_values(by="Training Time", ascending=True)
+#
+# fig = plt_exp.bar(df, x="Model", y="Training Time", title="Training time comparison",
+#              labels={"Model": "Model", "Training Time": "Training Time"},
+#              text_auto=True)
+#
+# fig.update_layout(xaxis_tickangle=-45, height=600, width=1200)
+# fig.show()
+# fig.write_image(os.path.join(run_phase, run_dir, "training_time_bar_chart.png"))

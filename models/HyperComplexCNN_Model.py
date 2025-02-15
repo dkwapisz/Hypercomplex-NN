@@ -72,3 +72,7 @@ class HyperComplexCNN_Model(ModelBase):
         else:
             super().__init__(color_space, None)
             self.model = build_model(input_shape, num_classes, metrics, algebras[algebra])
+
+
+if __name__ == "__main__":
+    build_model((100, 100, 4), 8, ["accuracy"], algebras["Quaternions"]).summary()

@@ -70,3 +70,7 @@ class CNN_Model(ModelBase):
         else:
             super().__init__(color_space, None)
             self.model = build_model(input_shape, num_classes, metrics)
+
+
+if __name__ == "__main__":
+    build_model((100, 100, 3), 8, ["accuracy"]).summary()
