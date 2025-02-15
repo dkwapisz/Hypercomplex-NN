@@ -17,13 +17,13 @@ from utils.LogsHelper import create_model_result_subdir, get_log_data, model_sum
 process_start_time = time.time()
 
 # ------------------- Static parameters -------------------
-dataset_path = "datasets/blood-cells"
+dataset_path = "datasets/"
 train_path = os.path.join(dataset_path, "train")
 val_path = os.path.join(dataset_path, "val")
 test_path = os.path.join(dataset_path, "test")
-img_size = (100, 100)
-batch_size = 64
-eval_batch_size = 32
+img_size = (32, 32)
+batch_size = 128
+eval_batch_size = 64
 epochs = 200
 verbose = 0
 num_classes = len(os.listdir(train_path))

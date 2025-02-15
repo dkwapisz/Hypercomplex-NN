@@ -1,16 +1,10 @@
 #!/bin/bash
 
 # Static variables
-DATASET_MAIN_DIR="datasets"
-DATASET_MAIN_SUBDIR="PBC_dataset_normal_DIB_224"
-DATASET_TARGET_NAME_DIR="blood-cells"
-DATASET_TARGET_DIR="$DATASET_MAIN_DIR/$DATASET_TARGET_NAME_DIR"
-DATASET_ZIP_NAME="blood-cell.zip"
-TRAINING_SPLIT=1
-VALIDATION_SPLIT=1
-MAX_IMAGES_PER_CLASS=1200
+DATASET_UNPACKED_NAME="cifar-100-python"
+DATASET_TAR_NAME="cifar-100-python.tar.gz"
 
-DATASET_URL="https://www.kaggle.com/api/v1/datasets/download/bzhbzh35/peripheral-blood-cell"
+DATASET_URL="https://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz"
 SEED=123
 
 # Default dynamic values
@@ -77,8 +71,10 @@ pip install -r requirements.txt
 
 
 if [ "$download_data" = true ] && [ ! -d "$DATASET_TARGET_DIR" ]; then
-  mkdir -p $DATASET_MAIN_DIR
-  curl -L -o $DATASET_MAIN_DIR/$DATASET_ZIP_NAME $DATASET_URL
+  wget $DATASET_URL
+  tar -xvzf $DATASET_TAR_NAME
+  rm $DATASET_TAR_NAME
+
 else
   echo "Dataset already downloaded or download skipped."
 fi
@@ -86,50 +82,9 @@ fi
 
 if [ "$prepare_data" = true ] && [ ! -d "$DATASET_TARGET_DIR" ]; then
   echo "Prepare data requested"
-
-  unzip $DATASET_MAIN_DIR/$DATASET_ZIP_NAME $DATASET_MAIN_SUBDIR/$DATASET_MAIN_SUBDIR/'*' -d $DATASET_MAIN_DIR/
-
-  # Cleanup
-  mv $DATASET_MAIN_DIR/$DATASET_MAIN_SUBDIR/$DATASET_MAIN_SUBDIR $DATASET_MAIN_DIR/$DATASET_TARGET_NAME_DIR
-  rm -rf $DATASET_MAIN_DIR/$DATASET_MAIN_SUBDIR
-  rm $DATASET_MAIN_DIR/$DATASET_ZIP_NAME
-
-  for class_dir in "$DATASET_MAIN_DIR"/"$DATASET_TARGET_NAME_DIR"/*/; do
-      [ -d "$class_dir" ] || continue
-
-      file_count=$(find "$class_dir" -type f | wc -l)
-
-      if [ "$file_count" -gt "$MAX_IMAGES_PER_CLASS" ]; then
-          files_to_remove=$((file_count - MAX_IMAGES_PER_CLASS))
-          find "$class_dir" -type f | shuf | head -n "$files_to_remove" | xargs rm -f
-          echo "Removed $files_to_remove files from $class_dir"
-      else
-          echo "Cannot remove from $class_dir. It has not enough files"
-      fi
-  done
-
-  for class in "$DATASET_TARGET_DIR"/*/; do
-    class_name=$(basename "$class")
-
-    mkdir -p "$DATASET_TARGET_DIR/train/$class_name"
-    mkdir -p "$DATASET_TARGET_DIR/val/$class_name"
-    mkdir -p "$DATASET_TARGET_DIR/test/$class_name"
-
-    mapfile -t files < <(find "$class" -type f)
-    total_files=${#files[@]}
-
-    mapfile -t shuffled_files < <(printf "%s\n" "${files[@]}" | awk -v seed="$SEED" 'BEGIN { srand(seed) } {print rand(), $0}' | sort -n | cut -d' ' -f2-)
-
-    train_count=$((total_files * TRAINING_SPLIT / 100))
-    val_count=$((total_files * VALIDATION_SPLIT / 100))
-    test_count=$((total_files - train_count - val_count))
-
-    mv "${shuffled_files[@]:0:train_count}" "$DATASET_TARGET_DIR/train/$class_name/"
-    mv "${shuffled_files[@]:train_count:val_count}" "$DATASET_TARGET_DIR/val/$class_name/"
-    mv "${shuffled_files[@]:train_count+val_count:test_count}" "$DATASET_TARGET_DIR/test/$class_name/"
-
-    rmdir "$class" 2>/dev/null
-  done
+  mkdir datasets
+  python3 Cifar100Converter.py
+  rm -rf $DATASET_UNPACKED_NAME
 else
   echo "Dataset folder already exists or preparation skipped."
 fi
