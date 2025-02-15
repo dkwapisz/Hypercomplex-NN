@@ -133,4 +133,4 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
 
 process_end_time = time.time()
 
-print(f"Process: {gpu_index} FINISHED. Total time: {(process_end_time - process_start_time):.4f} seconds | Models: {models_range_to_run}")
+print(f"\033[32mProcess: {gpu_index} FINISHED. Total time: {(process_end_time - process_start_time):.4f} seconds | Models: {models_range_to_run}\033[0m")

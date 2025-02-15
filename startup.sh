@@ -160,8 +160,8 @@ if [ "$test_run" = true ]; then
 fi
 
 if [ "$run_training" = true ]; then
-  rm -rf "results" "tuner_results" "final_results"
-  mkdir "results" "tuner_results" "final_results"
+  rm -rf "results" "tuner_results"
+  mkdir -p "results" "tuner_results" "final_results"
   i=0
   while [ $i -lt "$num_gpus" ]; do
     python3 Main.py $i "$num_gpus" &
