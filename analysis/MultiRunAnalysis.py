@@ -2,84 +2,164 @@ import json, os
 import plotly.express as plt_exp
 import pandas as pd
 
+from analysis.SingleRunAnalysis import get_formatted_model_name
+
 # ------------------- Static parameters -------------------
-run_phase = "phase_1"
-runs = ["run0"]
-json_result_file = "training.json"
-
-
+JSON_RESULT_FILE = "training.json"
+RUNS_TO_TEST = ["run1", "run2", "run3", "run4", "run5", "run6", "run7", "run8", "run9", "run10"]
+PHASE_1 = "phase1"
+PHASE_2 = "phase2"
 # ---------------------------------------------------------
 
-def get_formatted_model_name(model):
-    base_name = f"{model['model_name']['type']}-{model['model_name']['color_space']}"
-    if model['model_name']['algebra']:
-        base_name += f"-{model['model_name']['algebra']}"
-    return base_name
+def read_phase_data(run_phase, runs):
+    data = {run: [] for run in runs}
+
+    for run in runs:
+        trained_models = os.listdir(os.path.join(run_phase, run, "results"))
+        for model in trained_models:
+            file_path = os.path.join(run_phase, run, "results", model, "training.json")
+            if os.path.exists(file_path):
+                with open(file_path, 'r') as f:
+                    data[run].append(json.load(f))
+
+    return data
 
 
-results_list = []
+def group_evaluation_by(data, runs, group_by_key, evaluation_key):
+    grouped_evaluation = {run: {} for run in runs}
 
-for run in runs:
-    results_dir = os.path.join(run_phase, run, "results")
-    for single_result in os.listdir(results_dir):
-        json_result_path = os.path.join(results_dir, single_result, json_result_file)
-        with open(json_result_path, "r") as file:
-            data = json.load(file)
-            data['run'] = run
-            results_list.append(data)
+    for run_name, run in data.items():
+        for model in run:
+            evaluation_value = model["evaluation_result"][evaluation_key]
+            group_by_value = model["model_name"][group_by_key]
 
-model_name = [get_formatted_model_name(model) for model in results_list]
-run_name = [model['run'] for model in results_list]
-model_eval_accuracy = [model["evaluation_result"]["accuracy"] for model in results_list]
-model_precision_accuracy = [model["evaluation_result"]["Precision"] for model in results_list]
-model_recall_accuracy = [model["evaluation_result"]["Recall"] for model in results_list]
-model_f1_score = [2 * (p * r) / (p + r) if (p + r) > 0 else 0 for p, r in
-                  zip(model_precision_accuracy, model_recall_accuracy)]
-model_training_time = [model["training_time_seconds"] for model in results_list]
+            if group_by_key == "algebra" and group_by_value == "":
+                group_by_value = "CNN"
 
-df = pd.DataFrame({
-    "Model": model_name,
-    "Run": run_name,
-    "Accuracy": model_eval_accuracy,
-    "F1 Score": model_f1_score,
-    "Training Time": model_training_time
-})
+            if group_by_value not in grouped_evaluation[run_name]:
+                grouped_evaluation[run_name][group_by_value] = []
+            grouped_evaluation[run_name][group_by_value].append(evaluation_value)
 
-# TODO Fix to stop grouping by color, but keep coloring to mark Run
+    return grouped_evaluation
 
-# -------------------------- Accuracy comparison plot --------------------------
-df_best_accuracy = df.loc[df.groupby('Model')['Accuracy'].idxmax()]
-df_best_accuracy_sorted = df_best_accuracy.sort_values(by="Accuracy", ascending=False)
-fig_accuracy = plt_exp.bar(df_best_accuracy_sorted, x="Model", y="Accuracy", color="Run",
-                           title="Best Accuracy Across Runs",
-                           labels={"Model": "Model", "Accuracy": "Accuracy"},
-                           text_auto=True)
+def get_average_evaluation_grouped_by(data, runs, run_phase, group_by_key, evaluation_key="accuracy"):
+    grouped_evaluation = group_evaluation_by(data, runs, group_by_key, evaluation_key)
 
-fig_accuracy.update_layout(xaxis_tickangle=-45, height=600, width=1200)
-fig_accuracy.show()
-fig_accuracy.write_image(os.path.join(run_phase, "comparison", "best_accuracy_comparison.png"))
+    average_evaluation = {run_name: {group_by_value: sum(values) / len(values) for group_by_value, values in group_by_values.items()} for
+                          run_name, group_by_values in grouped_evaluation.items()}
 
-# -------------------------- F1 Score comparison plot --------------------------
-df_best_f1 = df.loc[df.groupby('Model')['F1 Score'].idxmax()]
-df_best_f1_sorted = df_best_f1.sort_values(by="F1 Score", ascending=False)
+    plot_data = []
+    for run_name, group_by_values in average_evaluation.items():
+        for group_by_value, avg_evaluation in group_by_values.items():
+            plot_data.append({"run_name": run_name, f"{group_by_key}": group_by_value, f"average_{evaluation_key}": avg_evaluation})
 
-fig_f1 = plt_exp.bar(df_best_f1_sorted, x="Model", y="F1 Score", color="Run", title="Best F1 Score Across Runs",
-                     labels={"Model": "Model", "F1 Score": "F1 Score"},
-                     text_auto=True)
+    df = pd.DataFrame(plot_data)
 
-fig_f1.update_layout(xaxis_tickangle=-45, height=600, width=1200)
-fig_f1.show()
-fig_f1.write_image(os.path.join(run_phase, "comparison", "best_f1_score_comparison.png"))
+    fig = plt_exp.line(df, x="run_name", y=f"average_{evaluation_key}", color=f"{group_by_key}",
+                       title=f"Average {evaluation_key} per {group_by_key}",
+                       labels={"run_name": "Run Number", f"average_{evaluation_key}": f"Average {evaluation_key}",
+                               f"{group_by_key}": f"{group_by_key}"})
 
-# -------------------------- Training Time comparison plot --------------------------
-df_best_training_time = df.loc[df.groupby('Model')['Training Time'].idxmin()]
-df_best_training_time_sorted = df_best_training_time.sort_values(by="Training Time", ascending=True)
+    fig.update_layout(xaxis_tickangle=-45, height=600, width=1200)
+    fig.write_image(os.path.join(run_phase, f"avg_{evaluation_key}_by_{group_by_key}.png"))
 
-fig_training_time = plt_exp.bar(df_best_training_time_sorted, x="Model", y="Training Time", color="Run",
-                                title="Best Training Time Across Runs",
-                                labels={"Model": "Model", "Training Time": "Training Time (seconds)"},
-                                text_auto=True)
+def get_average_evaluation_between_phases_grouped_by(data_phase1, data_phase2, phase_nums, runs, group_by_key, evaluation_key="accuracy"):
+    grouped_evaluation_phase1 = group_evaluation_by(data_phase1, runs, group_by_key, evaluation_key)
+    grouped_evaluation_phase2 = group_evaluation_by(data_phase2, runs, group_by_key, evaluation_key)
 
-fig_training_time.update_layout(xaxis_tickangle=-45, height=600, width=1200)
-fig_training_time.show()
-fig_training_time.write_image(os.path.join(run_phase, "comparison", "best_training_time_comparison.png"))
+    average_evaluation_phase1 = {run_name: {group_by_value: sum(values) / len(values) for group_by_value, values in group_by_values.items()} for
+                                 run_name, group_by_values in grouped_evaluation_phase1.items()}
+    average_evaluation_phase2 = {run_name: {group_by_value: sum(values) / len(values) for group_by_value, values in group_by_values.items()} for
+                                 run_name, group_by_values in grouped_evaluation_phase2.items()}
+
+    plot_data = []
+    for run_name, group_by_values in average_evaluation_phase1.items():
+        for group_by_value, avg_evaluation in group_by_values.items():
+            plot_data.append({"run_name": run_name, f"{group_by_key}": group_by_value, f"average_{evaluation_key}": avg_evaluation, "phase": f"phase{phase_nums[0]}"})
+
+    for run_name, group_by_values in average_evaluation_phase2.items():
+        for group_by_value, avg_evaluation in group_by_values.items():
+            plot_data.append({"run_name": run_name, f"{group_by_key}": group_by_value, f"average_{evaluation_key}": avg_evaluation, "phase": f"phase{phase_nums[1]}"})
+
+    df = pd.DataFrame(plot_data)
+
+    fig = plt_exp.line(df, x="run_name", y=f"average_{evaluation_key}", color=f"{group_by_key}", line_dash="phase",
+                       title=f"Average {evaluation_key} per {group_by_key} (Phase Comparison)",
+                       labels={"run_name": "Run Number", f"average_{evaluation_key}": f"Average {evaluation_key}",
+                               f"{group_by_key}": f"{group_by_key}", "phase": "Phase"})
+
+    fig.update_layout(xaxis_tickangle=-45, height=600, width=1200)
+    fig.write_image(os.path.join("between_phases_results", f"phase{phase_nums[0]}_phase{phase_nums[1]}_avg_{evaluation_key}_by_{group_by_key}_comparison.png"))
+
+
+def plot_stacked_average_bar_for_phase(data, phase, evaluation_key):
+    model_evaluation = {}
+
+    for run_name, run_data in data.items():
+        for model in run_data:
+            model_name = get_formatted_model_name(model)
+            evaluation_value = model["evaluation_result"][evaluation_key]
+            if model_name not in model_evaluation:
+                model_evaluation[model_name] = []
+            model_evaluation[model_name].append(evaluation_value)
+
+    model_evaluation_avg = {model: sum(values) / len(values) for model, values in model_evaluation.items()}
+
+    plot_data = [{"Model": model, evaluation_key: avg_value} for model, avg_value in model_evaluation_avg.items()]
+
+    df = pd.DataFrame(plot_data).sort_values(by=evaluation_key, ascending=True)
+
+    fig = plt_exp.bar(df, x="Model", y=evaluation_key,
+                      title=f"Average {evaluation_key} per Model",
+                      labels={"Model": "Model", evaluation_key: evaluation_key},
+                      text_auto=True)
+
+    fig.update_layout(xaxis_tickangle=-45, height=900, width=1800)
+    fig.write_image(os.path.join(phase, f"avg_{evaluation_key}_all_models_bar_chart.png"))
+
+def plot_stacked_bar_for_phase(data, phase, runs, evaluation_key):
+    model_evaluation = {}
+
+    for run_name, run_data in data.items():
+        for model in run_data:
+            model_name = get_formatted_model_name(model)
+            evaluation_value = model["evaluation_result"][evaluation_key]
+            if model_name not in model_evaluation:
+                model_evaluation[model_name] = []
+            model_evaluation[model_name].append(evaluation_value)
+
+    model_evaluation_sum = {model: sum(values) for model, values in model_evaluation.items()}
+    sorted_models = sorted(model_evaluation_sum.keys(), key=lambda x: model_evaluation_sum[x], reverse=False)
+
+    plot_data = []
+    for model in sorted_models:
+        for i, value in enumerate(model_evaluation[model]):
+            plot_data.append({"Model": model, "Run": runs[i], evaluation_key: value})
+
+    df = pd.DataFrame(plot_data)
+
+    fig = plt_exp.bar(df, x="Model", y=evaluation_key, color="Run",
+                      title=f"{evaluation_key} per Model (Stacked by Runs)",
+                      labels={"Model": "Model", evaluation_key: evaluation_key, "Run": "Run"},
+                      text_auto=True)
+
+    fig.update_traces(textangle=-90, textposition="inside")
+    fig.update_layout(xaxis_tickangle=-45, height=1200, width=2400)
+    fig.write_image(os.path.join(phase, f"stacked_{evaluation_key}_bar_chart.png"))
+
+phase1_data = read_phase_data(PHASE_1, RUNS_TO_TEST)
+phase2_data = read_phase_data(PHASE_2, RUNS_TO_TEST)
+
+plot_stacked_bar_for_phase(phase1_data, PHASE_1, RUNS_TO_TEST, "accuracy")
+plot_stacked_average_bar_for_phase(phase1_data, PHASE_1, "accuracy")
+get_average_evaluation_grouped_by(phase1_data, RUNS_TO_TEST, PHASE_1, "algebra", "accuracy")
+get_average_evaluation_grouped_by(phase1_data, RUNS_TO_TEST, PHASE_1, "color_space", "accuracy")
+get_average_evaluation_grouped_by(phase1_data, RUNS_TO_TEST, PHASE_1, "type", "accuracy")
+
+plot_stacked_bar_for_phase(phase2_data, PHASE_2, RUNS_TO_TEST, "accuracy")
+plot_stacked_average_bar_for_phase(phase2_data, PHASE_2, "accuracy")
+get_average_evaluation_grouped_by(phase2_data, RUNS_TO_TEST, PHASE_2, "algebra", "accuracy")
+get_average_evaluation_grouped_by(phase2_data, RUNS_TO_TEST, PHASE_2, "color_space", "accuracy")
+get_average_evaluation_grouped_by(phase2_data, RUNS_TO_TEST, PHASE_2, "type", "accuracy")
+
+get_average_evaluation_between_phases_grouped_by(phase1_data, phase2_data, (1, 2), RUNS_TO_TEST, "color_space", "accuracy")
