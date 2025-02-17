@@ -1,8 +1,17 @@
-## Phase 1 - Data Distribution
+## Phase 3 - Further color space transformation analysis
 
-Image size: (100, 100)
-Dataset: 8 classes, 1200 images per class
-Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-blood-cell)
+The aim of this phase is to further test the transformation of the colour space relative to no transformation, where the
+4th channel is the zero channel. This phase is a re-test of the models with the Klein4 algebra and CMYK colour space
+discarded, but with the zero channels retained as the 4th channel of the image (except for HSV, where transformation was better than zero channel). 
+Only HyperComplex models were tested in this phase. This phase is closely linked to phase 4, where transformations have already been tested.
+
+### Phase parameters
+
+- Image size: (100, 100)
+- Dataset: 8 classes, 1200 images per class
+- Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-blood-cell)
+- Algebras: Quaternions, Cl20, Coquaternions, Cl11, Bicomplex, Tessarines
+- Color spaces: RGB, HSV, YUV, YIQ
 
 | Run number | Proportion (%) | Training set (per class) | Validation set (per class) | Test set (per class) | Training set (all) | Validation set (all) | Test set (all) |
 |------------|----------------|--------------------------|----------------------------|----------------------|--------------------|----------------------|----------------|
@@ -22,12 +31,7 @@ Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-
 #### RGB
 
 - CNN: The image is kept in its original RGB format.
-- HCNN: The RGB channels are transformed into 4 dimensions:
-    - **R**
-    - **G**
-    - **B**
-    - **Magnitude * cos(θ)** (where Magnitude is sqrt(R^2 * G^2 * B^2) and θ = atan2(B - G, R)
-
+- HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 #### HSV
 
@@ -41,28 +45,12 @@ Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-
 #### YUV
 
 - CNN: The RGB image is converted to YUV.
-- HCNN: The U and V channels are transformed into polar coordinates:
-    - **Y (Luminance)**
-    - **Magnitude * cos(θ)** (where θ = atan2(V, U))
-    - **Magnitude * sin(θ)**
-    - **Y * cos(θ)**
+- HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 #### YIQ
 
 - CNN: The RGB image is converted to YIQ.
-- HCNN: The I and Q channels are transformed into polar coordinates:
-    - **Y (Luminance)**
-    - **Magnitude * cos(θ)** (where θ = atan2(V, U))
-    - **Magnitude * sin(θ)**
-    - **Y * cos(θ)**
-
-#### CMYK
-
-- CNN/HCNN: The image is converted to CMYK using:
-    - **C = (R - K) / (1 - K)**
-    - **M = (G - K) / (1 - K)**
-    - **Y = (B - K) / (1 - K)**
-    - **K = min(1 - R, 1 - G, 1 - B)**
+- HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 ### Models
 

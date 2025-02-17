@@ -1,8 +1,9 @@
 {
   "tune_model": false,
   "training_mode": {
-      "all_cnn": true,
-      "all_hypercomplex_cnn": true,
+      "all_cnn": false,
+      "all_hypercomplex_cnn": false,
+      "phase3": true,
       "custom": false
   },
 
@@ -50,6 +51,33 @@
     {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Cl11"},
     {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Bicomplex"},
     {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Tessarines"}
+  ],
+
+  "phase3_preset": [
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Cl20"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Bicomplex"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Tessarines"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Cl20"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Bicomplex"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Tessarines"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Cl20"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Bicomplex"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Tessarines"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Cl20"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Bicomplex"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Tessarines"}
   ],
 
   "custom_preset": [

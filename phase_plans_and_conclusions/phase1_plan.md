@@ -1,8 +1,15 @@
-## Phase 1 - Data Distribution
+## Phase 1 - Initial analysis
 
-Image size: (100, 100)
-Dataset: 8 classes, 1200 images per class
-Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-blood-cell)
+The aim of this phase is to pre-test and analyse all models in order to reduce the worst parameter combinations. In
+addition, phase 1 is linked to phase 2 to compare color space transformations.
+
+### Phase parameters
+
+- Image size: (100, 100)
+- Dataset: 8 classes, 1200 images per class
+- Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-blood-cell)
+- Algebras: None (CNN), Quaternions, Klein4, Cl20, Coquaternions, Cl11, Bicomplex, Tessarines
+- Color spaces: RGB, HSV, YUV, YIQ, CMYK
 
 | Run number | Proportion (%) | Training set (per class) | Validation set (per class) | Test set (per class) | Training set (all) | Validation set (all) | Test set (all) |
 |------------|----------------|--------------------------|----------------------------|----------------------|--------------------|----------------------|----------------|

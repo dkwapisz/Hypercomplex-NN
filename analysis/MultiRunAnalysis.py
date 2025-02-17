@@ -11,7 +11,7 @@ PHASE_1 = "phase1"
 PHASE_2 = "phase2"
 # ---------------------------------------------------------
 
-def read_phase_data(run_phase, runs):
+def read_phase_data(run_phase, runs, only_hypercomplex=False):
     data = {run: [] for run in runs}
 
     for run in runs:
@@ -20,7 +20,12 @@ def read_phase_data(run_phase, runs):
             file_path = os.path.join(run_phase, run, "results", model, "training.json")
             if os.path.exists(file_path):
                 with open(file_path, 'r') as f:
-                    data[run].append(json.load(f))
+                    model_data = json.load(f)
+                    if only_hypercomplex:
+                        if model_data.get("model_name").get("type") == "HyperComplex":
+                            data[run].append(model_data)
+                    else:
+                        data[run].append(model_data)
 
     return data
 
@@ -56,7 +61,7 @@ def get_average_evaluation_grouped_by(data, runs, run_phase, group_by_key, evalu
     df = pd.DataFrame(plot_data)
 
     fig = plt_exp.line(df, x="run_name", y=f"average_{evaluation_key}", color=f"{group_by_key}",
-                       title=f"Average {evaluation_key} per {group_by_key}",
+                       title=f"Average {evaluation_key} per {group_by_key} - {run_phase}",
                        labels={"run_name": "Run Number", f"average_{evaluation_key}": f"Average {evaluation_key}",
                                f"{group_by_key}": f"{group_by_key}"})
 
@@ -147,8 +152,8 @@ def plot_stacked_bar_for_phase(data, phase, runs, evaluation_key):
     fig.update_layout(xaxis_tickangle=-45, height=1200, width=2400)
     fig.write_image(os.path.join(phase, f"stacked_{evaluation_key}_bar_chart.png"))
 
-phase1_data = read_phase_data(PHASE_1, RUNS_TO_TEST)
-phase2_data = read_phase_data(PHASE_2, RUNS_TO_TEST)
+phase1_data = read_phase_data(PHASE_1, RUNS_TO_TEST, False)
+phase2_data = read_phase_data(PHASE_2, RUNS_TO_TEST, False)
 
 plot_stacked_bar_for_phase(phase1_data, PHASE_1, RUNS_TO_TEST, "accuracy")
 plot_stacked_average_bar_for_phase(phase1_data, PHASE_1, "accuracy")
