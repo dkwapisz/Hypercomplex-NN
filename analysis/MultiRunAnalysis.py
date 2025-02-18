@@ -9,6 +9,8 @@ JSON_RESULT_FILE = "training.json"
 RUNS_TO_TEST = ["run1", "run2", "run3", "run4", "run5", "run6", "run7", "run8", "run9", "run10"]
 PHASE_1 = "phase1"
 PHASE_2 = "phase2"
+PHASE_3 = "phase3"
+PHASE_4 = "phase4"
 # ---------------------------------------------------------
 
 def read_phase_data(run_phase, runs, only_hypercomplex=False):
@@ -152,19 +154,26 @@ def plot_stacked_bar_for_phase(data, phase, runs, evaluation_key):
     fig.update_layout(xaxis_tickangle=-45, height=1200, width=2400)
     fig.write_image(os.path.join(phase, f"stacked_{evaluation_key}_bar_chart.png"))
 
-phase1_data = read_phase_data(PHASE_1, RUNS_TO_TEST, False)
-phase2_data = read_phase_data(PHASE_2, RUNS_TO_TEST, False)
 
-plot_stacked_bar_for_phase(phase1_data, PHASE_1, RUNS_TO_TEST, "accuracy")
-plot_stacked_average_bar_for_phase(phase1_data, PHASE_1, "accuracy")
-get_average_evaluation_grouped_by(phase1_data, RUNS_TO_TEST, PHASE_1, "algebra", "accuracy")
-get_average_evaluation_grouped_by(phase1_data, RUNS_TO_TEST, PHASE_1, "color_space", "accuracy")
-get_average_evaluation_grouped_by(phase1_data, RUNS_TO_TEST, PHASE_1, "type", "accuracy")
+def plot_multirun_phase_results(phase_data, phase_number):
+    plot_stacked_bar_for_phase(phase_data, phase_number, RUNS_TO_TEST, "accuracy")
+    plot_stacked_average_bar_for_phase(phase_data, phase_number, "accuracy")
+    get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, "algebra", "accuracy")
+    get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, "color_space", "accuracy")
+    get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, "type", "accuracy")
 
-plot_stacked_bar_for_phase(phase2_data, PHASE_2, RUNS_TO_TEST, "accuracy")
-plot_stacked_average_bar_for_phase(phase2_data, PHASE_2, "accuracy")
-get_average_evaluation_grouped_by(phase2_data, RUNS_TO_TEST, PHASE_2, "algebra", "accuracy")
-get_average_evaluation_grouped_by(phase2_data, RUNS_TO_TEST, PHASE_2, "color_space", "accuracy")
-get_average_evaluation_grouped_by(phase2_data, RUNS_TO_TEST, PHASE_2, "type", "accuracy")
+phase1_data = read_phase_data(PHASE_1, RUNS_TO_TEST, only_hypercomplex=False)
+phase2_data = read_phase_data(PHASE_2, RUNS_TO_TEST, only_hypercomplex=False)
+phase3_data = read_phase_data(PHASE_3, RUNS_TO_TEST, only_hypercomplex=False)
+phase4_data = read_phase_data(PHASE_4, RUNS_TO_TEST, only_hypercomplex=False)
 
+plot_multirun_phase_results(phase1_data, PHASE_1)
+plot_multirun_phase_results(phase2_data, PHASE_2)
+plot_multirun_phase_results(phase3_data, PHASE_3)
+plot_multirun_phase_results(phase4_data, PHASE_4)
+
+# ------------------- Phase 1 vs Phase 2 -------------------
 get_average_evaluation_between_phases_grouped_by(phase1_data, phase2_data, (1, 2), RUNS_TO_TEST, "color_space", "accuracy")
+
+# ------------------- Phase 3 vs Phase 4 -------------------
+get_average_evaluation_between_phases_grouped_by(phase3_data, phase4_data, (3, 4), RUNS_TO_TEST, "color_space", "accuracy")
