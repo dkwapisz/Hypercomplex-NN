@@ -27,12 +27,14 @@ def get_models_range(total_model_num, num_processes, gpu_index):
     return start_model, end_model  # (inclusive, exclusive)
 
 def get_current_model_desc(model_index, total_model_num, model_name):
+    yellow_start = "\033[93m"
+    yellow_end = "\033[0m"
     if model_name["type"] == "HyperComplex":
-        return (f"Training model {model_index + 1}/{total_model_num}: "
+        return (f"{yellow_start}Training model {model_index + 1}/{total_model_num}: "
               f"Type: {model_name['type']} | "
               f"Color space: {model_name['color_space']} | "
-              f"Algebra: {model_name['algebra']}")
+              f"Algebra: {model_name['algebra']}{yellow_end}")
     else:
-        return (f"Training model {model_index + 1}/{total_model_num}: "
+        return (f"{yellow_start}Training model {model_index + 1}/{total_model_num}: "
               f"Type: {model_name['type']} | "
-              f"Color space: {model_name['color_space']}")
+              f"Color space: {model_name['color_space']}{yellow_end}")
