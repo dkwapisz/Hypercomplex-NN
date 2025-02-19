@@ -25,43 +25,18 @@ def perform_basic_transformation(image, color_space):
         y = (cmy[..., 2:3] - k) / denominator
         return tf.concat([c, m, y, k], axis=-1)
 
-# phase3
-# def perform_hypercomplex_transformation(image, color_space):
-#     if color_space == "RGB":
-#         return tf.concat([image, tf.zeros_like(image[..., :1])], axis=-1)
-#     elif color_space == "HSV":
-#         image = tf.image.rgb_to_hsv(image)
-#         h, s, v = tf.split(image, 3, axis=-1)
-#         theta = h * 2 * np.pi
-#         return tf.concat([v, s * tf.cos(theta), s * tf.sin(theta), v * tf.cos(theta)], axis=-1)
-#     elif color_space == "YUV":
-#         image = tf.image.rgb_to_yuv(image)
-#         return tf.concat([image, tf.zeros_like(image[..., :1])], axis=-1)
-#     elif color_space == "YIQ":
-#         image = tf.image.rgb_to_yiq(image)
-#         return tf.concat([image, tf.zeros_like(image[..., :1])], axis=-1)
-#     elif color_space == "CMYK":
-#         cmy = 1 - image
-#         k = tf.reduce_min(cmy, axis=-1, keepdims=True)
-#         denominator = 1 - k + 1e-8
-#         c = (cmy[..., 0:1] - k) / denominator
-#         m = (cmy[..., 1:2] - k) / denominator
-#         y = (cmy[..., 2:3] - k) / denominator
-#         return tf.concat([c, m, y, k], axis=-1)
-
-# phase4
 def perform_hypercomplex_transformation(image, color_space):
     if color_space == "RGB":
         r, g, b = tf.split(image, 3, axis=-1)
         magnitude = tf.sqrt(r ** 2 + g ** 2 + b ** 2)
-        theta_r = tf.atan2(g, r)
-        theta_b = tf.atan2(b, tf.sqrt(r ** 2 + g ** 2))
-        return tf.concat([tf.math.log1p(magnitude), theta_r, theta_b, tf.exp(-magnitude)], axis=-1)
+        phase_rg = tf.atan2(g, r)
+        phase_rb = tf.atan2(b, r)
+        return tf.concat([tf.math.log1p(magnitude), phase_rg, phase_rb, magnitude * tf.cos(phase_rg + phase_rb)], axis=-1)
     elif color_space == "HSV":
         image = tf.image.rgb_to_hsv(image)
         h, s, v = tf.split(image, 3, axis=-1)
         theta = h * 2 * np.pi
-        return tf.concat([v, s * tf.cos(theta), s * tf.sin(theta), tf.exp(-s)], axis=-1)
+        return tf.concat([v, s * tf.cos(theta), s * tf.sin(theta), v * tf.cos(theta)], axis=-1)
     elif color_space == "YUV":
         image = tf.image.rgb_to_yuv(image)
         y, u, v = tf.split(image, 3, axis=-1)
