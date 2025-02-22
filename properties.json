@@ -3,7 +3,7 @@
   "training_mode": {
       "all_cnn": false,
       "all_hypercomplex_cnn": false,
-      "phase56": true,
+      "phase7": true,
       "custom": false
   },
 

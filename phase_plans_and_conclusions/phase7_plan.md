@@ -32,8 +32,7 @@ computational effort needed to train the entire phase.
 
 #### RGB
 
-- **CNN**: The image remains in its original RGB format.
-- **HCNN**: The RGB channels are transformed into 4 dimensions:
+- **CNN/HCNN**: The RGB channels are transformed into 4 dimensions:
     - **log(1 + Magnitude)**, where Magnitude = sqrt(R² + G² + B²)
     - **Phase RG** = atan2(G, R)
     - **Phase RB** = atan2(B, R)
@@ -41,8 +40,7 @@ computational effort needed to train the entire phase.
 
 #### HSV
 
-- **CNN**: The image remains in its original HSV format.
-- **HCNN**: The HSV channels are transformed into 4 dimensions:
+- **CNN/HCNN**: The HSV channels are transformed into 4 dimensions:
     - **V**
     - **exp(S) * cos(θ)**, where θ = H * 2π
     - **exp(S) * sin(θ)**
@@ -50,8 +48,7 @@ computational effort needed to train the entire phase.
 
 #### YUV
 
-- **CNN**: The image remains in its original YUV format.
-- **HCNN**: The U and V channels are transformed into polar coordinates:
+- **CNN/HCNN**: The U and V channels are transformed into polar coordinates:
     - **Y (Luminance)**
     - **Magnitude * cos(2θ)**, where Magnitude = sqrt(U² + V²) and θ = atan2(V, U)
     - **Magnitude * sin(2θ)**
@@ -59,8 +56,7 @@ computational effort needed to train the entire phase.
 
 #### YIQ
 
-- **CNN**: The image remains in its original YIQ format.
-- **HCNN**: The I and Q channels are transformed into polar coordinates:
+- **CNN/HCNN**: The I and Q channels are transformed into polar coordinates:
     - **Y (Luminance)**
     - **Magnitude * cos(2θ)**, where Magnitude = sqrt(I² + Q²) and θ = atan2(Q, I)
     - **Magnitude * sin(2θ)**
