@@ -78,7 +78,7 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
     model_training_start_time = time.time()
     model_name = models_to_train[model_index]
 
-    hypercomplex = model_name["type"] == "HyperComplex" or "transformed" in model_name["color_space"]
+    hypercomplex = model_name["type"] == "HyperComplex"
     color_space = model_name["color_space"]
 
     print(get_current_model_desc(model_index, total_model_num, model_name))

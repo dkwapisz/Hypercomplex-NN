@@ -61,7 +61,7 @@ def perform_hypercomplex_transformation(image, color_space):
 def convert_color_tf(image, color_space, hypercomplex=False):
     image = tf.image.convert_image_dtype(image, tf.float32)
 
-    if hypercomplex:
+    if hypercomplex or "transformed" in color_space:
         image = perform_hypercomplex_transformation(image, color_space)
     else:
         image = perform_basic_transformation(image, color_space)
