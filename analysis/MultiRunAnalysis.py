@@ -11,7 +11,11 @@ PHASE_1 = "phase1"
 PHASE_2 = "phase2"
 PHASE_3 = "phase3"
 PHASE_4 = "phase4"
-RUN_LABELS_SPLIT = [1, 3, 5, 10, 15, 20, 40, 50, 60, 80] # For phase 1, 2, 3, 4
+PHASE_5 = "phase5"
+PHASE_6 = "phase6"
+PHASE_7 = "phase7"
+RUN_LABELS_SPLIT_1234 = [1, 3, 5, 10, 15, 20, 40, 50, 60, 80] # For phase 1, 2, 3, 4
+RUN_LABELS_SPLIT_567 = [1, 3, 5, 10, 20, 30, 40, 50, 60, 70] # For phase 5, 6
 # ---------------------------------------------------------
 
 def read_phase_data(run_phase, runs, only_hypercomplex=False):
@@ -156,27 +160,37 @@ def plot_stacked_bar_for_phase(data, phase, runs, evaluation_key):
     fig.write_image(os.path.join(phase, f"stacked_{evaluation_key}_bar_chart.png"))
 
 
-def plot_multirun_phase_results(phase_data, phase_number, was_hypercomplex_only=False):
+def plot_multirun_phase_results(phase_data, phase_number, run_labels, one_type_only=False):
     plot_stacked_bar_for_phase(phase_data, phase_number, RUNS_TO_TEST, "accuracy")
     plot_stacked_average_bar_for_phase(phase_data, phase_number, "accuracy")
-    get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, RUN_LABELS_SPLIT, "algebra", "accuracy")
-    get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, RUN_LABELS_SPLIT, "color_space", "accuracy")
+    get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, run_labels, "algebra", "accuracy")
+    get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, run_labels, "color_space", "accuracy")
 
-    if not was_hypercomplex_only:
-        get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, RUN_LABELS_SPLIT, "type", "accuracy")
+    if not one_type_only:
+        get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, run_labels, "type", "accuracy")
 
 phase1_data = read_phase_data(PHASE_1, RUNS_TO_TEST, only_hypercomplex=False)
 phase2_data = read_phase_data(PHASE_2, RUNS_TO_TEST, only_hypercomplex=False)
 phase3_data = read_phase_data(PHASE_3, RUNS_TO_TEST, only_hypercomplex=False)
 phase4_data = read_phase_data(PHASE_4, RUNS_TO_TEST, only_hypercomplex=False)
+phase5_data = read_phase_data(PHASE_5, RUNS_TO_TEST, only_hypercomplex=False)
+phase6_data = read_phase_data(PHASE_6, RUNS_TO_TEST, only_hypercomplex=False)
+phase7_data = read_phase_data(PHASE_7, RUNS_TO_TEST, only_hypercomplex=False)
 
-plot_multirun_phase_results(phase1_data, PHASE_1)
-plot_multirun_phase_results(phase2_data, PHASE_2)
-plot_multirun_phase_results(phase3_data, PHASE_3, was_hypercomplex_only=True)
-plot_multirun_phase_results(phase4_data, PHASE_4, was_hypercomplex_only=True)
+plot_multirun_phase_results(phase1_data, PHASE_1, RUN_LABELS_SPLIT_1234)
+plot_multirun_phase_results(phase2_data, PHASE_2, RUN_LABELS_SPLIT_1234)
+plot_multirun_phase_results(phase3_data, PHASE_3, RUN_LABELS_SPLIT_1234, one_type_only=True)
+plot_multirun_phase_results(phase4_data, PHASE_4, RUN_LABELS_SPLIT_1234, one_type_only=True)
+plot_multirun_phase_results(phase5_data, PHASE_5, RUN_LABELS_SPLIT_567, one_type_only=True)
+plot_multirun_phase_results(phase6_data, PHASE_6, RUN_LABELS_SPLIT_567, one_type_only=True)
+plot_multirun_phase_results(phase7_data, PHASE_7, RUN_LABELS_SPLIT_567, one_type_only=True)
 
 # ------------------- Phase 1 vs Phase 2 -------------------
-get_average_evaluation_between_phases_grouped_by(phase1_data, phase2_data, (1, 2), RUN_LABELS_SPLIT,  RUNS_TO_TEST, "color_space", "accuracy")
+get_average_evaluation_between_phases_grouped_by(phase1_data, phase2_data, (1, 2), RUN_LABELS_SPLIT_1234,  RUNS_TO_TEST, "color_space", "accuracy")
 
 # ------------------- Phase 3 vs Phase 4 -------------------
-get_average_evaluation_between_phases_grouped_by(phase3_data, phase4_data, (3, 4), RUN_LABELS_SPLIT,  RUNS_TO_TEST, "color_space", "accuracy")
+get_average_evaluation_between_phases_grouped_by(phase3_data, phase4_data, (3, 4), RUN_LABELS_SPLIT_1234,  RUNS_TO_TEST, "color_space", "accuracy")
+
+# ------------------- Phase 5 vs Phase 6 -------------------
+get_average_evaluation_between_phases_grouped_by(phase5_data, phase6_data, (5, 6), RUN_LABELS_SPLIT_567,  RUNS_TO_TEST, "color_space", "accuracy")
+

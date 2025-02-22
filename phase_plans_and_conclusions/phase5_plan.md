@@ -1,4 +1,4 @@
-## Phase 5 - CNN color space comparison (3-dim no transformation vs 4-dim transformation)
+## Phase 5 - CNN color space comparison 3-dim, no transformations
 
 The aim of this phase is to make a final comparison between CNNs and HCNNs with the number of layers and filters that
 were used in the previous phases. The colour space transformations that were the best in the previous 4 phases were
@@ -32,38 +32,18 @@ computational effort needed to train the entire phase.
 #### RGB
 
 - **CNN**: The image remains in its original RGB format.
-- **CNN_transformed**: The RGB channels are transformed into 4 dimensions:
-    - **log(1 + Magnitude)**, where Magnitude = sqrt(R² + G² + B²)
-    - **Phase RG** = atan2(G, R)
-    - **Phase RB** = atan2(B, R)
-    - **Magnitude * cos(Phase RG + Phase RB)**
 
 #### HSV
 
 - **CNN**: The image remains in its original HSV format.
-- **CNN_transformed**: The HSV channels are transformed into 4 dimensions:
-    - **V**
-    - **exp(S) * cos(θ)**, where θ = H * 2π
-    - **exp(S) * sin(θ)**
-    - **sin(V * π)**
 
 #### YUV
 
 - **CNN**: The image remains in its original YUV format.
-- **CNN_transformed**: The U and V channels are transformed into polar coordinates:
-    - **Y (Luminance)**
-    - **Magnitude * cos(2θ)**, where Magnitude = sqrt(U² + V²) and θ = atan2(V, U)
-    - **Magnitude * sin(2θ)**
-    - **exp(-Magnitude)**
 
 #### YIQ
 
 - **CNN**: The image remains in its original YIQ format.
-- **CNN_transformed**: The I and Q channels are transformed into polar coordinates:
-    - **Y (Luminance)**
-    - **Magnitude * cos(2θ)**, where Magnitude = sqrt(I² + Q²) and θ = atan2(Q, I)
-    - **Magnitude * sin(2θ)**
-    - **exp(-Magnitude)**
 
 ### Models
 

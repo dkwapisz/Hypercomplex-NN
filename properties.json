@@ -3,7 +3,7 @@
   "training_mode": {
       "all_cnn": false,
       "all_hypercomplex_cnn": false,
-      "phase5": true,
+      "phase56": true,
       "custom": false
   },
 
@@ -80,18 +80,14 @@
     {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Tessarines"}
   ],
 
-  "phase5_preset": [
+  "phase56_preset": [
     {"type": "CNN", "color_space": "RGB", "algebra": ""},
     {"type": "CNN", "color_space": "HSV", "algebra": ""},
     {"type": "CNN", "color_space": "YUV", "algebra": ""},
-    {"type": "CNN", "color_space": "YIQ", "algebra": ""},
-    {"type": "CNN", "color_space": "RGB_transformed", "algebra": ""},
-    {"type": "CNN", "color_space": "HSV_transformed", "algebra": ""},
-    {"type": "CNN", "color_space": "YUV_transformed", "algebra": ""},
-    {"type": "CNN", "color_space": "YIQ_transformed", "algebra": ""}
+    {"type": "CNN", "color_space": "YIQ", "algebra": ""}
   ],
 
-    "phase6_preset": [
+    "phase7_preset": [
     {"type": "CNN", "color_space": "RGB", "algebra": ""},
     {"type": "CNN", "color_space": "HSV", "algebra": ""},
     {"type": "CNN", "color_space": "YUV", "algebra": ""},

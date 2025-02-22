@@ -59,8 +59,8 @@ if training_mode["all_cnn"]:
     models_to_train += properties.get("cnn_models_preset", [])
 if training_mode["all_hypercomplex_cnn"]:
     models_to_train += properties.get("hypercomplex_cnn_models_preset", [])
-if training_mode["phase5"]:
-    models_to_train += properties.get("phase5_preset", [])
+if training_mode["phase56"]:
+    models_to_train += properties.get("phase56_preset", [])
 if training_mode["custom"]:
     models_to_train += properties.get("custom_preset", [])
 
@@ -83,11 +83,20 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
 
     print(get_current_model_desc(model_index, total_model_num, model_name))
 
-    input_shape = img_size + (4,) if (color_space == "CMYK" or hypercomplex or "transformed" in color_space) else img_size + (3,)
 
     train_dataset = create_dataset_tf(train_path, img_size, batch_size, color_space, hypercomplex)
     val_dataset = create_dataset_tf(val_path, img_size, batch_size, color_space, hypercomplex)
     test_dataset = create_dataset_tf(test_path, img_size, batch_size, color_space, hypercomplex)
+
+    num_channels = 0
+    for image, _ in train_dataset.take(1):
+        num_channels = image.shape[-1]
+        break
+
+    print(num_channels)
+    assert num_channels != 0, "Number of channels could not be determined."
+
+    input_shape = img_size + (num_channels,) if (color_space == "CMYK" or hypercomplex) else img_size + (num_channels,)
 
     if hypercomplex:
         algebra_name = model_name["algebra"]
