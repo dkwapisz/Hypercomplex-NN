@@ -1,36 +1,38 @@
-## Phase 4 - Further color space transformation analysis
+## Phase 6 - Final comparison of color transformations between CNN and HCNN
 
-The aim of this phase is to further test the transformation of the color space relative to no transformation, where the
-4th channel is the zero channel. This phase is a re-test of the models with the Klein4 algebra and CMYK color space
-discarded, with RGB/HSV/YUV/YIQ transformations tested. Only HyperComplex models were tested in this phase. This phase
-is closely linked to phase 4, where transformations have already been tested.
+The aim of this phase is to make a final comparison between CNNs and HCNNs with the number of layers and filters that
+were used in the previous phases. The colour space transformations that were the best in the previous 4 phases were
+used. The split proportions of the dataset have been slightly altered in order to obtain more diverse results.
+An additional objective of this phase is to select a few of the best models for further analysis in order to reduce the
+computational effort needed to train the entire phase.
 
 ### Phase parameters
 
 - Image size: (100, 100)
 - Dataset: 8 classes, 1200 images per class
 - Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-blood-cell)
-- Types: HCNN
+- Types: CNN, HCNN
 - Algebras: Quaternions, Cl20, Coquaternions, Cl11, Bicomplex, Tessarines
 - Color spaces: RGB, HSV, YUV, YIQ
 
 | Run number | Proportion (%) | Training set (per class) | Validation set (per class) | Test set (per class) | Training set (all) | Validation set (all) | Test set (all) |
 |------------|----------------|--------------------------|----------------------------|----------------------|--------------------|----------------------|----------------|
-| Run1       | **1/1/98**     | 12                       | 12                         | 1176                 | 96                 | 96                   | 9408           |
-| Run2       | **3/3/94**     | 36                       | 36                         | 1128                 | 288                | 288                  | 9024           |
-| Run3       | **5/5/90**     | 60                       | 60                         | 1080                 | 480                | 480                  | 8640           |
-| Run4       | **10/10/80**   | 120                      | 120                        | 960                  | 960                | 960                  | 7680           |
-| Run5       | **15/15/70**   | 180                      | 180                        | 840                  | 1440               | 1440                 | 6720           |
-| Run6       | **20/20/60**   | 240                      | 240                        | 720                  | 1920               | 1920                 | 5760           |
+| Run1       | **1/20/79**    | 12                       | 240                        | 948                  | 96                 | 1920                 | 7584           |
+| Run2       | **3/20/77**    | 36                       | 240                        | 924                  | 288                | 1920                 | 7392           |
+| Run3       | **5/20/75**    | 60                       | 240                        | 900                  | 480                | 1920                 | 7200           |
+| Run4       | **10/20/70**   | 120                      | 240                        | 840                  | 960                | 1920                 | 6720           |
+| Run5       | **20/20/60**   | 240                      | 240                        | 720                  | 1920               | 1920                 | 5760           |
+| Run6       | **30/20/50**   | 360                      | 240                        | 600                  | 2880               | 1920                 | 4800           |
 | Run7       | **40/20/40**   | 480                      | 240                        | 480                  | 3840               | 1920                 | 3840           |
 | Run8       | **50/20/30**   | 600                      | 240                        | 360                  | 4800               | 1920                 | 2880           |
 | Run9       | **60/20/20**   | 720                      | 240                        | 240                  | 5760               | 1920                 | 1920           |
-| Run10      | **80/10/10**   | 960                      | 120                        | 120                  | 7680               | 960                  | 960            |
+| Run10      | **70/20/10**   | 840                      | 240                        | 120                  | 6720               | 1920                 | 960            |
 
 ### Color transformations
 
 #### RGB
 
+- **CNN**: The image remains in its original RGB format.
 - **HCNN**: The RGB channels are transformed into 4 dimensions:
     - **log(1 + Magnitude)**, where Magnitude = sqrt(R² + G² + B²)
     - **Phase RG** = atan2(G, R)
@@ -39,6 +41,7 @@ is closely linked to phase 4, where transformations have already been tested.
 
 #### HSV
 
+- **CNN**: The image remains in its original HSV format.
 - **HCNN**: The HSV channels are transformed into 4 dimensions:
     - **V**
     - **exp(S) * cos(θ)**, where θ = H * 2π
@@ -47,6 +50,7 @@ is closely linked to phase 4, where transformations have already been tested.
 
 #### YUV
 
+- **CNN**: The image remains in its original YUV format.
 - **HCNN**: The U and V channels are transformed into polar coordinates:
     - **Y (Luminance)**
     - **Magnitude * cos(2θ)**, where Magnitude = sqrt(U² + V²) and θ = atan2(V, U)
@@ -55,6 +59,7 @@ is closely linked to phase 4, where transformations have already been tested.
 
 #### YIQ
 
+- **CNN**: The image remains in its original YIQ format.
 - **HCNN**: The I and Q channels are transformed into polar coordinates:
     - **Y (Luminance)**
     - **Magnitude * cos(2θ)**, where Magnitude = sqrt(I² + Q²) and θ = atan2(Q, I)
@@ -62,6 +67,30 @@ is closely linked to phase 4, where transformations have already been tested.
     - **exp(-Magnitude)**
 
 ### Models
+
+#### Convolutional Neural Network
+
+```python
+def build_model(input_shape, num_classes, metrics):
+    model = Sequential()
+    model.add(Input(shape=input_shape))
+
+    model.add(Conv2D(32, (3, 3), activation='relu'))
+    model.add(MaxPooling2D())
+
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(MaxPooling2D())
+
+    model.add(Conv2D(128, (3, 3), activation='relu'))
+    model.add(MaxPooling2D())
+
+    model.add(Flatten())
+    model.add(Dense(num_classes, activation='softmax'))
+
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
+
+    return model
+```
 
 #### HyperComplex Convolutional Neural Network
 

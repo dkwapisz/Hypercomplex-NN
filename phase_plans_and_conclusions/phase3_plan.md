@@ -51,30 +51,6 @@ Only HyperComplex models were tested in this phase. This phase is closely linked
 
 ### Models
 
-#### Convolutional Neural Network
-
-```python
-def build_model(input_shape, num_classes, metrics):
-    model = Sequential()
-    model.add(Input(shape=input_shape))
-
-    model.add(Conv2D(32, (3, 3), activation='relu'))
-    model.add(MaxPooling2D())
-
-    model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(MaxPooling2D())
-
-    model.add(Conv2D(128, (3, 3), activation='relu'))
-    model.add(MaxPooling2D())
-
-    model.add(Flatten())
-    model.add(Dense(num_classes, activation='softmax'))
-
-    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
-
-    return model
-```
-
 #### HyperComplex Convolutional Neural Network
 
 ```python

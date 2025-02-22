@@ -1,16 +1,17 @@
-## Phase 5 - Final comparison of color transformations between CNN and HCNN
+## Phase 5 - CNN color space comparison (3-dim no transformation vs 4-dim transformation)
 
 The aim of this phase is to make a final comparison between CNNs and HCNNs with the number of layers and filters that
 were used in the previous phases. The colour space transformations that were the best in the previous 4 phases were
 used. The split proportions of the dataset have been slightly altered in order to obtain more diverse results.
+An additional objective of this phase is to select a few of the best models for further analysis in order to reduce the
+computational effort needed to train the entire phase.
 
 ### Phase parameters
 
 - Image size: (100, 100)
 - Dataset: 8 classes, 1200 images per class
 - Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-blood-cell)
-- Types: CNN, HCNN
-- Algebras: Quaternions, Cl20, Coquaternions, Cl11, Bicomplex, Tessarines
+- Types: CNN
 - Color spaces: RGB, HSV, YUV, YIQ
 
 | Run number | Proportion (%) | Training set (per class) | Validation set (per class) | Test set (per class) | Training set (all) | Validation set (all) | Test set (all) |
@@ -30,8 +31,8 @@ used. The split proportions of the dataset have been slightly altered in order t
 
 #### RGB
 
-- CNN: The image remains in its original RGB format.
-- **HCNN**: The RGB channels are transformed into 4 dimensions:
+- **CNN**: The image remains in its original RGB format.
+- **CNN_transformed**: The RGB channels are transformed into 4 dimensions:
     - **log(1 + Magnitude)**, where Magnitude = sqrt(R² + G² + B²)
     - **Phase RG** = atan2(G, R)
     - **Phase RB** = atan2(B, R)
@@ -39,8 +40,8 @@ used. The split proportions of the dataset have been slightly altered in order t
 
 #### HSV
 
-- CNN: The image remains in its original HSV format.
-- **HCNN**: The HSV channels are transformed into 4 dimensions:
+- **CNN**: The image remains in its original HSV format.
+- **CNN_transformed**: The HSV channels are transformed into 4 dimensions:
     - **V**
     - **exp(S) * cos(θ)**, where θ = H * 2π
     - **exp(S) * sin(θ)**
@@ -48,8 +49,8 @@ used. The split proportions of the dataset have been slightly altered in order t
 
 #### YUV
 
-- CNN: The image remains in its original YUV format.
-- **HCNN**: The U and V channels are transformed into polar coordinates:
+- **CNN**: The image remains in its original YUV format.
+- **CNN_transformed**: The U and V channels are transformed into polar coordinates:
     - **Y (Luminance)**
     - **Magnitude * cos(2θ)**, where Magnitude = sqrt(U² + V²) and θ = atan2(V, U)
     - **Magnitude * sin(2θ)**
@@ -57,8 +58,8 @@ used. The split proportions of the dataset have been slightly altered in order t
 
 #### YIQ
 
-- CNN: The image remains in its original YIQ format.
-- **HCNN**: The I and Q channels are transformed into polar coordinates:
+- **CNN**: The image remains in its original YIQ format.
+- **CNN_transformed**: The I and Q channels are transformed into polar coordinates:
     - **Y (Luminance)**
     - **Magnitude * cos(2θ)**, where Magnitude = sqrt(I² + Q²) and θ = atan2(Q, I)
     - **Magnitude * sin(2θ)**
@@ -80,30 +81,6 @@ def build_model(input_shape, num_classes, metrics):
     model.add(MaxPooling2D())
 
     model.add(Conv2D(128, (3, 3), activation='relu'))
-    model.add(MaxPooling2D())
-
-    model.add(Flatten())
-    model.add(Dense(num_classes, activation='softmax'))
-
-    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
-
-    return model
-```
-
-#### HyperComplex Convolutional Neural Network
-
-```python
-def build_model(input_shape, num_classes, metrics, algebra):
-    model = Sequential()
-    model.add(Input(shape=input_shape))
-
-    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
-    model.add(MaxPooling2D())
-
-    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
-    model.add(MaxPooling2D())
-
-    model.add(HyperConv2D(32, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
     model.add(Flatten())

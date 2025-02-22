@@ -85,6 +85,17 @@
     {"type": "CNN", "color_space": "HSV", "algebra": ""},
     {"type": "CNN", "color_space": "YUV", "algebra": ""},
     {"type": "CNN", "color_space": "YIQ", "algebra": ""},
+    {"type": "CNN", "color_space": "RGB_transformed", "algebra": ""},
+    {"type": "CNN", "color_space": "HSV_transformed", "algebra": ""},
+    {"type": "CNN", "color_space": "YUV_transformed", "algebra": ""},
+    {"type": "CNN", "color_space": "YIQ_transformed", "algebra": ""}
+  ],
+
+    "phase6_preset": [
+    {"type": "CNN", "color_space": "RGB", "algebra": ""},
+    {"type": "CNN", "color_space": "HSV", "algebra": ""},
+    {"type": "CNN", "color_space": "YUV", "algebra": ""},
+    {"type": "CNN", "color_space": "YIQ", "algebra": ""},
     {"type": "HyperComplex", "color_space": "RGB", "algebra": "Quaternions"},
     {"type": "HyperComplex", "color_space": "RGB", "algebra": "Cl20"},
     {"type": "HyperComplex", "color_space": "RGB", "algebra": "Coquaternions"},
