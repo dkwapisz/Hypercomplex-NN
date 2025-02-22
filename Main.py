@@ -93,7 +93,6 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
         num_channels = image.shape[-1]
         break
 
-    print(num_channels)
     assert num_channels != 0, "Number of channels could not be determined."
 
     input_shape = img_size + (num_channels,) if (color_space == "CMYK" or hypercomplex) else img_size + (num_channels,)

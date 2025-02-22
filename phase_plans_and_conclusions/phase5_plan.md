@@ -1,4 +1,4 @@
-## Phase 5 - CNN color space comparison 3-dim, no transformations
+## Phase 5 - CNN color space comparison - 3-dim, no transformations
 
 The aim of this phase is to make a final comparison between CNNs and HCNNs with the number of layers and filters that
 were used in the previous phases. The colour space transformations that were the best in the previous 4 phases were
