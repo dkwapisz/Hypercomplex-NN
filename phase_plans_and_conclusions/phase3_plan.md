@@ -10,6 +10,7 @@ Only HyperComplex models were tested in this phase. This phase is closely linked
 - Image size: (100, 100)
 - Dataset: 8 classes, 1200 images per class
 - Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-blood-cell)
+- Types: HCNN
 - Algebras: Quaternions, Cl20, Coquaternions, Cl11, Bicomplex, Tessarines
 - Color spaces: RGB, HSV, YUV, YIQ
 
@@ -30,13 +31,11 @@ Only HyperComplex models were tested in this phase. This phase is closely linked
 
 #### RGB
 
-- CNN: The image remains in its original RGB format.
-- HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
+- **HCNN**: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 #### HSV
 
-- CNN: The RGB image is converted to HSV.
-- HCNN: The HSV channels are transformed into 4 dimensions:
+- **HCNN**: The HSV channels are transformed into 4 dimensions:
     - **V** (Value)
     - **S * cos(θ)** (where θ = H * 2π)
     - **S * sin(θ)**
@@ -44,13 +43,11 @@ Only HyperComplex models were tested in this phase. This phase is closely linked
 
 #### YUV
 
-- CNN: The RGB image is converted to YUV.
-- HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
+- **HCNN**: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 #### YIQ
 
-- CNN: The RGB image is converted to YIQ.
-- HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
+- **HCNN**: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 ### Models
 

@@ -8,6 +8,7 @@ addition, phase 1 is linked to phase 2 to compare color space transformations.
 - Image size: (100, 100)
 - Dataset: 8 classes, 1200 images per class
 - Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-blood-cell)
+- Types: CNN, HCNN
 - Algebras: None (CNN), Quaternions, Klein4, Cl20, Coquaternions, Cl11, Bicomplex, Tessarines
 - Color spaces: RGB, HSV, YUV, YIQ, CMYK
 
@@ -28,27 +29,27 @@ addition, phase 1 is linked to phase 2 to compare color space transformations.
 
 #### RGB
 
-- CNN: The image remains in its original RGB format.
-- HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
+- **CNN**: The image remains in its original RGB format.
+- **HCNN**: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 #### HSV
 
-- CNN: The RGB image is converted to HSV.
-- HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
+- **CNN**: The RGB image is converted to HSV.
+- **HCNN**: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 #### YUV
 
-- CNN: The RGB image is converted to YUV.
-- HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
+- **CNN**: The RGB image is converted to YUV.
+- **HCNN**: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 #### YIQ
 
-- CNN: The RGB image is converted to YIQ.
-- HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
+- **CNN**: The RGB image is converted to YIQ.
+- **HCNN**: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 #### CMYK
 
-- CNN/HCNN: The image is converted to CMYK using:
+- **CNN**/**HCNN**: The image is converted to CMYK using:
     - **C = (R - K) / (1 - K)**
     - **M = (G - K) / (1 - K)**
     - **Y = (B - K) / (1 - K)**

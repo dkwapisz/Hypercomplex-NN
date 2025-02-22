@@ -1,4 +1,4 @@
-## Phase 3 - Further color space transformation analysis
+## Phase 4 - Further color space transformation analysis
 
 The aim of this phase is to further test the transformation of the color space relative to no transformation, where the
 4th channel is the zero channel. This phase is a re-test of the models with the Klein4 algebra and CMYK color space
@@ -10,6 +10,7 @@ is closely linked to phase 4, where transformations have already been tested.
 - Image size: (100, 100)
 - Dataset: 8 classes, 1200 images per class
 - Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-blood-cell)
+- Types: HCNN
 - Algebras: Quaternions, Cl20, Coquaternions, Cl11, Bicomplex, Tessarines
 - Color spaces: RGB, HSV, YUV, YIQ
 
@@ -30,7 +31,6 @@ is closely linked to phase 4, where transformations have already been tested.
 
 #### RGB
 
-- **CNN**: The image remains in its original RGB format.
 - **HCNN**: The RGB channels are transformed into 4 dimensions:
     - **log(1 + Magnitude)**, where Magnitude = sqrt(R² + G² + B²)
     - **Phase RG** = atan2(G, R)
@@ -39,7 +39,6 @@ is closely linked to phase 4, where transformations have already been tested.
 
 #### HSV
 
-- **CNN**: The RGB image is converted to HSV.
 - **HCNN**: The HSV channels are transformed into 4 dimensions:
     - **V**
     - **exp(S) * cos(θ)**, where θ = H * 2π
@@ -48,7 +47,6 @@ is closely linked to phase 4, where transformations have already been tested.
 
 #### YUV
 
-- **CNN**: The RGB image is converted to YUV.
 - **HCNN**: The U and V channels are transformed into polar coordinates:
     - **Y (Luminance)**
     - **Magnitude * cos(2θ)**, where Magnitude = sqrt(U² + V²) and θ = atan2(V, U)
@@ -57,7 +55,6 @@ is closely linked to phase 4, where transformations have already been tested.
 
 #### YIQ
 
-- **CNN**: The RGB image is converted to YIQ.
 - **HCNN**: The I and Q channels are transformed into polar coordinates:
     - **Y (Luminance)**
     - **Magnitude * cos(2θ)**, where Magnitude = sqrt(I² + Q²) and θ = atan2(Q, I)

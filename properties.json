@@ -3,7 +3,7 @@
   "training_mode": {
       "all_cnn": false,
       "all_hypercomplex_cnn": false,
-      "phase3": true,
+      "phase5": true,
       "custom": false
   },
 
@@ -53,7 +53,38 @@
     {"type": "HyperComplex", "color_space": "CMYK", "algebra": "Tessarines"}
   ],
 
-  "phase3_preset": [
+  "phase3_4_preset": [
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Cl20"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Bicomplex"},
+    {"type": "HyperComplex", "color_space": "RGB", "algebra": "Tessarines"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Cl20"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Bicomplex"},
+    {"type": "HyperComplex", "color_space": "HSV", "algebra": "Tessarines"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Cl20"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Bicomplex"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Tessarines"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Cl20"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Coquaternions"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Cl11"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Bicomplex"},
+    {"type": "HyperComplex", "color_space": "YIQ", "algebra": "Tessarines"}
+  ],
+
+  "phase5_preset": [
+    {"type": "CNN", "color_space": "RGB", "algebra": ""},
+    {"type": "CNN", "color_space": "HSV", "algebra": ""},
+    {"type": "CNN", "color_space": "YUV", "algebra": ""},
+    {"type": "CNN", "color_space": "YIQ", "algebra": ""},
     {"type": "HyperComplex", "color_space": "RGB", "algebra": "Quaternions"},
     {"type": "HyperComplex", "color_space": "RGB", "algebra": "Cl20"},
     {"type": "HyperComplex", "color_space": "RGB", "algebra": "Coquaternions"},
