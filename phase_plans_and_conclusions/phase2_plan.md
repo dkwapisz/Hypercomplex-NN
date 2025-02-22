@@ -28,19 +28,19 @@ addition, phase 2 is linked to phase 1 to compare color space transformations.
 
 #### RGB
 
-- CNN: The image is kept in its original RGB format.
+- CNN: The image remains in its original RGB format.
 - HCNN: The RGB channels are transformed into 4 dimensions:
     - **R**
     - **G**
     - **B**
-    - **Magnitude * cos(θ)** (where Magnitude is sqrt(R^2 * G^2 * B^2) and θ = atan2(B - G, R)
+    - **Magnitude * cos(θ)** (where Magnitude is sqrt(R² * G² * B²) and θ = atan2(B - G, R)
 
 
 #### HSV
 
 - CNN: The RGB image is converted to HSV.
 - HCNN: The channels are split into:
-    - **V** (Value)
+    - **V**
     - **S * cos(θ)** (where θ = H * 2π)
     - **S * sin(θ)**
     - **V * cos(θ)**

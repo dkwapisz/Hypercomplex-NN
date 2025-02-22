@@ -30,13 +30,13 @@ Only HyperComplex models were tested in this phase. This phase is closely linked
 
 #### RGB
 
-- CNN: The image is kept in its original RGB format.
+- CNN: The image remains in its original RGB format.
 - HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 #### HSV
 
 - CNN: The RGB image is converted to HSV.
-- HCNN: The channels are split into:
+- HCNN: The HSV channels are transformed into 4 dimensions:
     - **V** (Value)
     - **S * cos(θ)** (where θ = H * 2π)
     - **S * sin(θ)**

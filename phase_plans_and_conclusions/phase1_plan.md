@@ -28,7 +28,7 @@ addition, phase 1 is linked to phase 2 to compare color space transformations.
 
 #### RGB
 
-- CNN: The image is kept in its original RGB format.
+- CNN: The image remains in its original RGB format.
 - HCNN: A fourth channel filled with zeros is added to match hypercomplex representation.
 
 #### HSV
