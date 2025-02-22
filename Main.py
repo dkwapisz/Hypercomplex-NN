@@ -83,7 +83,7 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
 
     print(get_current_model_desc(model_index, total_model_num, model_name))
 
-    input_shape = img_size + (4,) if (color_space == "CMYK" or hypercomplex) else img_size + (3,)
+    input_shape = img_size + (4,) if (color_space == "CMYK" or hypercomplex or "transformed" in color_space) else img_size + (3,)
 
     train_dataset = create_dataset_tf(train_path, img_size, batch_size, color_space, hypercomplex)
     val_dataset = create_dataset_tf(val_path, img_size, batch_size, color_space, hypercomplex)
