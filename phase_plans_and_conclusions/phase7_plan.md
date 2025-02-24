@@ -1,7 +1,7 @@
 ## Phase 7 - Final comparison of color transformations between CNN and HCNN
 
 The aim of this phase is to make a final comparison between CNNs and HCNNs with the number of layers and filters that
-were used in the previous phases. The colour space transformations that were the best in the previous 4 phases were
+were used in the previous phases. The colour space transformations that were the best in the previous 6 phases were
 used. The split proportions of the dataset have been slightly altered in order to obtain more diverse results.
 An additional objective of this phase is to select a few of the best models for further analysis in order to reduce the
 computational effort needed to train the entire phase.
@@ -32,7 +32,8 @@ computational effort needed to train the entire phase.
 
 #### RGB
 
-- **CNN/HCNN**: The RGB channels are transformed into 4 dimensions:
+- **CNN**: The image remains in its original RGB format.
+- **HCNN**: The RGB channels are transformed into 4 dimensions:
     - **log(1 + Magnitude)**, where Magnitude = sqrt(R² + G² + B²)
     - **Phase RG** = atan2(G, R)
     - **Phase RB** = atan2(B, R)

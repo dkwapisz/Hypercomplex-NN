@@ -26,14 +26,10 @@ def normalize_zscore(image):
 #         y = (cmy[..., 2:3] - k) / denominator
 #         return tf.concat([c, m, y, k], axis=-1)
 
-# Phase6+
-def perform_basic_transformation(image, color_space):
+# Phase7+
+def perform_transformation_for_cnn(image, color_space):
     if "RGB" in color_space:
-        r, g, b = tf.split(image, 3, axis=-1)
-        magnitude = tf.sqrt(r ** 2 + g ** 2 + b ** 2)
-        phase_rg = tf.atan2(g, r)
-        phase_rb = tf.atan2(b, r)
-        return tf.concat([tf.math.log1p(magnitude), phase_rg, phase_rb, magnitude * tf.cos(phase_rg + phase_rb)], axis=-1)
+        return image
     elif "HSV" in color_space:
         image = tf.image.rgb_to_hsv(image)
         h, s, v = tf.split(image, 3, axis=-1)
@@ -60,7 +56,7 @@ def perform_basic_transformation(image, color_space):
         y = (cmy[..., 2:3] - k) / denominator
         return tf.concat([c, m, y, k], axis=-1)
 
-def perform_hypercomplex_transformation(image, color_space):
+def perform_transformation_for_hypercomplex(image, color_space):
     if "RGB" in color_space:
         r, g, b = tf.split(image, 3, axis=-1)
         magnitude = tf.sqrt(r ** 2 + g ** 2 + b ** 2)
@@ -97,9 +93,9 @@ def convert_color_tf(image, color_space, hypercomplex=False):
     image = tf.image.convert_image_dtype(image, tf.float32)
 
     if hypercomplex:
-        image = perform_hypercomplex_transformation(image, color_space)
+        image = perform_transformation_for_hypercomplex(image, color_space)
     else:
-        image = perform_basic_transformation(image, color_space)
+        image = perform_transformation_for_cnn(image, color_space)
 
     image = normalize_zscore(image)
 

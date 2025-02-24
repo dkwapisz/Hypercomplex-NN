@@ -19,13 +19,13 @@ Better results achieved in:
 
 Better results achieved in:  
 `Phase4` HCNN: The channels are split into **(Y, Magnitude * cos(2θ), Magnitude * sin(2θ, exp(-Magnitude))** where θ =
-H * 2π and Magnitude = sqrt(U² + V²).
+atan2(U, V) and Magnitude = sqrt(U² + V²).
 
 ### YIQ
 
 Better results achieved in:  
 `Phase4` HCNN: The channels are split into **(Y, Magnitude * cos(2θ), Magnitude * sin(2θ, exp(-Magnitude))** where θ =
-H * 2π and Magnitude = sqrt(I² + Q²).
+atan2(I, Q) and Magnitude = sqrt(I² + Q²).
 
 ## Color space type conclusions
 
