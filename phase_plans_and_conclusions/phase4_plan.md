@@ -64,6 +64,7 @@ is closely linked to phase 4, where transformations have already been tested.
 ### Models
 
 #### HyperComplex Convolutional Neural Network
+**Trainable parameters**: `102,632` (32 + 64 + 128 + 102,408)
 
 ```python
 def build_model(input_shape, num_classes, metrics, algebra):

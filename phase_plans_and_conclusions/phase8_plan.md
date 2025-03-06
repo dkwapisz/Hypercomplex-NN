@@ -59,6 +59,7 @@ was increased from 8, 16, 32 to 16, 32, 64.
 ### Models
 
 #### Convolutional Neural Network
+**Trainable parameters**: `102,632` (32 + 64 + 128 + 102,408)
 
 ```python
 def build_model(input_shape, num_classes, metrics):
@@ -83,6 +84,7 @@ def build_model(input_shape, num_classes, metrics):
 ```
 
 #### HyperComplex Convolutional Neural Network
+**Trainable parameters**: `205,256` (64 + 128 + 256 + 204,808)
 
 ```python
 def build_model(input_shape, num_classes, metrics, algebra):

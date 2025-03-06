@@ -1,18 +1,20 @@
-## Phase 5 - CNN color space comparison - 3-dim, no transformations
+## Phase 8 - Final comparison of color transformations between CNN and HCNN
 
-The aim of this phase is to make a final comparison between CNNs and HCNNs with the number of layers and filters that
-were used in the previous phases. The colour space transformations that were the best in the previous 4 phases were
-used. The split proportions of the dataset have been slightly altered in order to obtain more diverse results.
-An additional objective of this phase is to select a few of the best models for further analysis in order to reduce the
-computational effort needed to train the entire phase.
+This phase used one model from each type of algebra that performed best in the previous phase. The CNN-RGB model was
+left as a reference for the most classical approach. The aim of this phase is to test a variant in which the number of
+parameters of the hypercomplex networks is 2 times greater than for the CNNs. For the CNN network, the same architecture
+was maintained - 3 layers of Conv2D with 32, 64, 128 filters, while for the HyperConv2D network the number of filters
+was decreased from 8, 16, 32 to 4, 8, 16.
 
 ### Phase parameters
 
 - Image size: (100, 100)
 - Dataset: 8 classes, 1200 images per class
 - Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-blood-cell)
-- Types: CNN
-- Color spaces: RGB, HSV, YUV, YIQ
+- Types: CNN, HCNN
+- Algebras: Quaternions, Cl20, Coquaternions, Cl11, Bicomplex, Tessarines
+- Color spaces: RGB, YUV, YIQ
+- Models used: CNN-RGB, CNN-YUV, Cl20-RGB, Cl11-RGB, Quaternions-YUV, Coquaternions-YUV, Bicomplex-YUV, Tessarines-YUV
 
 | Run number | Proportion (%) | Training set (per class) | Validation set (per class) | Test set (per class) | Training set (all) | Validation set (all) | Test set (all) |
 |------------|----------------|--------------------------|----------------------------|----------------------|--------------------|----------------------|----------------|
@@ -32,18 +34,27 @@ computational effort needed to train the entire phase.
 #### RGB
 
 - **CNN**: The image remains in its original RGB format.
-
-#### HSV
-
-- **CNN**: The image remains in its original HSV format.
+- **HCNN**: The RGB channels are transformed into 4 dimensions:
+    - **log(1 + Magnitude)**, where Magnitude = sqrt(R² + G² + B²)
+    - **Phase RG** = atan2(G, R)
+    - **Phase RB** = atan2(B, R)
+    - **Magnitude * cos(Phase RG + Phase RB)**
 
 #### YUV
 
-- **CNN**: The image remains in its original YUV format.
+- **CNN/HCNN**: The U and V channels are transformed into polar coordinates:
+    - **Y (Luminance)**
+    - **Magnitude * cos(2θ)**, where Magnitude = sqrt(U² + V²) and θ = atan2(V, U)
+    - **Magnitude * sin(2θ)**
+    - **exp(-Magnitude)**
 
 #### YIQ
 
-- **CNN**: The image remains in its original YIQ format.
+- **CNN/HCNN**: The I and Q channels are transformed into polar coordinates:
+    - **Y (Luminance)**
+    - **Magnitude * cos(2θ)**, where Magnitude = sqrt(I² + Q²) and θ = atan2(Q, I)
+    - **Magnitude * sin(2θ)**
+    - **exp(-Magnitude)**
 
 ### Models
 
@@ -62,6 +73,31 @@ def build_model(input_shape, num_classes, metrics):
     model.add(MaxPooling2D())
 
     model.add(Conv2D(128, (3, 3), activation='relu'))
+    model.add(MaxPooling2D())
+
+    model.add(Flatten())
+    model.add(Dense(num_classes, activation='softmax'))
+
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
+
+    return model
+```
+
+#### HyperComplex Convolutional Neural Network
+**Trainable parameters**: `205,256` (64 + 128 + 256 + 204,808)
+
+```python
+def build_model(input_shape, num_classes, metrics, algebra):
+    model = Sequential()
+    model.add(Input(shape=input_shape))
+
+    model.add(HyperConv2D(4, (3, 3), activation='relu', algebra=algebra))
+    model.add(MaxPooling2D())
+
+    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
+    model.add(MaxPooling2D())
+
+    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
     model.add(Flatten())

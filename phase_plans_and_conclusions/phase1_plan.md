@@ -58,6 +58,7 @@ addition, phase 1 is linked to phase 2 to compare color space transformations.
 ### Models
 
 #### Convolutional Neural Network
+**Trainable parameters**: `102,632` (32 + 64 + 128 + 102,408)
 
 ```python
 def build_model(input_shape, num_classes, metrics):
@@ -82,6 +83,7 @@ def build_model(input_shape, num_classes, metrics):
 ```
 
 #### HyperComplex Convolutional Neural Network
+**Trainable parameters**: `102,632` (32 + 64 + 128 + 102,408)
 
 ```python
 def build_model(input_shape, num_classes, metrics, algebra):
