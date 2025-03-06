@@ -1,10 +1,9 @@
-## Phase 8 - Final comparison of color transformations between CNN and HCNN
+# Phase plan **work in progress**
+
+## Phase 8
 
 This phase used one model from each type of algebra that performed best in the previous phase. The CNN-RGB model was
-left as a reference for the most classical approach. The aim of this phase is to test a variant in which the number of
-parameters of the hypercomplex networks is 2 times greater than for the CNNs. For the CNN network, the same architecture
-was maintained - 3 layers of Conv2D with 32, 64, 128 filters, while for the HyperConv2D network the number of filters
-was increased from 8, 16, 32 to 16, 32, 64.
+left as a reference for the most classical approach.
 
 ### Phase parameters
 
@@ -59,51 +58,9 @@ was increased from 8, 16, 32 to 16, 32, 64.
 ### Models
 
 #### Convolutional Neural Network
-**Trainable parameters**: `102,632` (32 + 64 + 128 + 102,408)
 
-```python
-def build_model(input_shape, num_classes, metrics):
-    model = Sequential()
-    model.add(Input(shape=input_shape))
-
-    model.add(Conv2D(32, (3, 3), activation='relu'))
-    model.add(MaxPooling2D())
-
-    model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(MaxPooling2D())
-
-    model.add(Conv2D(128, (3, 3), activation='relu'))
-    model.add(MaxPooling2D())
-
-    model.add(Flatten())
-    model.add(Dense(num_classes, activation='softmax'))
-
-    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
-
-    return model
-```
+TBD
 
 #### HyperComplex Convolutional Neural Network
-**Trainable parameters**: `205,256` (64 + 128 + 256 + 204,808)
 
-```python
-def build_model(input_shape, num_classes, metrics, algebra):
-    model = Sequential()
-    model.add(Input(shape=input_shape))
-
-    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
-    model.add(MaxPooling2D())
-
-    model.add(HyperConv2D(32, (3, 3), activation='relu', algebra=algebra))
-    model.add(MaxPooling2D())
-
-    model.add(HyperConv2D(64, (3, 3), activation='relu', algebra=algebra))
-    model.add(MaxPooling2D())
-
-    model.add(Flatten())
-    model.add(Dense(num_classes, activation='softmax'))
-
-    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
-
-    return model
-```
+TBD
