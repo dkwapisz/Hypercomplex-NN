@@ -59,8 +59,8 @@ if training_mode["all_cnn"]:
     models_to_train += properties.get("cnn_models_preset", [])
 if training_mode["all_hypercomplex_cnn"]:
     models_to_train += properties.get("hypercomplex_cnn_models_preset", [])
-if training_mode["phase7"]:
-    models_to_train += properties.get("phase7_preset", [])
+if training_mode["phase8+"]:
+    models_to_train += properties.get("phase8+_preset", [])
 if training_mode["custom"]:
     models_to_train += properties.get("custom_preset", [])
 
