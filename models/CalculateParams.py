@@ -1,0 +1,25 @@
+def calculateParamsHyperConv(filters, kernel_size, input_size, layer_before_flatten_shape, num_classes):
+    color_channel_shape = input_size[2]
+    flatten_shape = layer_before_flatten_shape[0] * layer_before_flatten_shape[1] * layer_before_flatten_shape[2]
+    params_sum = 0
+
+    for i in range(len(filters)):
+        last_filters_value = 1 if i == 0 else filters[i-1]
+        params = (kernel_size[0] * kernel_size[1] * last_filters_value + 1) * filters[i] * color_channel_shape
+        params_sum += params
+        print(f"HyperConv2D_{i+1}: {params}")
+
+    dense_params = num_classes * (flatten_shape + 1)
+    params_sum += dense_params
+
+    print(f"Dense: {dense_params}")
+    print(f"Total params: {params_sum}")
+
+
+filters = (8, 16, 32)
+layer_before_flatten_shape = (10, 10, 128)
+kernel_size = (3, 3)
+input_size = (100, 100, 4)
+num_classes = 8
+
+calculateParamsHyperConv(filters, kernel_size, input_size, layer_before_flatten_shape, num_classes)
