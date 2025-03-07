@@ -39,13 +39,13 @@ def build_model(input_shape, num_classes, metrics, algebra):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
+    model.add(HyperConv2D(4, (3, 3), activation='relu', algebra=algebra))
+    model.add(MaxPooling2D())
+
     model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
     model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
-    model.add(MaxPooling2D())
-
-    model.add(HyperConv2D(32, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
     model.add(Flatten())
@@ -75,4 +75,4 @@ class HyperComplexCNN_Model(ModelBase):
 
 
 if __name__ == "__main__":
-    build_model((100, 100, 4), 1, ["accuracy"], algebras["Quaternions"]).summary()
+    build_model((100, 100, 4), 8, ["accuracy"], algebras["Quaternions"]).summary()
