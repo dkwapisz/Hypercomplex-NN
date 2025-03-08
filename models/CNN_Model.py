@@ -43,6 +43,9 @@ def build_model(input_shape, num_classes, metrics):
     model.add(Conv2D(32, (3, 3), activation='relu'))
     model.add(MaxPooling2D())
 
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(MaxPooling2D())
+
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
 

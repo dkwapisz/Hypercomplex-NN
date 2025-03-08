@@ -62,7 +62,6 @@ def build_model(input_shape, num_classes, metrics):
     model.add(Conv2D(64, (3, 3), activation='relu'))
     model.add(GlobalAveragePooling2D())
 
-    model.add(Dense(16, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
@@ -83,7 +82,6 @@ def build_model(input_shape, num_classes, metrics, algebra):
     model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
     model.add(GlobalAveragePooling2D())
 
-    model.add(Dense(16, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)

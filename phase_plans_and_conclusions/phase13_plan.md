@@ -67,7 +67,6 @@ def build_model(input_shape, num_classes, metrics):
     x = MaxPooling2D()(x)
 
     x = Flatten()(x)
-    x = Dense(64, activation='relu')(x)
     outputs = Dense(num_classes, activation='softmax')(x)
 
     model = Model(inputs, outputs)
@@ -96,7 +95,6 @@ def build_model(input_shape, num_classes, metrics, algebra):
     x = MaxPooling2D()(x)
 
     x = Flatten()(x)
-    x = Dense(64, activation='relu')(x)
     outputs = Dense(num_classes, activation='softmax')(x)
 
     model = Model(inputs, outputs)

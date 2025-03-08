@@ -65,8 +65,6 @@ def build_model(input_shape, num_classes, metrics):
     model.add(Dropout(0.3))
 
     model.add(Flatten())
-    model.add(Dense(32, activation='relu'))
-    model.add(Dropout(0.4))
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
@@ -90,8 +88,6 @@ def build_model(input_shape, num_classes, metrics, algebra):
     model.add(Dropout(0.3))
 
     model.add(Flatten())
-    model.add(Dense(32, activation='relu'))
-    model.add(Dropout(0.4))
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
