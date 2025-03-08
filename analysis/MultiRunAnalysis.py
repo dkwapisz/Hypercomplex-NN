@@ -163,7 +163,7 @@ def plot_multirun_phase_results(phase_data, phase_number, run_labels, one_type_o
         get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, run_labels, "type", "accuracy")
 
 
-PHASE = "phase10"
+PHASE = "phase11"
 phase_data = read_phase_data(PHASE, RUNS_TO_TEST, only_hypercomplex=False)
 plot_multirun_phase_results(phase_data, PHASE, RUN_LABELS_SPLIT_5_PLUS)
 

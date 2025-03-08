@@ -1,6 +1,7 @@
 import keras_tuner as kt
 from keras import Sequential, Input
-from keras.src.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, GlobalMaxPooling2D, BatchNormalization
+from keras.src.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, GlobalMaxPooling2D, BatchNormalization, \
+    GlobalAveragePooling2D
 from keras.src.optimizers import Adam
 
 from models.ModelBase import ModelBase
@@ -39,13 +40,10 @@ def build_model(input_shape, num_classes, metrics):
 
     model.add(Conv2D(32, (3, 3), activation='relu'))
     model.add(MaxPooling2D())
-    model.add(Dropout(0.3))
 
     model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(MaxPooling2D())
-    model.add(Dropout(0.3))
+    model.add(GlobalAveragePooling2D())
 
-    model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
