@@ -43,10 +43,13 @@ def build_model(input_shape, num_classes, metrics, algebra):
 
     model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
+    model.add(Dropout(0.2))
 
     model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
-    model.add(GlobalAveragePooling2D())
+    model.add(MaxPooling2D())
+    model.add(Dropout(0.3))
 
+    model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
