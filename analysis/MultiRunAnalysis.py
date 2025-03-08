@@ -7,15 +7,6 @@ from analysis.SingleRunAnalysis import get_formatted_model_name
 # ------------------- Static parameters -------------------
 JSON_RESULT_FILE = "training.json"
 RUNS_TO_TEST = ["run1", "run2", "run3", "run4", "run5", "run6", "run7", "run8", "run9", "run10"]
-PHASE_1 = "phase1"
-PHASE_2 = "phase2"
-PHASE_3 = "phase3"
-PHASE_4 = "phase4"
-PHASE_5 = "phase5"
-PHASE_6 = "phase6"
-PHASE_7 = "phase7"
-PHASE_8 = "phase8"
-PHASE_9 = "phase9"
 RUN_LABELS_SPLIT_1234 = [1, 3, 5, 10, 15, 20, 40, 50, 60, 80] # For phase 1, 2, 3, 4
 RUN_LABELS_SPLIT_5_PLUS = [1, 3, 5, 10, 20, 30, 40, 50, 60, 70] # For phase 5+
 # ---------------------------------------------------------
@@ -171,25 +162,10 @@ def plot_multirun_phase_results(phase_data, phase_number, run_labels, one_type_o
     if not one_type_only:
         get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, run_labels, "type", "accuracy")
 
-# phase1_data = read_phase_data(PHASE_1, RUNS_TO_TEST, only_hypercomplex=False)
-# phase2_data = read_phase_data(PHASE_2, RUNS_TO_TEST, only_hypercomplex=False)
-# phase3_data = read_phase_data(PHASE_3, RUNS_TO_TEST, only_hypercomplex=False)
-# phase4_data = read_phase_data(PHASE_4, RUNS_TO_TEST, only_hypercomplex=False)
-# phase5_data = read_phase_data(PHASE_5, RUNS_TO_TEST, only_hypercomplex=False)
-# phase6_data = read_phase_data(PHASE_6, RUNS_TO_TEST, only_hypercomplex=False)
-# phase7_data = read_phase_data(PHASE_7, RUNS_TO_TEST, only_hypercomplex=False)
-# phase8_data = read_phase_data(PHASE_8, RUNS_TO_TEST, only_hypercomplex=False)
-phase9_data = read_phase_data(PHASE_9, RUNS_TO_TEST, only_hypercomplex=False)
 
-# plot_multirun_phase_results(phase1_data, PHASE_1, RUN_LABELS_SPLIT_1234)
-# plot_multirun_phase_results(phase2_data, PHASE_2, RUN_LABELS_SPLIT_1234)
-# plot_multirun_phase_results(phase3_data, PHASE_3, RUN_LABELS_SPLIT_1234, one_type_only=True) # Only HyperComplex models
-# plot_multirun_phase_results(phase4_data, PHASE_4, RUN_LABELS_SPLIT_1234, one_type_only=True) # Only HyperComplex models
-# plot_multirun_phase_results(phase5_data, PHASE_5, RUN_LABELS_SPLIT_5_PLUS, one_type_only=True) # Only CNN models
-# plot_multirun_phase_results(phase6_data, PHASE_6, RUN_LABELS_SPLIT_5_PLUS, one_type_only=True) # Only CNN models
-# plot_multirun_phase_results(phase7_data, PHASE_7, RUN_LABELS_SPLIT_5_PLUS)
-# plot_multirun_phase_results(phase8_data, PHASE_8, RUN_LABELS_SPLIT_5_PLUS)
-plot_multirun_phase_results(phase9_data, PHASE_9, RUN_LABELS_SPLIT_5_PLUS)
+PHASE = "phase10"
+phase_data = read_phase_data(PHASE, RUNS_TO_TEST, only_hypercomplex=False)
+plot_multirun_phase_results(phase_data, PHASE, RUN_LABELS_SPLIT_5_PLUS)
 
 # # ------------------- Phase 1 vs Phase 2 -------------------
 # get_average_evaluation_between_phases_grouped_by(phase1_data, phase2_data, (1, 2), RUN_LABELS_SPLIT_1234,  RUNS_TO_TEST, "color_space", "accuracy")

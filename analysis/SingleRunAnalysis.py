@@ -3,8 +3,8 @@ import plotly.express as plt_exp
 import pandas as pd
 
 # ------------------- Static parameters -------------------
-start_phase = 9         # Inclusive
-end_phase = 9          # Inclusive
+start_phase = 10        # Inclusive
+end_phase = 10          # Inclusive
 run_phases = [f"phase{i}" for i in range(start_phase, end_phase + 1)]
 runs = ["run1", "run2", "run3", "run4", "run5", "run6", "run7", "run8", "run9", "run10"]
 json_result_file = "training.json"
