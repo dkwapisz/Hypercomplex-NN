@@ -2,8 +2,8 @@
 
 ## Phase 8
 
-This phase used one model from each type of algebra that performed best in the previous phase. The CNN-RGB model was
-left as a reference for the most classical approach.
+This phase used one model from each type of algebra that performed best (in case of accuracy) in the previous phase. The
+CNN-RGB model was left as a reference for the most classical approach.
 
 ### Phase parameters
 
@@ -12,7 +12,7 @@ left as a reference for the most classical approach.
 - Dataset URL - [Blood Cells](https://www.kaggle.com/datasets/bzhbzh35/peripheral-blood-cell)
 - Types: CNN, HCNN
 - Algebras: Quaternions, Cl20, Coquaternions, Cl11, Bicomplex, Tessarines
-- Color spaces: RGB, YUV, YIQ
+- Color spaces: RGB, YUV
 - Models used: CNN-RGB, CNN-YUV, Cl20-RGB, Cl11-RGB, Quaternions-YUV, Coquaternions-YUV, Bicomplex-YUV, Tessarines-YUV
 
 | Run number | Proportion (%) | Training set (per class) | Validation set (per class) | Test set (per class) | Training set (all) | Validation set (all) | Test set (all) |
@@ -44,14 +44,6 @@ left as a reference for the most classical approach.
 - **CNN/HCNN**: The U and V channels are transformed into polar coordinates:
     - **Y (Luminance)**
     - **Magnitude * cos(2θ)**, where Magnitude = sqrt(U² + V²) and θ = atan2(V, U)
-    - **Magnitude * sin(2θ)**
-    - **exp(-Magnitude)**
-
-#### YIQ
-
-- **CNN/HCNN**: The I and Q channels are transformed into polar coordinates:
-    - **Y (Luminance)**
-    - **Magnitude * cos(2θ)**, where Magnitude = sqrt(I² + Q²) and θ = atan2(Q, I)
     - **Magnitude * sin(2θ)**
     - **exp(-Magnitude)**
 
