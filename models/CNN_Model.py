@@ -44,7 +44,6 @@ def build_model(input_shape, num_classes, metrics):
     model.add(MaxPooling2D())
 
     model.add(Flatten())
-    model.add(Dense(16, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
