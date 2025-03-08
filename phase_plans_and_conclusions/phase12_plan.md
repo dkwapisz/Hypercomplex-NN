@@ -1,4 +1,6 @@
-## Phase 8 - Testing architecture 1 (Small)
+from HypercomplexKeras.Convolutional import HyperConv2D
+
+## Phase 12 - Testing architecture 1 (GlobalPooling)
 
 This phase used one model from each type of algebra that performed best (in case of accuracy) in the previous phase. The
 CNN-RGB model was left as a reference for the most classical approach.
@@ -54,13 +56,12 @@ def build_model(input_shape, num_classes, metrics):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    model.add(Conv2D(16, (3, 3), activation='relu'))
-    model.add(MaxPooling2D())
-
     model.add(Conv2D(32, (3, 3), activation='relu'))
     model.add(MaxPooling2D())
 
-    model.add(Flatten())
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(GlobalAveragePooling2D())
+
     model.add(Dense(16, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
 
@@ -76,16 +77,16 @@ def build_model(input_shape, num_classes, metrics, algebra):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    model.add(HyperConv2D(4, (3, 3), activation='relu', algebra=algebra))
-    model.add(MaxPooling2D())
-    
-    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
+    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
-    model.add(Flatten())
+    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
+    model.add(GlobalAveragePooling2D())
+
     model.add(Dense(16, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
+
     return model
 ```
