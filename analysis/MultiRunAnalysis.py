@@ -83,9 +83,9 @@ def get_average_evaluation_grouped_by(data, runs, run_phase, run_labels, group_b
                                f"{group_by_key}": f"{group_by_key}"})
 
     fig.update_layout(xaxis_tickangle=-45, height=600, width=1200, xaxis=dict(tickmode='array',tickvals=run_labels, ticktext=run_labels))
-    fig.write_image(os.path.join(run_phase, f"avg_{evaluation_key}_by_{group_by_key}.png"))
+    fig.write_image(os.path.join(run_phase, f"avg_{evaluation_key.lower()}_by_{group_by_key}.png"))
 
-def get_average_evaluation(data, runs, run_phase, run_labels, model_name, evaluation_key="accuracy"):
+def get_average_evaluation_by_model(data, runs, run_phase, run_labels, evaluation_key="accuracy"):
     grouped_evaluation = evaluation_by(data, runs, evaluation_key)
 
     average_evaluation = {run_name: {group_by_value: sum(values) / len(values) for group_by_value, values in group_by_values.items()} for
@@ -94,35 +94,28 @@ def get_average_evaluation(data, runs, run_phase, run_labels, model_name, evalua
     plot_data = []
     for run_name, group_by_values in average_evaluation.items():
         for group_by_value, avg_evaluation in group_by_values.items():
-            plot_data.append({"run_name": run_labels[runs.index(run_name)], f"{model_name}": group_by_value, f"average_{evaluation_key}": avg_evaluation})
+            plot_data.append({"run_name": run_labels[runs.index(run_name)], "model": group_by_value, f"average_{evaluation_key}": avg_evaluation})
 
     df = pd.DataFrame(plot_data)
 
-    fig = plt_exp.line(df, x="run_name", y=f"average_{evaluation_key}", color=f"{model_name}",
-                       title=f"Average {evaluation_key} per {model_name} - {run_phase}",
+    fig = plt_exp.line(df, x="run_name", y=f"average_{evaluation_key}", color="model",
+                       title=f"Average {evaluation_key} per model - {run_phase}",
                        labels={"run_name": "Percentage of training data used for training", f"average_{evaluation_key}": f"Average {evaluation_key}",
-                               f"{model_name}": f"{model_name}"})
+                               "model": "model"})
 
     fig.update_layout(xaxis_tickangle=-45, height=600, width=1200, xaxis=dict(tickmode='array',tickvals=run_labels, ticktext=run_labels))
-    fig.write_image(os.path.join(run_phase, f"avg_{evaluation_key}_by_{model_name}.png"))
+    fig.write_image(os.path.join(run_phase, f"avg_{evaluation_key.lower()}_by_model.png"))
 
-def get_average_evaluation_between_phases_grouped_by(data_phase1, data_phase2, phase_nums, run_labels, runs, group_by_key, evaluation_key="accuracy"):
-    grouped_evaluation_phase1 = group_evaluation_by(data_phase1, runs, group_by_key, evaluation_key)
-    grouped_evaluation_phase2 = group_evaluation_by(data_phase2, runs, group_by_key, evaluation_key)
-
-    average_evaluation_phase1 = {run_name: {group_by_value: sum(values) / len(values) for group_by_value, values in group_by_values.items()} for
-                                 run_name, group_by_values in grouped_evaluation_phase1.items()}
-    average_evaluation_phase2 = {run_name: {group_by_value: sum(values) / len(values) for group_by_value, values in group_by_values.items()} for
-                                 run_name, group_by_values in grouped_evaluation_phase2.items()}
+def get_average_evaluation_between_phases_grouped_by(phases_data, phase_nums, run_labels, runs, group_by_key, evaluation_key="accuracy"):
+    grouped_evaluations = [group_evaluation_by(data, runs, group_by_key, evaluation_key) for data in phases_data]
+    average_evaluations = [{run_name: {group_by_value: sum(values) / len(values) for group_by_value, values in group_by_values.items()} for
+                            run_name, group_by_values in grouped_evaluation.items()} for grouped_evaluation in grouped_evaluations]
 
     plot_data = []
-    for run_name, group_by_values in average_evaluation_phase1.items():
-        for group_by_value, avg_evaluation in group_by_values.items():
-            plot_data.append({"run_name": run_labels[runs.index(run_name)], f"{group_by_key}": group_by_value, f"average_{evaluation_key}": avg_evaluation, "phase": f"phase{phase_nums[0]}"})
-
-    for run_name, group_by_values in average_evaluation_phase2.items():
-        for group_by_value, avg_evaluation in group_by_values.items():
-            plot_data.append({"run_name": run_labels[runs.index(run_name)], f"{group_by_key}": group_by_value, f"average_{evaluation_key}": avg_evaluation, "phase": f"phase{phase_nums[1]}"})
+    for phase_index, average_evaluation in enumerate(average_evaluations):
+        for run_name, group_by_values in average_evaluation.items():
+            for group_by_value, avg_evaluation in group_by_values.items():
+                plot_data.append({"run_name": run_labels[runs.index(run_name)], f"{group_by_key}": group_by_value, f"average_{evaluation_key}": avg_evaluation, "phase": f"phase{phase_nums[phase_index]}"})
 
     df = pd.DataFrame(plot_data)
 
@@ -132,8 +125,7 @@ def get_average_evaluation_between_phases_grouped_by(data_phase1, data_phase2, p
                                f"{group_by_key}": f"{group_by_key}", "phase": "Phase"})
 
     fig.update_layout(xaxis_tickangle=-45, height=600, width=1200, xaxis=dict(tickmode='array',tickvals=run_labels, ticktext=run_labels))
-    fig.write_image(os.path.join("between_phases_results", f"phase{phase_nums[0]}_phase{phase_nums[1]}_avg_{evaluation_key}_by_{group_by_key}_comparison.png"))
-
+    fig.write_image(os.path.join("between_phases_results", f"phase{'_'.join(map(str, phase_nums))}_avg_{evaluation_key.lower()}_by_{group_by_key}_comparison.png"))
 
 def plot_stacked_average_bar_for_phase(data, phase, evaluation_key):
     model_evaluation = {}
@@ -158,7 +150,7 @@ def plot_stacked_average_bar_for_phase(data, phase, evaluation_key):
                       text_auto=True)
 
     fig.update_layout(xaxis_tickangle=-45, height=900, width=1800)
-    fig.write_image(os.path.join(phase, f"avg_{evaluation_key}_all_models_bar_chart.png"))
+    fig.write_image(os.path.join(phase, f"avg_{evaluation_key.lower()}_all_models_bar_chart.png"))
 
 def plot_stacked_bar_for_phase(data, phase, runs, evaluation_key):
     model_evaluation = {}
@@ -188,44 +180,62 @@ def plot_stacked_bar_for_phase(data, phase, runs, evaluation_key):
 
     fig.update_traces(textangle=-90, textposition="inside")
     fig.update_layout(xaxis_tickangle=-45, height=1200, width=2400)
-    fig.write_image(os.path.join(phase, f"stacked_{evaluation_key}_bar_chart.png"))
+    fig.write_image(os.path.join(phase, f"stacked_{evaluation_key.lower()}_bar_chart.png"))
 
 
-def plot_multirun_phase_results(phase_data, phase_number, run_labels, one_type_only=False):
-    plot_stacked_bar_for_phase(phase_data, phase_number, RUNS_TO_TEST, "accuracy")
-    plot_stacked_average_bar_for_phase(phase_data, phase_number, "accuracy")
-    get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, run_labels, "algebra", "accuracy")
-    get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, run_labels, "color_space", "accuracy")
-    get_average_evaluation(phase_data, RUNS_TO_TEST, phase_number, run_labels, "model", "accuracy")
+def plot_multirun_phase_results(phase_data, phase_number, run_labels, evaluation_key="accuracy", one_type_only=False):
+    plot_stacked_bar_for_phase(phase_data, phase_number, RUNS_TO_TEST, evaluation_key)
+    plot_stacked_average_bar_for_phase(phase_data, phase_number, evaluation_key)
+    get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, run_labels, "algebra", evaluation_key)
+    get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, run_labels, "color_space", evaluation_key)
+    get_average_evaluation_by_model(phase_data, RUNS_TO_TEST, phase_number, run_labels, evaluation_key)
 
     if not one_type_only:
-        get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, run_labels, "type", "accuracy")
+        get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, run_labels, "type", evaluation_key)
 
 
-phase1_data = read_phase_data("phase1", RUNS_TO_TEST, only_hypercomplex=False)
-phase2_data = read_phase_data("phase2", RUNS_TO_TEST, only_hypercomplex=False)
-phase3_data = read_phase_data("phase3", RUNS_TO_TEST, only_hypercomplex=False)
-phase4_data = read_phase_data("phase4", RUNS_TO_TEST, only_hypercomplex=False)
-phase5_data = read_phase_data("phase5", RUNS_TO_TEST, only_hypercomplex=False)
-phase6_data = read_phase_data("phase6", RUNS_TO_TEST, only_hypercomplex=False)
+# phase1_data = read_phase_data("phase1", RUNS_TO_TEST, only_hypercomplex=False)
+# phase2_data = read_phase_data("phase2", RUNS_TO_TEST, only_hypercomplex=False)
+# phase3_data = read_phase_data("phase3", RUNS_TO_TEST, only_hypercomplex=False)
+# phase4_data = read_phase_data("phase4", RUNS_TO_TEST, only_hypercomplex=False)
+# phase5_data = read_phase_data("phase5", RUNS_TO_TEST, only_hypercomplex=False)
+# phase6_data = read_phase_data("phase6", RUNS_TO_TEST, only_hypercomplex=False)
+# phase7_data = read_phase_data("phase7", RUNS_TO_TEST, only_hypercomplex=False)
+#
+# plot_multirun_phase_results(phase1_data, "phase1", RUN_LABELS_SPLIT_1234)
+# plot_multirun_phase_results(phase2_data, "phase2", RUN_LABELS_SPLIT_1234)
+# plot_multirun_phase_results(phase3_data, "phase3", RUN_LABELS_SPLIT_1234, one_type_only=True) # Only HyperComplex models
+# plot_multirun_phase_results(phase4_data, "phase4", RUN_LABELS_SPLIT_1234, one_type_only=True) # Only HyperComplex models
+# plot_multirun_phase_results(phase5_data, "phase5", RUN_LABELS_SPLIT_5_PLUS, one_type_only=True) # Only CNN models
+# plot_multirun_phase_results(phase6_data, "phase6", RUN_LABELS_SPLIT_5_PLUS, one_type_only=True) # Only CNN models
+# plot_multirun_phase_results(phase7_data, "phase7", RUN_LABELS_SPLIT_5_PLUS)
+#
+# plot_multirun_phase_results(phase1_data, "phase1", RUN_LABELS_SPLIT_1234, "F1-Score")
+# plot_multirun_phase_results(phase2_data, "phase2", RUN_LABELS_SPLIT_1234, "F1-Score")
+# plot_multirun_phase_results(phase3_data, "phase3", RUN_LABELS_SPLIT_1234, "F1-Score", one_type_only=True) # Only HyperComplex models
+# plot_multirun_phase_results(phase4_data, "phase4", RUN_LABELS_SPLIT_1234, "F1-Score", one_type_only=True) # Only HyperComplex models
+# plot_multirun_phase_results(phase5_data, "phase5", RUN_LABELS_SPLIT_5_PLUS, "F1-Score", one_type_only=True) # Only CNN models
+# plot_multirun_phase_results(phase6_data, "phase6", RUN_LABELS_SPLIT_5_PLUS, "F1-Score", one_type_only=True) # Only CNN models
+# plot_multirun_phase_results(phase7_data, "phase7", RUN_LABELS_SPLIT_5_PLUS, "F1-Score")
 
-plot_multirun_phase_results(phase1_data, "phase1", RUN_LABELS_SPLIT_1234)
-plot_multirun_phase_results(phase2_data, "phase2", RUN_LABELS_SPLIT_1234)
-plot_multirun_phase_results(phase3_data, "phase3", RUN_LABELS_SPLIT_1234, one_type_only=True) # Only HyperComplex models
-plot_multirun_phase_results(phase4_data, "phase4", RUN_LABELS_SPLIT_1234, one_type_only=True) # Only HyperComplex models
-plot_multirun_phase_results(phase5_data, "phase5", RUN_LABELS_SPLIT_5_PLUS, one_type_only=True) # Only CNN models
-plot_multirun_phase_results(phase6_data, "phase6", RUN_LABELS_SPLIT_5_PLUS, one_type_only=True) # Only CNN models
+phases_to_compare = []
 
-for phase in [f"phase{i}" for i in range(7, 15)]:
+for phase in [f"phase{i}" for i in range(8, 15)]:
     phase_data = read_phase_data(phase, RUNS_TO_TEST, only_hypercomplex=False)
-    plot_multirun_phase_results(phase_data, phase, RUN_LABELS_SPLIT_5_PLUS)
+    plot_multirun_phase_results(phase_data, phase, RUN_LABELS_SPLIT_5_PLUS, "accuracy")
+    plot_multirun_phase_results(phase_data, phase, RUN_LABELS_SPLIT_5_PLUS, "F1-Score")
+    phases_to_compare.append(phase_data)
 
+#
 # # ------------------- Phase 1 vs Phase 2 -------------------
-# get_average_evaluation_between_phases_grouped_by(phase1_data, phase2_data, (1, 2), RUN_LABELS_SPLIT_1234,  RUNS_TO_TEST, "color_space", "accuracy")
+# get_average_evaluation_between_phases_grouped_by([phase1_data, phase2_data], (1, 2), RUN_LABELS_SPLIT_1234,  RUNS_TO_TEST, "color_space", "accuracy")
+# get_average_evaluation_between_phases_grouped_by([phase1_data, phase2_data], (1, 2), RUN_LABELS_SPLIT_1234,  RUNS_TO_TEST, "color_space", "F1-Score")
 #
 # # ------------------- Phase 3 vs Phase 4 -------------------
-# get_average_evaluation_between_phases_grouped_by(phase3_data, phase4_data, (3, 4), RUN_LABELS_SPLIT_1234,  RUNS_TO_TEST, "color_space", "accuracy")
+# get_average_evaluation_between_phases_grouped_by([phase3_data, phase4_data], (3, 4), RUN_LABELS_SPLIT_1234,  RUNS_TO_TEST, "color_space", "accuracy")
+# get_average_evaluation_between_phases_grouped_by([phase3_data, phase4_data], (3, 4), RUN_LABELS_SPLIT_1234,  RUNS_TO_TEST, "color_space", "F1-Score")
 #
 # # ------------------- Phase 5 vs Phase 6 -------------------
-# get_average_evaluation_between_phases_grouped_by(phase5_data, phase6_data, (5, 6), RUN_LABELS_SPLIT_5_PLUS,  RUNS_TO_TEST, "color_space", "accuracy")
+# get_average_evaluation_between_phases_grouped_by([phase5_data, phase6_data], (5, 6), RUN_LABELS_SPLIT_5_PLUS,  RUNS_TO_TEST, "color_space", "accuracy")
+# get_average_evaluation_between_phases_grouped_by([phase5_data, phase6_data], (5, 6), RUN_LABELS_SPLIT_5_PLUS,  RUNS_TO_TEST, "color_space", "F1-Score")
 
