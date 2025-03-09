@@ -47,6 +47,23 @@ def group_evaluation_by(data, runs, group_by_key, evaluation_key):
 
     return grouped_evaluation
 
+def evaluation_by(data, runs, evaluation_key):
+    grouped_evaluation = {run: {} for run in runs}
+
+    for run_name, run in data.items():
+        for model in run:
+            evaluation_value = model["evaluation_result"][evaluation_key]
+            group_by_value = model["model_name"]["type"] + "-" + model["model_name"]["color_space"]
+
+            if model["model_name"]["algebra"] != "":
+                group_by_value += "-" + model["model_name"]["algebra"]
+
+            if group_by_value not in grouped_evaluation[run_name]:
+                grouped_evaluation[run_name][group_by_value] = []
+            grouped_evaluation[run_name][group_by_value].append(evaluation_value)
+
+    return grouped_evaluation
+
 def get_average_evaluation_grouped_by(data, runs, run_phase, run_labels, group_by_key, evaluation_key="accuracy"):
     grouped_evaluation = group_evaluation_by(data, runs, group_by_key, evaluation_key)
 
@@ -67,6 +84,27 @@ def get_average_evaluation_grouped_by(data, runs, run_phase, run_labels, group_b
 
     fig.update_layout(xaxis_tickangle=-45, height=600, width=1200, xaxis=dict(tickmode='array',tickvals=run_labels, ticktext=run_labels))
     fig.write_image(os.path.join(run_phase, f"avg_{evaluation_key}_by_{group_by_key}.png"))
+
+def get_average_evaluation(data, runs, run_phase, run_labels, model_name, evaluation_key="accuracy"):
+    grouped_evaluation = evaluation_by(data, runs, evaluation_key)
+
+    average_evaluation = {run_name: {group_by_value: sum(values) / len(values) for group_by_value, values in group_by_values.items()} for
+                          run_name, group_by_values in grouped_evaluation.items()}
+
+    plot_data = []
+    for run_name, group_by_values in average_evaluation.items():
+        for group_by_value, avg_evaluation in group_by_values.items():
+            plot_data.append({"run_name": run_labels[runs.index(run_name)], f"{model_name}": group_by_value, f"average_{evaluation_key}": avg_evaluation})
+
+    df = pd.DataFrame(plot_data)
+
+    fig = plt_exp.line(df, x="run_name", y=f"average_{evaluation_key}", color=f"{model_name}",
+                       title=f"Average {evaluation_key} per {model_name} - {run_phase}",
+                       labels={"run_name": "Percentage of training data used for training", f"average_{evaluation_key}": f"Average {evaluation_key}",
+                               f"{model_name}": f"{model_name}"})
+
+    fig.update_layout(xaxis_tickangle=-45, height=600, width=1200, xaxis=dict(tickmode='array',tickvals=run_labels, ticktext=run_labels))
+    fig.write_image(os.path.join(run_phase, f"avg_{evaluation_key}_by_{model_name}.png"))
 
 def get_average_evaluation_between_phases_grouped_by(data_phase1, data_phase2, phase_nums, run_labels, runs, group_by_key, evaluation_key="accuracy"):
     grouped_evaluation_phase1 = group_evaluation_by(data_phase1, runs, group_by_key, evaluation_key)
@@ -158,14 +196,29 @@ def plot_multirun_phase_results(phase_data, phase_number, run_labels, one_type_o
     plot_stacked_average_bar_for_phase(phase_data, phase_number, "accuracy")
     get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, run_labels, "algebra", "accuracy")
     get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, run_labels, "color_space", "accuracy")
+    get_average_evaluation(phase_data, RUNS_TO_TEST, phase_number, run_labels, "model", "accuracy")
 
     if not one_type_only:
         get_average_evaluation_grouped_by(phase_data, RUNS_TO_TEST, phase_number, run_labels, "type", "accuracy")
 
 
-PHASE = "phase13"
-phase_data = read_phase_data(PHASE, RUNS_TO_TEST, only_hypercomplex=False)
-plot_multirun_phase_results(phase_data, PHASE, RUN_LABELS_SPLIT_5_PLUS)
+phase1_data = read_phase_data("phase1", RUNS_TO_TEST, only_hypercomplex=False)
+phase2_data = read_phase_data("phase2", RUNS_TO_TEST, only_hypercomplex=False)
+phase3_data = read_phase_data("phase3", RUNS_TO_TEST, only_hypercomplex=False)
+phase4_data = read_phase_data("phase4", RUNS_TO_TEST, only_hypercomplex=False)
+phase5_data = read_phase_data("phase5", RUNS_TO_TEST, only_hypercomplex=False)
+phase6_data = read_phase_data("phase6", RUNS_TO_TEST, only_hypercomplex=False)
+
+plot_multirun_phase_results(phase1_data, "phase1", RUN_LABELS_SPLIT_1234)
+plot_multirun_phase_results(phase2_data, "phase2", RUN_LABELS_SPLIT_1234)
+plot_multirun_phase_results(phase3_data, "phase3", RUN_LABELS_SPLIT_1234, one_type_only=True) # Only HyperComplex models
+plot_multirun_phase_results(phase4_data, "phase4", RUN_LABELS_SPLIT_1234, one_type_only=True) # Only HyperComplex models
+plot_multirun_phase_results(phase5_data, "phase5", RUN_LABELS_SPLIT_5_PLUS, one_type_only=True) # Only CNN models
+plot_multirun_phase_results(phase6_data, "phase6", RUN_LABELS_SPLIT_5_PLUS, one_type_only=True) # Only CNN models
+
+for phase in [f"phase{i}" for i in range(7, 15)]:
+    phase_data = read_phase_data(phase, RUNS_TO_TEST, only_hypercomplex=False)
+    plot_multirun_phase_results(phase_data, phase, RUN_LABELS_SPLIT_5_PLUS)
 
 # # ------------------- Phase 1 vs Phase 2 -------------------
 # get_average_evaluation_between_phases_grouped_by(phase1_data, phase2_data, (1, 2), RUN_LABELS_SPLIT_1234,  RUNS_TO_TEST, "color_space", "accuracy")
