@@ -1,4 +1,4 @@
-## Phase 13 - Testing architecture (AlexNet based)
+## Phase 13 - Testing architecture (AlexNet based, no Dense/HyperDense layers)
 
 This phase used one model from each type of algebra that performed best (in case of accuracy) in the previous phase. The
 CNN-RGB model was left as a reference for the most classical approach.
@@ -65,10 +65,6 @@ def build_model(input_shape, num_classes, metrics):
     model.add(MaxPooling2D(strides=2))
 
     model.add(Flatten())
-    model.add(Dense(64, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(32, activation='relu'))
-    model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
@@ -94,10 +90,6 @@ def build_model(input_shape, num_classes, metrics, algebra):
     model.add(MaxPooling2D(strides=2))
 
     model.add(Flatten())
-    model.add(HyperDense(16, activation='relu', algebra=algebra))
-    model.add(Dropout(0.5))
-    model.add(HyperDense(8, activation='relu', algebra=algebra))
-    model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
