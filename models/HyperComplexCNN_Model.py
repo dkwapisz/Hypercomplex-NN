@@ -53,9 +53,9 @@ def build_model(input_shape, num_classes, metrics, algebra):
     model.add(MaxPooling2D(pool_size=(2, 2), strides=2))
 
     model.add(Flatten())
-    model.add(HyperDense(32, activation='relu', algebra=algebra))
-    model.add(Dropout(0.5))
     model.add(HyperDense(16, activation='relu', algebra=algebra))
+    model.add(Dropout(0.5))
+    model.add(HyperDense(8, activation='relu', algebra=algebra))
     model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation='softmax'))
 
