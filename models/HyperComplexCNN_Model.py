@@ -1,5 +1,6 @@
 import keras_tuner as kt
 from HypercomplexKeras.Convolutional import HyperConv2D
+from HypercomplexKeras.Hyperdense import HyperDense
 from keras import Sequential, Input
 from keras.src.layers import MaxPooling2D, Flatten, Dense, Dropout, GlobalMaxPooling2D, BatchNormalization, \
     GlobalAveragePooling2D
@@ -41,19 +42,21 @@ def build_model(input_shape, num_classes, metrics, algebra):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    model.add(HyperConv2D(4, (3, 3), activation='relu', algebra=algebra))
-    model.add(HyperConv2D(4, (3, 3), activation='relu', algebra=algebra))
-    model.add(MaxPooling2D())
+    model.add(HyperConv2D(16, (3, 3), padding='SAME', activation='relu', algebra=algebra))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=2))
 
-    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
-    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
-    model.add(MaxPooling2D())
+    model.add(HyperConv2D(32, (3, 3), padding='SAME', activation='relu', algebra=algebra))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=2))
 
-    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
-    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
-    model.add(MaxPooling2D())
+    model.add(HyperConv2D(64, (3, 3), padding='SAME', activation='relu', algebra=algebra))
+    model.add(HyperConv2D(64, (3, 3), padding='SAME', activation='relu', algebra=algebra))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=2))
 
     model.add(Flatten())
+    model.add(HyperDense(32, activation='relu', algebra=algebra))
+    model.add(Dropout(0.5))
+    model.add(HyperDense(16, activation='relu', algebra=algebra))
+    model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)

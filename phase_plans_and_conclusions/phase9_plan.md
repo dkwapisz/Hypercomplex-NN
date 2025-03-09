@@ -1,4 +1,4 @@
-## Phase 9 - Testing architecture 1 (Medium)
+## Phase 9 - Testing architecture (Medium)
 
 This phase used one model from each type of algebra that performed best (in case of accuracy) in the previous phase. The
 CNN-RGB model was left as a reference for the most classical approach.
