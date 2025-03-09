@@ -1,4 +1,4 @@
-## Phase 13 - Testing architecture 1 (Residual)
+## Phase 12 - Testing architecture 1 (Deep Double Conv)
 
 This phase used one model from each type of algebra that performed best (in case of accuracy) in the previous phase. The
 CNN-RGB model was left as a reference for the most classical approach.
@@ -48,7 +48,55 @@ CNN-RGB model was left as a reference for the most classical approach.
 ### Models
 
 #### Convolutional Neural Network
-TBD
+
+```python
+def build_model(input_shape, num_classes, metrics):
+    model = Sequential()
+    model.add(Input(shape=input_shape))
+
+    model.add(Conv2D(16, (3, 3), activation='relu'))
+    model.add(Conv2D(16, (3, 3), activation='relu'))
+    model.add(MaxPooling2D())
+    
+    model.add(Conv2D(32, (3, 3), activation='relu'))
+    model.add(Conv2D(32, (3, 3), activation='relu'))
+    model.add(MaxPooling2D())
+
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(MaxPooling2D())
+
+    model.add(Flatten())
+    model.add(Dense(num_classes, activation='softmax'))
+
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
+
+    return model
+```
 
 #### HyperComplex Convolutional Neural Network
-TBD
+
+```python
+def build_model(input_shape, num_classes, metrics, algebra):
+    model = Sequential()
+    model.add(Input(shape=input_shape))
+
+    model.add(HyperConv2D(4, (3, 3), activation='relu', algebra=algebra))
+    model.add(HyperConv2D(4, (3, 3), activation='relu', algebra=algebra))
+    model.add(MaxPooling2D())
+    
+    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
+    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
+    model.add(MaxPooling2D())
+
+    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
+    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
+    model.add(MaxPooling2D())
+
+    model.add(Flatten())
+    model.add(Dense(num_classes, activation='softmax'))
+
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
+
+    return model
+```

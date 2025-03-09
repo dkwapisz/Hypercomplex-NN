@@ -34,17 +34,22 @@ def build_model_tuner(hp, input_shape, num_classes, metrics):
 
     return model
 
+
 def build_model(input_shape, num_classes, metrics):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
+    model.add(Conv2D(16, (3, 3), activation='relu'))
+    model.add(Conv2D(16, (3, 3), activation='relu'))
+    model.add(MaxPooling2D())
+
+    model.add(Conv2D(32, (3, 3), activation='relu'))
     model.add(Conv2D(32, (3, 3), activation='relu'))
     model.add(MaxPooling2D())
-    model.add(Dropout(0.2))
 
     model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(Conv2D(64, (3, 3), activation='relu'))
     model.add(MaxPooling2D())
-    model.add(Dropout(0.3))
 
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))

@@ -1,5 +1,3 @@
-from HypercomplexKeras.Convolutional import HyperConv2D
-
 ## Phase 11 - Testing architecture 1 (Regularized)
 
 This phase used one model from each type of algebra that performed best (in case of accuracy) in the previous phase. The
