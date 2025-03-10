@@ -1,4 +1,4 @@
-## Phase 13 - Testing architecture (AlexNet based, no Dense/HyperDense layers)
+## Phase 14 - Testing architecture (AlexNet based, no Dense/HyperDense layers)
 
 This phase used one model from each type of algebra that performed best (in case of accuracy) in the previous phase. The
 CNN-RGB model was left as a reference for the most classical approach.
