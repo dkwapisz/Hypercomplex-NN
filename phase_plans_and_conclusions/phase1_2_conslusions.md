@@ -1,6 +1,6 @@
 # Color spaces
 
-![Phase1_and_2_color_space_comparison](../analysis/between_phases_results/phase1_phase2_avg_accuracy_by_color_space_comparison.png)
+![Phase1_and_2_color_space_comparison](../analysis/between_phases_results/phase1_2_avg_accuracy_by_color_space_comparison.png)
 
 ## Color space transformations conclusions
 
