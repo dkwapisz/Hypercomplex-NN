@@ -51,7 +51,7 @@ addition, phase 2 is linked to phase 1 to compare color space transformations.
 - **CNN**: The RGB image is converted to YUV.
 - **HCNN**: The U and V channels are transformed into polar coordinates:
     - **Y (Luminance)**
-    - **Magnitude * cos(θ)** (where θ = atan2(V, U))
+    - **Magnitude * cos(θ)** (where Magnitude = sqrt(U² + V²), θ = atan2(V, U))
     - **Magnitude * sin(θ)**
     - **Y * cos(θ)**
 
@@ -60,7 +60,7 @@ addition, phase 2 is linked to phase 1 to compare color space transformations.
 - **CNN**: The RGB image is converted to YIQ.
 - **HCNN**: The I and Q channels are transformed into polar coordinates:
     - **Y (Luminance)**
-    - **Magnitude * cos(θ)** (where θ = atan2(I, Q))
+    - **Magnitude * cos(θ)** (where Magnitude = sqrt(I² + Q²), θ = atan2(I, Q))
     - **Magnitude * sin(θ)**
     - **Y * cos(θ)**
 
