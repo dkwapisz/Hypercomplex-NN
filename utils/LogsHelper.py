@@ -15,7 +15,6 @@ def get_log_data(model_index, total_model_num, process_index, model_name, epochs
         "model_layers_details": None,
         "training_history": None,
         "evaluation_result": None,
-        "tuning_time_seconds": None,
         "training_time_seconds": None,
         "evaluate_time_seconds": None
     }

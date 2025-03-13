@@ -59,8 +59,8 @@ if training_mode["all_cnn"]:
     models_to_train += properties.get("cnn_models_preset", [])
 if training_mode["all_hypercomplex_cnn"]:
     models_to_train += properties.get("hypercomplex_cnn_models_preset", [])
-if training_mode["phase8+"]:
-    models_to_train += properties.get("phase8+_preset", [])
+if training_mode["phase15+"]:
+    models_to_train += properties.get("phase15+_preset", [])
 if training_mode["custom"]:
     models_to_train += properties.get("custom_preset", [])
 
@@ -99,18 +99,9 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
 
     if hypercomplex:
         algebra_name = model_name["algebra"]
-        model = HyperComplexCNN_Model(tune_model, input_shape, num_classes, color_space, metrics, algebra_name)
+        model = HyperComplexCNN_Model(input_shape, num_classes, color_space, metrics, algebra_name)
     else:
-        model = CNN_Model(tune_model, input_shape, num_classes, color_space, metrics)
-
-    # ------------------- Tuning -------------------
-    if tune_model:
-        print(f"Starting hyperparameter tuning for {model_name}")
-        model.tune_model(train_dataset, val_dataset, epochs=30)
-        print("Hyperparameter tuning complete.")
-
-        model_tuning_end_time = time.time()
-        log_data["tuning_time_seconds"] = round(model_tuning_end_time - model_training_start_time, 4)
+        model = CNN_Model(input_shape, num_classes, color_space, metrics)
 
     log_data["model_hyperparameters"] = get_model_hyperparams(model.get_model())
     log_data["model_layers_details"] = model_summary_to_dict(model.get_model())

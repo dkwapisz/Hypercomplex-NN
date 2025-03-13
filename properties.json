@@ -3,7 +3,7 @@
   "training_mode": {
       "all_cnn": false,
       "all_hypercomplex_cnn": false,
-      "phase8+": true,
+      "phase15+": true,
       "custom": false
   },
 
@@ -87,7 +87,7 @@
     {"type": "CNN", "color_space": "YIQ", "algebra": ""}
   ],
 
-    "phase8+_preset": [
+  "phase8+_preset": [
     {"type": "CNN", "color_space": "RGB", "algebra": ""},
     {"type": "CNN", "color_space": "YUV", "algebra": ""},
     {"type": "HyperComplex", "color_space": "RGB", "algebra": "Cl20"},
@@ -96,6 +96,12 @@
     {"type": "HyperComplex", "color_space": "YUV", "algebra": "Coquaternions"},
     {"type": "HyperComplex", "color_space": "YUV", "algebra": "Bicomplex"},
     {"type": "HyperComplex", "color_space": "YUV", "algebra": "Tessarines"}
+  ],
+
+  "phase15+_preset": [
+    {"type": "CNN", "color_space": "RGB", "algebra": ""},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Quaternions"},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Bicomplex"}
   ],
 
   "custom_preset": [
