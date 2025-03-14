@@ -1,9 +1,9 @@
 #!/bin/bash
 
-NUM_GPUS=8
+NUM_GPUS=2
 
-TRAINING_SPLITS=(1 3 5 10 20 30 40 50 60 70)
-VALIDATION_SPLITS=(20 20 20 20 20 20 20 20 20 20)
+TRAINING_SPLITS=(10 30 70)
+VALIDATION_SPLITS=(20 20 20)
 
 for i in "${!TRAINING_SPLITS[@]}"; do
   echo "----------------- STARTING RUN $((i+1)) -----------------"
