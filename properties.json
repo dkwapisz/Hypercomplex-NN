@@ -1,5 +1,5 @@
 {
-  "tune_model": false,
+  "tune_model": true,
   "training_mode": {
       "all_cnn": false,
       "all_hypercomplex_cnn": false,

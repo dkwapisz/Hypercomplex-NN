@@ -13,8 +13,8 @@ SEED=123
 
 # Default dynamic values
 num_gpus=1
-training_split=1
-validation_split=1
+training_split=70
+validation_split=20
 download_data=false
 prepare_data=false
 test_run=false

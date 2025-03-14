@@ -8,8 +8,8 @@ from keras.src.utils import set_random_seed
 
 from config.PropertiesResolver import PropertiesResolver
 from data_processing.ColorSpaceConverter import create_dataset_tf
-from models.CNN_Model import CNN_Model
-from models.HyperComplexCNN_Model import HyperComplexCNN_Model
+from models.CNN_Model import CNN_Model, objective_cnn, perform_model_tuning_cnn
+from models.HyperComplexCNN_Model import HyperComplexCNN_Model, objective_hcnn, perform_model_tuning_hcnn
 from models.ModelUtils import get_models_range, get_current_model_desc
 from utils.GPU_Helper import check_gpu_health, set_gpu_device
 from utils.LogsHelper import create_model_result_subdir, get_log_data, model_summary_to_dict, get_model_hyperparams
@@ -68,11 +68,15 @@ total_model_num = len(models_to_train)
 
 models_range_to_run = get_models_range(total_model_num, num_processes, gpu_index)
 tune_model = properties.get("tune_model")
+if tune_model:
+    log_filename = "tuning_log.json"
+else:
+    log_filename = "training.json"
 
 # ------------------- Training -------------------
 for model_index in range(models_range_to_run[0], models_range_to_run[1]):
     results_subdir_path = create_model_result_subdir(models_to_train[model_index])
-    log_file_path = os.path.join(results_subdir_path, "training.json")
+    log_file_path = os.path.join(results_subdir_path, log_filename)
     log_data = get_log_data(model_index, total_model_num, gpu_index, models_to_train[model_index], epochs)
 
     model_training_start_time = time.time()
@@ -82,7 +86,6 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
     color_space = model_name["color_space"]
 
     print(get_current_model_desc(model_index, total_model_num, model_name))
-
 
     train_dataset = create_dataset_tf(train_path, img_size, batch_size, color_space, hypercomplex)
     val_dataset = create_dataset_tf(val_path, img_size, batch_size, color_space, hypercomplex)
@@ -97,11 +100,24 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
 
     input_shape = img_size + (num_channels,) if (color_space == "CMYK" or hypercomplex) else img_size + (num_channels,)
 
-    if hypercomplex:
-        algebra_name = model_name["algebra"]
-        model = HyperComplexCNN_Model(input_shape, num_classes, color_space, metrics, algebra_name)
+    if tune_model:
+        start_time = time.time()
+        if hypercomplex:
+            algebra_name = model_name["algebra"]
+            best_params = perform_model_tuning_hcnn(train_dataset, val_dataset, input_shape, num_classes, metrics, algebra_name)
+        else:
+            best_params = perform_model_tuning_cnn(train_dataset, val_dataset, input_shape, num_classes, metrics)
+        log_data["tuning_time"] = round(time.time() - start_time, 4)
+        log_data["best_params"] = best_params
+        with open(log_file_path, "w") as log_file:
+            json.dump(log_data, log_file, indent=4)
+        continue
     else:
-        model = CNN_Model(input_shape, num_classes, color_space, metrics)
+        if hypercomplex:
+            algebra_name = model_name["algebra"]
+            model = HyperComplexCNN_Model(input_shape, num_classes, color_space, metrics, algebra_name)
+        else:
+            model = CNN_Model(input_shape, num_classes, color_space, metrics)
 
     log_data["model_hyperparameters"] = get_model_hyperparams(model.get_model())
     log_data["model_layers_details"] = model_summary_to_dict(model.get_model())
@@ -128,9 +144,6 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
 
     with open(log_file_path, "w") as log_file:
         json.dump(log_data, log_file, indent=4)
-
-    # with open(os.path.join(results_subdir_path, "model.pkl"), "wb") as model_file:
-    #     pickle.dump(model, model_file)
 
 process_end_time = time.time()
 
