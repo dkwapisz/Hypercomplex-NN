@@ -160,8 +160,8 @@ if [ "$test_run" = true ]; then
 fi
 
 if [ "$run_training" = true ]; then
-  rm -rf "results" "tuner_results"
-  mkdir -p "results" "tuner_results" "final_results"
+  rm -rf "results"
+  mkdir -p "results" "final_results"
   i=0
   while [ $i -lt "$num_gpus" ]; do
     python3 Main.py $i "$num_gpus" &
@@ -173,12 +173,8 @@ if [ "$run_training" = true ]; then
   wait
   echo "All processes completed training. Packing results..."
 
-  find tuner_results/ -type f -name 'checkpoint.weights.h5' -exec rm {} \; # Removing checkpoints to reduce zip size
-
   zip -r results.zip results
-#  zip -r tuner_results.zip tuner_results
 
-#  mv results.zip tuner_results.zip final_results/
   mv results.zip final_results/
 
   echo "Results packed. Processing completed. Thank you for your patience."
