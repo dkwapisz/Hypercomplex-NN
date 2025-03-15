@@ -36,18 +36,17 @@ def objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, 
     model.add(Input(shape=input_shape))
 
     num_layers = trial.suggest_int("num_layers", 1, 8)
-    activation = trial.suggest_categorical("activation", ["relu", "elu", "gelu", "silu"])
 
     for i in range(num_layers):
         filters = trial.suggest_categorical(f"filters_{i}", [1, 2, 4, 8, 16, 32, 64, 128])
         kernel_size_num = trial.suggest_categorical(f"kernels_size_{i}", [1, 3, 5, 7])
 
         model.add(HyperConv2D(filters, (kernel_size_num, kernel_size_num), padding='SAME',
-                              activation=activation, algebra=algebra))
+                              activation='relu', algebra=algebra))
 
         if trial.suggest_categorical(f"double_conv_{i}", [True, False]):
             model.add(HyperConv2D(filters, (kernel_size_num, kernel_size_num), padding='SAME',
-                                  activation=activation, algebra=algebra))
+                                  activation='relu', algebra=algebra))
 
         if trial.suggest_categorical(f"max_pool_{i}", [True, False]):
             strides = trial.suggest_categorical(f"strides_{i}", [None, 1, 2, 3])
@@ -79,7 +78,7 @@ def perform_model_tuning_hcnn(train_dataset, val_dataset, input_shape, num_class
     study = optuna.create_study(study_name="HCNN-optimizer", direction="maximize", sampler=optuna.samplers.TPESampler(),
                                 pruner=optuna.pruners.MedianPruner())
     study.optimize(lambda trial: objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes,
-                                                algebras[algebra]), n_trials=300)
+                                                algebras[algebra]), n_trials=200)
     return study.best_params
 
 
