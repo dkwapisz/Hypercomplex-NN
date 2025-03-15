@@ -4,9 +4,8 @@ from keras import Sequential, Input
 from keras.src.callbacks import EarlyStopping, ReduceLROnPlateau
 from keras.src.layers import MaxPooling2D, Flatten, Dense, BatchNormalization, Dropout
 from keras.src.optimizers import Adam
-from tensorflow.python.keras.regularizers import l1, l2
 
-from models.ModelBase import ModelBase, early_stopping_tuning
+from models.ModelBase import ModelBase
 from models.ModelUtils import algebras
 
 
@@ -32,7 +31,7 @@ def build_model(input_shape, num_classes, metrics, algebra):
     return model
 
 
-def objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, metrics, algebra):
+def objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, algebra):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
@@ -64,21 +63,25 @@ def objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, 
     lr = trial.suggest_float("learning_rate", 1e-5, 1e-2, log=True)
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
-    model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=lr), metrics=['val_accuracy', 'val_loss'])
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=lr),
+                  metrics=['val_accuracy', 'val_loss'])
 
     early_stopping_tuning = EarlyStopping(monitor='val_accuracy', patience=10, restore_best_weights=True)
     lr_scheduler = ReduceLROnPlateau(factor=0.2, patience=5, min_lr=1e-6)
 
-    history = model.fit(train_dataset, validation_data=val_dataset, epochs=100, verbose=0, callbacks=[early_stopping_tuning, lr_scheduler])
+    history = model.fit(train_dataset, validation_data=val_dataset, epochs=100, verbose=0,
+                        callbacks=[early_stopping_tuning, lr_scheduler])
 
     return history.history['val_accuracy'][-1]
 
-def perform_model_tuning_hcnn(train_dataset, val_dataset, input_shape, num_classes, metrics, algebra):
+
+def perform_model_tuning_hcnn(train_dataset, val_dataset, input_shape, num_classes, algebra):
     study = optuna.create_study(study_name="HCNN-optimizer", direction="maximize", sampler=optuna.samplers.TPESampler(),
                                 pruner=optuna.pruners.MedianPruner())
-    study.optimize(lambda trial: objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, metrics,
+    study.optimize(lambda trial: objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes,
                                                 algebras[algebra]), n_trials=300)
     return study.best_params
+
 
 class HyperComplexCNN_Model(ModelBase):
     def __init__(self, input_shape, num_classes, color_space, metrics, algebra: str):

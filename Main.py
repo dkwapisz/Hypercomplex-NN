@@ -8,8 +8,8 @@ from keras.src.utils import set_random_seed
 
 from config.PropertiesResolver import PropertiesResolver
 from data_processing.ColorSpaceConverter import create_dataset_tf
-from models.CNN_Model import CNN_Model, objective_cnn, perform_model_tuning_cnn
-from models.HyperComplexCNN_Model import HyperComplexCNN_Model, objective_hcnn, perform_model_tuning_hcnn
+from models.CNN_Model import CNN_Model, perform_model_tuning_cnn
+from models.HyperComplexCNN_Model import HyperComplexCNN_Model, perform_model_tuning_hcnn
 from models.ModelUtils import get_models_range, get_current_model_desc
 from utils.GPU_Helper import check_gpu_health, set_gpu_device
 from utils.LogsHelper import create_model_result_subdir, get_log_data, model_summary_to_dict, get_model_hyperparams
@@ -104,9 +104,9 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
         start_time = time.time()
         if hypercomplex:
             algebra_name = model_name["algebra"]
-            best_params = perform_model_tuning_hcnn(train_dataset, val_dataset, input_shape, num_classes, metrics, algebra_name)
+            best_params = perform_model_tuning_hcnn(train_dataset, val_dataset, input_shape, num_classes, algebra_name)
         else:
-            best_params = perform_model_tuning_cnn(train_dataset, val_dataset, input_shape, num_classes, metrics)
+            best_params = perform_model_tuning_cnn(train_dataset, val_dataset, input_shape, num_classes)
         log_data["tuning_time"] = round(time.time() - start_time, 4)
         log_data["best_params"] = best_params
         with open(log_file_path, "w") as log_file:
