@@ -49,7 +49,8 @@ def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes):
 
         if trial.suggest_categorical(f"pool_{i}", [True, False]):
             strides = trial.suggest_categorical(f"strides_{i}", [None, 1, 2, 3])
-            model.add(MaxPooling2D(strides=strides))
+            pool_size_num = trial.suggest_categorical(f"pool_size_{i}", [2, 3])
+            model.add(MaxPooling2D(strides=strides, pool_size=(pool_size_num, pool_size_num)))
 
         if trial.suggest_categorical(f"batch_norm_{i}", [True, False]):
             model.add(BatchNormalization())
