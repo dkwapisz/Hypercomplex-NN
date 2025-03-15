@@ -45,7 +45,7 @@ def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes, m
     model.add(Dense(num_classes, activation='softmax'))
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
 
-    history = model.fit(train_dataset, validation_data=val_dataset, epochs=100, verbose=0, callbacks=[early_stopping_tuning])
+    history = model.fit(train_dataset, validation_data=val_dataset, epochs=200, verbose=0, callbacks=[early_stopping_tuning])
 
     return history.history['val_accuracy'][-1]
 
