@@ -34,11 +34,11 @@ def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes, m
 
     num_layers = trial.suggest_int("num_layers", 2, 6)
     for i in range(num_layers):
-        filters = trial.suggest_categorical(f"filters_{i}", [16, 32, 64, 128, 256])
+        filters = trial.suggest_categorical(f"filters_{i}", [8, 16, 32, 64, 128, 256])
         kernel_size_num = trial.suggest_categorical(f"kernels_size_{i}", [3, 5, 7])
         model.add(Conv2D(filters, (kernel_size_num, kernel_size_num), padding='same', activation='relu'))
         if trial.suggest_categorical(f"pool_{i}", [True, False]):
-            strides = trial.suggest_categorical(f"strides_{i}", [1, 2])
+            strides = trial.suggest_categorical(f"strides_{i}", [None, 1, 2])
             model.add(MaxPooling2D(strides=strides))
 
     model.add(Flatten())
@@ -52,7 +52,7 @@ def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes, m
 def perform_model_tuning_cnn(train_dataset, val_dataset, input_shape, num_classes, metrics):
     study = optuna.create_study(direction="maximize")
     study.optimize(lambda trial: objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes, metrics),
-                   n_trials=50)
+                   n_trials=200)
     return study.best_params
 
 class CNN_Model(ModelBase):

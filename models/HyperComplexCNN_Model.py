@@ -40,7 +40,7 @@ def objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, 
         kernel_size_num = trial.suggest_categorical(f"kernels_size_{i}", [3, 5, 7])
         model.add(HyperConv2D(filters, (kernel_size_num, kernel_size_num), padding='SAME', activation='relu', algebra=algebra))
         if trial.suggest_categorical(f"pool_{i}", [True, False]):
-            strides = trial.suggest_categorical(f"strides_{i}", [1, 2])
+            strides = trial.suggest_categorical(f"strides_{i}", [None, 1, 2])
             model.add(MaxPooling2D(strides=strides))
 
     model.add(Flatten())
@@ -54,7 +54,7 @@ def objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, 
 def perform_model_tuning_hcnn(train_dataset, val_dataset, input_shape, num_classes, metrics, algebra):
     study = optuna.create_study(direction="maximize")
     study.optimize(lambda trial: objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, metrics,
-                                                algebras[algebra]), n_trials=50)
+                                                algebras[algebra]), n_trials=200)
     return study.best_params
 
 class HyperComplexCNN_Model(ModelBase):
