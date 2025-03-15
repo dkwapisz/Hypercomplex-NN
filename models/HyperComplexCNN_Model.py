@@ -39,7 +39,7 @@ def objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, 
     activation = trial.suggest_categorical("activation", ["relu", "elu", "gelu", "silu"])
 
     for i in range(num_layers):
-        filters = trial.suggest_categorical(f"filters_{i}", [8, 16, 32, 64, 128, 256])
+        filters = trial.suggest_categorical(f"filters_{i}", [2, 4, 8, 16, 32, 64])
         kernel_size_num = trial.suggest_categorical(f"kernels_size_{i}", [1, 3, 5, 7])
 
         model.add(HyperConv2D(filters, (kernel_size_num, kernel_size_num), padding='SAME',
