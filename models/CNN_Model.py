@@ -33,10 +33,10 @@ def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    num_layers = trial.suggest_int("num_layers", 1, 6)
+    num_layers = trial.suggest_int("num_layers", 1, 8)
 
     for i in range(num_layers):
-        filters = trial.suggest_categorical(f"filters_{i}", [8, 16, 32, 64, 128, 256])
+        filters = trial.suggest_categorical(f"filters_{i}", [4, 8, 16, 32, 64, 128, 256, 512])
         kernel_size_num = trial.suggest_categorical(f"kernels_size_{i}", [1, 3, 5, 7])
 
         model.add(Conv2D(filters, (kernel_size_num, kernel_size_num), padding='same',activation='relu'))
@@ -64,8 +64,7 @@ def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes):
     early_stopping_tuning = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
     lr_scheduler = ReduceLROnPlateau(factor=0.2, patience=5, min_lr=1e-6)
 
-    history = model.fit(train_dataset, validation_data=val_dataset, epochs=100, verbose=0,
-                        callbacks=[early_stopping_tuning, lr_scheduler])
+    history = model.fit(train_dataset, validation_data=val_dataset, epochs=100, verbose=0, callbacks=[early_stopping_tuning, lr_scheduler])
 
     return history.history['val_accuracy'][-1]
 
