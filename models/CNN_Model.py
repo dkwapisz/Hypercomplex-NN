@@ -3,8 +3,9 @@ from keras import Sequential, Input
 from keras.src.callbacks import EarlyStopping, ReduceLROnPlateau
 from keras.src.layers import Conv2D, MaxPooling2D, Flatten, Dense, BatchNormalization, Dropout
 from keras.src.optimizers import Adam
+from tensorflow.python.keras.regularizers import l1, l2
 
-from models.ModelBase import ModelBase
+from models.ModelBase import ModelBase, early_stopping_tuning
 
 
 def build_model(input_shape, num_classes, metrics):
@@ -29,7 +30,7 @@ def build_model(input_shape, num_classes, metrics):
     return model
 
 
-def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes):
+def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes, metrics):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
@@ -70,10 +71,10 @@ def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes):
 
     return history.history['val_accuracy'][-1]
 
-def perform_model_tuning_cnn(train_dataset, val_dataset, input_shape, num_classes):
+def perform_model_tuning_cnn(train_dataset, val_dataset, input_shape, num_classes, metrics):
     study = optuna.create_study(study_name="CNN-optimizer", direction="maximize", sampler=optuna.samplers.TPESampler(),
                                 pruner=optuna.pruners.MedianPruner())
-    study.optimize(lambda trial: objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes),
+    study.optimize(lambda trial: objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes, metrics),
                    n_trials=300)
     return study.best_params
 
