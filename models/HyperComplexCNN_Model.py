@@ -55,7 +55,7 @@ def objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, 
 def perform_model_tuning_hcnn(train_dataset, val_dataset, input_shape, num_classes, algebra):
     study = optuna.create_study(study_name="HCNN-model-tuning", direction="maximize")
     study.optimize(lambda trial: objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes,
-                                                algebras[algebra]), n_trials=200)
+                                                algebras[algebra]), n_trials=100)
     return study.best_params
 
 class HyperComplexCNN_Model(ModelBase):

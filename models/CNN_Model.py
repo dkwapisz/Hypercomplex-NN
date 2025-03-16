@@ -52,7 +52,7 @@ def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes):
 def perform_model_tuning_cnn(train_dataset, val_dataset, input_shape, num_classes):
     study = optuna.create_study(study_name="CNN-model-tuning", direction="maximize")
     study.optimize(lambda trial: objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes),
-                   n_trials=200)
+                   n_trials=100)
     return study.best_params
 
 class CNN_Model(ModelBase):
