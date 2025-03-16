@@ -9,8 +9,9 @@
 | HyperComplex-YUV-Tessarines    |              0.814843 |
 | CNN-RGB                        |              0.793581 |
 
-For further analysis and hyperparameter optimization, the two best hypercomplex neural networks and the CNN-RGB neural
-network will be selected as the most classical approach to image classification. These are the
+For further analysis and hyperparameter optimization, the two best hypercomplex neural networks and the both CNN-YUV and 
+CNN-RGB neural network will be selected as the most classical approach to image classification. These are the
 HyperComplex-YUV-Bicomplex and HyperComplex-YUV-Quaternions models, which have the highest mean average accuracy and
-mean average F1-Score. The CNN-RGB model was the worst performing model in both metrics, but it will be included in the
-analysis to compare the performance of the hypercomplex models with the most classical approach.
+mean average F1-Score. The CNN-YUV outperformed HyperComplex models if there was more training data available. 
+The CNN-RGB model was the worst performing model in both metrics, but it will be included in the analysis to compare 
+the performance of the hypercomplex models with the most classical approach.
