@@ -30,7 +30,7 @@ def build_model(input_shape, num_classes, metrics, algebra):
     return model
 
 
-def objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, metrics, algebra):
+def objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, algebra):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
@@ -38,23 +38,24 @@ def objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, 
     for i in range(num_layers):
         filters = trial.suggest_categorical(f"filters_{i}", [2, 4, 8, 16, 32, 64])
         kernel_size_num = trial.suggest_categorical(f"kernels_size_{i}", [3, 5, 7])
-        model.add(HyperConv2D(filters, (kernel_size_num, kernel_size_num), padding='SAME', activation='relu', algebra=algebra))
+        model.add(HyperConv2D(filters, (kernel_size_num, kernel_size_num), padding='SAME', activation='relu',
+                              algebra=algebra))
         if trial.suggest_categorical(f"pool_{i}", [True, False]):
             strides = trial.suggest_categorical(f"strides_{i}", [None, 1, 2])
             model.add(MaxPooling2D(strides=strides))
 
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
-    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=["accuracy"])
 
     history = model.fit(train_dataset, validation_data=val_dataset, epochs=200, verbose=0, callbacks=[early_stopping_tuning])
 
     return history.history['val_accuracy'][-1]
 
-def perform_model_tuning_hcnn(train_dataset, val_dataset, input_shape, num_classes, metrics, algebra):
-    study = optuna.create_study(direction="maximize")
-    study.optimize(lambda trial: objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, metrics,
-                                                algebras[algebra]), n_trials=200)
+def perform_model_tuning_hcnn(train_dataset, val_dataset, input_shape, num_classes, algebra):
+    study = optuna.create_study(study_name="HCNN-model-tuning", direction="maximize")
+    study.optimize(lambda trial: objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes,
+                                                algebras[algebra]), n_trials=200, n_jobs=4)
     return study.best_params
 
 class HyperComplexCNN_Model(ModelBase):

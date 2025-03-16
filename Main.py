@@ -104,9 +104,9 @@ for model_index in range(models_range_to_run[0], models_range_to_run[1]):
         start_time = time.time()
         if hypercomplex:
             algebra_name = model_name["algebra"]
-            best_params = perform_model_tuning_hcnn(train_dataset, val_dataset, input_shape, num_classes, metrics, algebra_name)
+            best_params = perform_model_tuning_hcnn(train_dataset, val_dataset, input_shape, num_classes, algebra_name)
         else:
-            best_params = perform_model_tuning_cnn(train_dataset, val_dataset, input_shape, num_classes, metrics)
+            best_params = perform_model_tuning_cnn(train_dataset, val_dataset, input_shape, num_classes)
         log_data["tuning_time"] = round(time.time() - start_time, 4)
         log_data["best_params"] = best_params
         with open(log_file_path, "w") as log_file:

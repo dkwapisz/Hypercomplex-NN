@@ -28,7 +28,7 @@ def build_model(input_shape, num_classes, metrics):
     return model
 
 
-def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes, metrics):
+def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
@@ -43,16 +43,16 @@ def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes, m
 
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
-    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=metrics)
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=["accuracy"])
 
     history = model.fit(train_dataset, validation_data=val_dataset, epochs=200, verbose=0, callbacks=[early_stopping_tuning])
 
     return history.history['val_accuracy'][-1]
 
-def perform_model_tuning_cnn(train_dataset, val_dataset, input_shape, num_classes, metrics):
-    study = optuna.create_study(direction="maximize")
-    study.optimize(lambda trial: objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes, metrics),
-                   n_trials=200)
+def perform_model_tuning_cnn(train_dataset, val_dataset, input_shape, num_classes):
+    study = optuna.create_study(study_name="CNN-model-tuning", direction="maximize")
+    study.optimize(lambda trial: objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes),
+                   n_trials=200, n_jobs=4)
     return study.best_params
 
 class CNN_Model(ModelBase):
