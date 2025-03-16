@@ -28,7 +28,7 @@ def process_all_training_jsons(phases, runs):
                     file_path = os.path.join(root, 'training.json')
                     update_json_with_f1_score(file_path)
 
-phases = range(1, 15)
-runs = range(1, 11)
+phases = range(16, 17)
+runs = range(1, 4)
 
 process_all_training_jsons(phases, runs)

@@ -99,8 +99,8 @@
   ],
 
   "phase15+_preset": [
-    {"type": "CNN", "color_space": "RGB", "algebra": ""},
-    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Bicomplex"}
+    {"type": "CNN", "color_space": "YUV", "algebra": ""},
+    {"type": "HyperComplex", "color_space": "YUV", "algebra": "Quaternions"}
   ],
 
   "custom_preset": [
