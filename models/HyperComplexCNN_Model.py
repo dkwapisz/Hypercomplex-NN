@@ -34,22 +34,20 @@ def build_model(input_shape, num_classes, metrics, algebra):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    model.add(HyperConv2D(64, (3, 3), padding='SAME', activation='relu', algebra=algebra))
+    model.add(HyperConv2D(32, (5, 5), padding='same', activation='relu', algebra=algebra))
     model.add(MaxPooling2D(strides=2))
 
-    model.add(HyperConv2D(8, (3, 3), padding='SAME', activation='relu', algebra=algebra))
-    model.add(MaxPooling2D())
-
-    model.add(HyperConv2D(64, (7, 7), padding='SAME', activation='relu', algebra=algebra))
+    model.add(HyperConv2D(128, (3, 3), padding='same', activation='relu', algebra=algebra))
     model.add(MaxPooling2D(strides=2))
 
-    model.add(HyperConv2D(32, (5, 5), padding='SAME', activation='relu', algebra=algebra))
+    model.add(HyperConv2D(256, (3, 3), padding='same', activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
-    model.add(HyperConv2D(8, (3, 3), padding='SAME', activation='relu', algebra=algebra))
+    model.add(HyperConv2D(32, (5, 5), padding='same', activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
-    model.add(HyperConv2D(4, (3, 3), padding='SAME', activation='relu', algebra=algebra))
+    model.add(HyperConv2D(64, (5, 5), padding='same', activation='relu', algebra=algebra))
+    model.add(MaxPooling2D(strides=2))
 
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
