@@ -2,13 +2,8 @@
 
 NUM_GPUS=2
 
-# Run2
-TRAINING_SPLITS=(30)
+TRAINING_SPLITS=(70)
 VALIDATION_SPLITS=(20)
-
-# Run3
-#TRAINING_SPLITS=(70)
-#VALIDATION_SPLITS=(20)
 
 for i in "${!TRAINING_SPLITS[@]}"; do
   echo "----------------- STARTING RUN $((i+1)) -----------------"
