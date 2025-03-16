@@ -62,9 +62,9 @@ def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes):
     lr = trial.suggest_float("learning_rate", 1e-5, 1e-2, log=True)
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
-    model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=lr), metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=lr), metrics=['val_accuracy', 'val_loss'])
 
-    early_stopping_tuning = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+    early_stopping_tuning = EarlyStopping(monitor='val_accuracy', patience=10, restore_best_weights=True)
     lr_scheduler = ReduceLROnPlateau(factor=0.2, patience=5, min_lr=1e-6)
 
     history = model.fit(train_dataset, validation_data=val_dataset, epochs=100, verbose=0, callbacks=[early_stopping_tuning, lr_scheduler])
