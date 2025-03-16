@@ -64,3 +64,54 @@ for run_phase in run_phases:
         fig.update_layout(xaxis_tickangle=-45, height=600, width=1200)
         # fig.show()
         fig.write_image(os.path.join(run_phase, run, "f1_score_bar_chart.png"))
+
+for run_phase in run_phases:
+    all_results = []
+
+    for run in runs:
+        results_dir = os.path.join(run_phase, run, "results")
+
+        for single_result in os.listdir(results_dir):
+            json_result_path = os.path.join(results_dir, single_result, json_result_file)
+            with open(json_result_path, "r") as file:
+                data = json.load(file)
+                data["run"] = run
+                all_results.append(data)
+
+    model_name = [get_formatted_model_name(model) for model in all_results]
+    model_eval_accuracy = [model["evaluation_result"]["accuracy"] for model in all_results]
+    model_f1_score = [2 * (p * r) / (p + r) if (p + r) > 0 else 0 for p, r in zip(
+        [model["evaluation_result"]["Precision"] for model in all_results],
+        [model["evaluation_result"]["Recall"] for model in all_results]
+    )]
+    model_training_time = [model["training_time_seconds"] for model in all_results]
+    run_labels = [model["run"] for model in all_results]
+
+    df = pd.DataFrame({
+        "Model": model_name,
+        "Accuracy": model_eval_accuracy,
+        "F1 Score": model_f1_score,
+        "Training Time": model_training_time,
+        "Run": run_labels
+    })
+
+    # -------------------------- Combined plot --------------------------
+    df = df.sort_values(by=["Model", "Run"], ascending=True)
+
+    fig = plt_exp.bar(df, x="Run", y="Accuracy", color="Model", barmode="group",
+                      title="Accuracy comparison",
+                      labels={"Run": "Run", "Accuracy": "Accuracy"},
+                      text_auto=True)
+
+    fig.update_layout(xaxis_tickangle=-45, height=600, width=1200)
+    # fig.show()
+    fig.write_image(os.path.join(run_phase, "accuracy_bar_chart.png"))
+
+    fig = plt_exp.bar(df, x="Run", y="F1 Score", color="Model", barmode="group",
+                      title="F1 Score comparison",
+                      labels={"Run": "Run", "F1 Score": "F1 Score"},
+                      text_auto=True)
+
+    fig.update_layout(xaxis_tickangle=-45, height=600, width=1200)
+    # fig.show()
+    fig.write_image(os.path.join(run_phase, "f1_score_bar_chart.png"))

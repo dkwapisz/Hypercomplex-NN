@@ -1,69 +1,11 @@
 # Run 1
 
-## CNN-RGB
-
-Accuracy: 
-F1 Score:
-
-## CNN-YUV
-
-Accuracy: 
-F1 Score:
-
-## HyperComplex-YUV-Bicomplex
-
-Accuracy: 
-F1 Score:
-
-## HyperComplex-YUV-Quaternions
-
-Accuracy: 
-F1 Score:
-
-
+![phase16_run1_accuracy_bar_chart](../analysis/phase16/run1/accuracy_bar_chart.png)
 
 # Run 2
 
-## CNN-RGB
-
-Accuracy: 
-F1 Score:
-
-## CNN-YUV
-
-Accuracy: 
-F1 Score:
-
-## HyperComplex-YUV-Bicomplex
-
-Accuracy: 
-F1 Score:
-
-## HyperComplex-YUV-Quaternions
-
-Accuracy: 
-F1 Score:
-
-
+![phase16_run1_accuracy_bar_chart](../analysis/phase16/run2/accuracy_bar_chart.png)
 
 # Run 3
 
-## CNN-RGB
-
-Accuracy: 
-F1 Score:
-
-## CNN-YUV
-
-Accuracy: 
-F1 Score:
-
-## HyperComplex-YUV-Bicomplex
-
-Accuracy: 
-F1 Score:
-
-## HyperComplex-YUV-Quaternions
-
-Accuracy: 
-F1 Score:
+![phase16_run1_accuracy_bar_chart](../analysis/phase16/run3/accuracy_bar_chart.png)
