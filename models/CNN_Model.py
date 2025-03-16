@@ -39,10 +39,10 @@ def build_model(input_shape, num_classes, metrics):
     model.add(MaxPooling2D(strides=2))
 
     model.add(Conv2D(128, (7, 7), padding='same', activation='relu'))
-    model.add(MaxPooling2D(strides=None))
+    model.add(MaxPooling2D())
 
     model.add(Conv2D(8, (3, 3), padding='same', activation='relu'))
-    model.add(MaxPooling2D(strides=1))
+    model.add(MaxPooling2D())
 
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
