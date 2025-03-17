@@ -1,6 +1,6 @@
 import optuna
 from keras import Sequential, Input
-from keras.src.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from keras.src.layers import Conv2D, MaxPooling2D, Flatten, Dense, GlobalMaxPooling2D, Dropout
 from keras.src.optimizers import Adam
 
 from models.ModelBase import ModelBase, early_stopping_tuning
@@ -32,16 +32,20 @@ def build_model(input_shape, num_classes, metrics):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
+    model.add(Conv2D(32, (3, 3), activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(MaxPooling2D(strides=2))
+
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(MaxPooling2D(strides=2))
+
+    model.add(Conv2D(128, (3, 3), activation='relu'))
+    model.add(Dropout(0.5))
     model.add(MaxPooling2D())
 
-    model.add(Conv2D(64, (5, 5), padding='same', activation='relu'))
-    model.add(MaxPooling2D())
-
-    model.add(Conv2D(256, (5, 5), padding='same', activation='relu'))
-    model.add(MaxPooling2D())
-
-    model.add(Conv2D(128, (3, 3), padding='same', activation='relu'))
+    model.add(Conv2D(256, (5, 5), activation='relu'))
+    model.add(Dropout(0.5))
     model.add(MaxPooling2D())
 
     model.add(Flatten())
@@ -81,3 +85,6 @@ class CNN_Model(ModelBase):
     def __init__(self, input_shape, num_classes, color_space, metrics):
         super().__init__(color_space)
         self.model = build_model(input_shape, num_classes, metrics)
+
+if __name__ == "__main__":
+    build_model((100, 100, 4), 8, ["accuracy"]).summary()

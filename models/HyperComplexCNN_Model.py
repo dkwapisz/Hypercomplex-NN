@@ -1,7 +1,7 @@
 import optuna
 from HypercomplexKeras.Convolutional import HyperConv2D
 from keras import Sequential, Input
-from keras.src.layers import MaxPooling2D, Flatten, Dense
+from keras.src.layers import MaxPooling2D, Flatten, Dense, GlobalMaxPooling2D, Dropout
 from keras.src.optimizers import Adam
 
 from models.ModelBase import ModelBase, early_stopping_tuning
@@ -34,16 +34,20 @@ def build_model(input_shape, num_classes, metrics, algebra):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    model.add(HyperConv2D(16, (3, 3), padding='SAME', activation='relu', algebra=algebra))
+    model.add(HyperConv2D(32, (3, 3), activation='relu', algebra=algebra))
+    model.add(Dropout(0.5))
+    model.add(MaxPooling2D(strides=2))
+
+    model.add(HyperConv2D(64, (3, 3), activation='relu', algebra=algebra))
+    model.add(Dropout(0.5))
+    model.add(MaxPooling2D(strides=2))
+
+    model.add(HyperConv2D(128, (3, 3), activation='relu', algebra=algebra))
+    model.add(Dropout(0.5))
     model.add(MaxPooling2D())
 
-    model.add(HyperConv2D(16, (5, 5), padding='SAME', activation='relu', algebra=algebra))
-    model.add(MaxPooling2D())
-
-    model.add(HyperConv2D(64, (5, 5), padding='SAME', activation='relu', algebra=algebra))
-    model.add(MaxPooling2D())
-
-    model.add(HyperConv2D(32, (3, 3), padding='SAME', activation='relu', algebra=algebra))
+    model.add(HyperConv2D(256, (5, 5), activation='relu', algebra=algebra))
+    model.add(Dropout(0.5))
     model.add(MaxPooling2D())
 
     model.add(Flatten())
@@ -85,4 +89,4 @@ class HyperComplexCNN_Model(ModelBase):
 
 
 if __name__ == "__main__":
-    build_model((100, 100, 4), 1, ["accuracy"], algebras["Quaternions"]).summary()
+    build_model((100, 100, 4), 8, ["accuracy"], algebras["Quaternions"]).summary()
