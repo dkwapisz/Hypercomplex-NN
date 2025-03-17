@@ -88,55 +88,56 @@ def perform_transformation_for_hypercomplex(image, color_space):
 def yuv_permutation(color_space, image):
     image = tf.image.rgb_to_yuv(image)
     y, u, v = tf.split(image, 3, axis=-1)
+    fourth_channel = tf.zeros_like(y)
 
     if color_space == "YUV-1":
-        return tf.concat([y, u, v, 0], axis=-1)
+        return tf.concat([y, u, v, fourth_channel], axis=-1)
     elif color_space == "YUV-2":
-        return tf.concat([y, u, 0, v], axis=-1)
+        return tf.concat([y, u, fourth_channel, v], axis=-1)
     elif color_space == "YUV-3":
-        return tf.concat([y, v, u, 0], axis=-1)
+        return tf.concat([y, v, u, fourth_channel], axis=-1)
     elif color_space == "YUV-4":
-        return tf.concat([y, v, 0, u], axis=-1)
+        return tf.concat([y, v, fourth_channel, u], axis=-1)
     elif color_space == "YUV-5":
-        return tf.concat([y, 0, u, v], axis=-1)
+        return tf.concat([y, fourth_channel, u, v], axis=-1)
     elif color_space == "YUV-6":
-        return tf.concat([y, 0, v, u], axis=-1)
+        return tf.concat([y, fourth_channel, v, u], axis=-1)
     elif color_space == "YUV-7":
-        return tf.concat([u, y, v, 0], axis=-1)
+        return tf.concat([u, y, v, fourth_channel], axis=-1)
     elif color_space == "YUV-8":
-        return tf.concat([u, y, 0, v], axis=-1)
+        return tf.concat([u, y, fourth_channel, v], axis=-1)
     elif color_space == "YUV-9":
-        return tf.concat([u, v, y, 0], axis=-1)
+        return tf.concat([u, v, y, fourth_channel], axis=-1)
     elif color_space == "YUV-10":
-        return tf.concat([u, v, 0, y], axis=-1)
+        return tf.concat([u, v, fourth_channel, y], axis=-1)
     elif color_space == "YUV-11":
-        return tf.concat([u, 0, y, v], axis=-1)
+        return tf.concat([u, fourth_channel, y, v], axis=-1)
     elif color_space == "YUV-12":
-        return tf.concat([u, 0, v, y], axis=-1)
+        return tf.concat([u, fourth_channel, v, y], axis=-1)
     elif color_space == "YUV-13":
-        return tf.concat([v, y, u, 0], axis=-1)
+        return tf.concat([v, y, u, fourth_channel], axis=-1)
     elif color_space == "YUV-14":
-        return tf.concat([v, y, 0, u], axis=-1)
+        return tf.concat([v, y, fourth_channel, u], axis=-1)
     elif color_space == "YUV-15":
-        return tf.concat([v, u, y, 0], axis=-1)
+        return tf.concat([v, u, y, fourth_channel], axis=-1)
     elif color_space == "YUV-16":
-        return tf.concat([v, u, 0, y], axis=-1)
+        return tf.concat([v, u, fourth_channel, y], axis=-1)
     elif color_space == "YUV-17":
-        return tf.concat([v, 0, y, u], axis=-1)
+        return tf.concat([v, fourth_channel, y, u], axis=-1)
     elif color_space == "YUV-18":
-        return tf.concat([v, 0, u, y], axis=-1)
+        return tf.concat([v, fourth_channel, u, y], axis=-1)
     elif color_space == "YUV-19":
-        return tf.concat([0, y, u, v], axis=-1)
+        return tf.concat([fourth_channel, y, u, v], axis=-1)
     elif color_space == "YUV-20":
-        return tf.concat([0, y, v, u], axis=-1)
+        return tf.concat([fourth_channel, y, v, u], axis=-1)
     elif color_space == "YUV-21":
-        return tf.concat([0, u, y, v], axis=-1)
+        return tf.concat([fourth_channel, u, y, v], axis=-1)
     elif color_space == "YUV-22":
-        return tf.concat([0, u, v, y], axis=-1)
+        return tf.concat([fourth_channel, u, v, y], axis=-1)
     elif color_space == "YUV-23":
-        return tf.concat([0, v, y, u], axis=-1)
+        return tf.concat([fourth_channel, v, y, u], axis=-1)
     elif color_space == "YUV-24":
-        return tf.concat([0, v, u, y], axis=-1)
+        return tf.concat([fourth_channel, v, u, y], axis=-1)
 
 def convert_color_tf(image, color_space, hypercomplex=False):
     image = tf.image.convert_image_dtype(image, tf.float32)
