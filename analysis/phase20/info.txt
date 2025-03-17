@@ -1,0 +1,1 @@
+HCNN models are the same as CNN, but filters are divided by 4.

@@ -1,0 +1,3 @@
+YUV permutation (24 variations) - only HyperComplex-YUV-Bicomplex and HyperComplex-YUV-Quaternions.
+
+Base - [Y, U, V, 0]
