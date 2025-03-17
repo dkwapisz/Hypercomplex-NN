@@ -6,10 +6,10 @@ from analysis.SingleRunAnalysis import get_formatted_model_name
 
 # ------------------- Static parameters -------------------
 JSON_RESULT_FILE = "training.json"
-RUNS_TO_TEST = ["run1", "run2", "run3", "run4", "run5", "run6", "run7", "run8", "run9", "run10"]
+RUNS_TO_TEST = ["run1"]
 RUN_LABELS_SPLIT_1234 = [1, 3, 5, 10, 15, 20, 40, 50, 60, 80] # For phase 1, 2, 3, 4
 RUN_LABELS_SPLIT_5_PLUS = [1, 3, 5, 10, 20, 30, 40, 50, 60, 70] # For phase 5-14, 19-20
-RUN_LABELS_SPLIT_16_PLUS = [10, 30, 70] # For phase 16+
+RUN_LABELS_SPLIT_16_PLUS = [70] # For phase 16+
 # ---------------------------------------------------------
 
 def read_phase_data(run_phase, runs, only_hypercomplex=False):
@@ -221,9 +221,9 @@ def plot_multirun_phase_results(phase_data, phase_number, run_labels, evaluation
 
 phases_to_compare = []
 
-for phase in [f"phase{i}" for i in range(19, 21)]:
+for phase in [f"phase{i}" for i in range(22, 23)]:
     phase_data = read_phase_data(phase, RUNS_TO_TEST, only_hypercomplex=False)
-    plot_multirun_phase_results(phase_data, phase, RUN_LABELS_SPLIT_5_PLUS, "accuracy")
+    plot_multirun_phase_results(phase_data, phase, RUN_LABELS_SPLIT_16_PLUS, "accuracy")
     # plot_multirun_phase_results(phase_data, phase, RUN_LABELS_SPLIT_5_PLUS, "F1-Score")
     phases_to_compare.append(phase_data)
 
