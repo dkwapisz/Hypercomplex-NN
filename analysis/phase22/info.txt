@@ -1,0 +1,12 @@
+YUV permutation (24 variations) - only HyperComplex-YUV-Bicomplex and HyperComplex-YUV-Quaternions.
+
+Base:
+
+y, u, v = tf.split(image, 3, axis=-1)
+magnitude = tf.sqrt(u ** 2 + v ** 2)
+theta = tf.atan2(v, u)
+
+y = y
+u = magnitude * tf.cos(2 * theta)
+v = magnitude * tf.sin(2 * theta)
+fourth_channel = tf.exp(-magnitude)

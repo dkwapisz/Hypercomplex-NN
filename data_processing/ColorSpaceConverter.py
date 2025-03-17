@@ -88,7 +88,12 @@ def perform_transformation_for_hypercomplex(image, color_space):
 def yuv_permutation(color_space, image):
     image = tf.image.rgb_to_yuv(image)
     y, u, v = tf.split(image, 3, axis=-1)
-    fourth_channel = tf.zeros_like(y)
+    magnitude = tf.sqrt(u ** 2 + v ** 2)
+    theta = tf.atan2(v, u)
+
+    u = magnitude * tf.cos(2 * theta)
+    v = magnitude * tf.sin(2 * theta)
+    fourth_channel = tf.exp(-magnitude)
 
     if color_space == "YUV-1":
         return tf.concat([y, u, v, fourth_channel], axis=-1)
