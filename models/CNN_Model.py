@@ -33,19 +33,15 @@ def build_model(input_shape, num_classes, metrics):
     model.add(Input(shape=input_shape))
 
     model.add(Conv2D(32, (3, 3), activation='relu'))
-    model.add(Dropout(0.5))
     model.add(MaxPooling2D(strides=2))
 
     model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(Dropout(0.5))
     model.add(MaxPooling2D(strides=2))
 
     model.add(Conv2D(128, (3, 3), activation='relu'))
-    model.add(Dropout(0.5))
     model.add(MaxPooling2D())
 
     model.add(Conv2D(256, (5, 5), activation='relu'))
-    model.add(Dropout(0.5))
     model.add(MaxPooling2D())
 
     model.add(Flatten())
