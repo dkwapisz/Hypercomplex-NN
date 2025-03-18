@@ -69,7 +69,11 @@ def perform_transformation_for_hypercomplex(image, color_space):
         theta = h * 2 * np.pi
         return tf.concat([v, s * tf.cos(theta), s * tf.sin(theta), v * tf.cos(theta)], axis=-1)
     elif "YUV" in color_space:
-        return yuv_permutation(color_space, image)
+        image = tf.image.rgb_to_yuv(image)
+        y, u, v = tf.split(image, 3, axis=-1)
+        magnitude = tf.sqrt(u ** 2 + v ** 2)
+        theta = tf.atan2(v, u)
+        return tf.concat([y, magnitude * tf.cos(2 * theta), magnitude * tf.sin(2 * theta), tf.exp(-magnitude)], axis=-1)
     elif "YIQ" in color_space:
         image = tf.image.rgb_to_yiq(image)
         y, i, q = tf.split(image, 3, axis=-1)
