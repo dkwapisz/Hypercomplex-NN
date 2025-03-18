@@ -48,7 +48,7 @@ def objective_cnn(trial, train_dataset, val_dataset, input_shape, num_classes):
     for i in range(num_layers):
         filters = trial.suggest_categorical(f"filters_{i}", [8, 16, 32, 64, 128, 256])
         kernel_size_num = trial.suggest_categorical(f"kernels_size_{i}", [3, 5, 7])
-        model.add(Conv2D(filters, (kernel_size_num, kernel_size_num), padding='same', activation='relu'))
+        model.add(Conv2D(filters, (kernel_size_num, kernel_size_num), activation='relu'))
         if trial.suggest_categorical(f"pool_{i}", [True, False]):
             strides = trial.suggest_categorical(f"strides_{i}", [None, 1, 2])
             model.add(MaxPooling2D(strides=strides))
@@ -74,7 +74,7 @@ def objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, 
     for i in range(num_layers):
         filters = trial.suggest_categorical(f"filters_{i}", [2, 4, 8, 16, 32, 64])
         kernel_size_num = trial.suggest_categorical(f"kernels_size_{i}", [3, 5, 7])
-        model.add(HyperConv2D(filters, (kernel_size_num, kernel_size_num), padding='SAME', activation='relu',
+        model.add(HyperConv2D(filters, (kernel_size_num, kernel_size_num), activation='relu',
                               algebra=algebra))
         if trial.suggest_categorical(f"pool_{i}", [True, False]):
             strides = trial.suggest_categorical(f"strides_{i}", [None, 1, 2])
