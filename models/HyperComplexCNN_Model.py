@@ -34,16 +34,16 @@ def build_model(input_shape, num_classes, metrics, algebra):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
+    model.add(HyperConv2D(11, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D(strides=2))
 
-    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
+    model.add(HyperConv2D(22, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D(strides=2))
 
-    model.add(HyperConv2D(32, (3, 3), activation='relu', algebra=algebra))
+    model.add(HyperConv2D(45, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
-    model.add(HyperConv2D(64, (5, 5), activation='relu', algebra=algebra))
+    model.add(HyperConv2D(90, (5, 5), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
     model.add(Flatten())
