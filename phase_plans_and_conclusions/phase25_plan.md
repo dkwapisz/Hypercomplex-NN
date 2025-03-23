@@ -1,9 +1,7 @@
-## Phase 20 - Test tuned models - identical architecture, but filters/4 in HyperConv2D
+## Phase 25 - Final test of models - Roughly the same number of parameters in HyperComplex models
 
-In this phase, the models from the previous phase will be tested with the same architecture, but this time, filters in 
-HyperComplex models were divided by 4. The goal is to verify if the tuning of the models improved their performance.
-
-Models were so similar, so the same architecture was used for all of them.
+CNN parameters: 931 432
+HCNN parameters: 912 896
 
 ### Phase parameters
 
@@ -28,30 +26,37 @@ Models were so similar, so the same architecture was used for all of them.
 | Run9       | **60/20/20**   | 720                      | 240                        | 240                  | 5760               | 1920                 | 1920           |
 | Run10      | **70/20/10**   | 840                      | 240                        | 120                  | 6720               | 1920                 | 960            |
 
-
 ### Color transformations
 
-#### RGB
+#### YUV-CNN
 
-- **CNN**: The image remains in its original RGB format.
-- **HCNN**: The RGB channels are transformed into 4 dimensions:
-    - **log(1 + Magnitude)**, where Magnitude = sqrt(R² + G² + B²)
-    - **Phase RG** = atan2(G, R)
-    - **Phase RB** = atan2(B, R)
-    - **Magnitude * cos(Phase RG + Phase RB)**
+Default permutation were used for YUV-CNN:
+- **Y -> Y (Luminance)**
+- **U -> Magnitude * cos(2θ)**, where Magnitude = sqrt(U² + V²) and θ = atan2(V, U)
+- **V -> Magnitude * sin(2θ)**
+- **fourth_channel -> exp(-Magnitude)**
 
-#### YUV
+#### YUV-Quaternions
 
-- **CNN/HCNN**: The U and V channels are transformed into polar coordinates:
-    - **Y (Luminance)**
-    - **Magnitude * cos(2θ)**, where Magnitude = sqrt(U² + V²) and θ = atan2(V, U)
-    - **Magnitude * sin(2θ)**
-    - **exp(-Magnitude)**
+Best permutation from last phase for Quaternions:
+- **Y -> Y (Luminance)**
+- **U -> Magnitude * sin(2θ)**, where Magnitude = sqrt(U² + V²) and θ = atan2(V, U)
+- **V -> exp(-Magnitude)**
+- **fourth_channel -> Magnitude * cos(2θ)**
 
+#### YUV-Bicomplex
+
+Best permutation from last phase for Bicomplex:
+- **Y -> Magnitude * sin(2θ)**, where Magnitude = sqrt(U² + V²) and θ = atan2(V, U)
+- **U -> Magnitude * cos(2θ)**
+- **V -> Y (Luminance)**
+- **fourth_channel -> exp(-Magnitude)**
 
 ### Models
 
 #### Convolutional Neural Network
+
+## CNN-RGB
 
 ```python
 def build_model(input_shape, num_classes, metrics):
@@ -84,16 +89,16 @@ def build_model(input_shape, num_classes, metrics, algebra):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
-    model.add(MaxPooling2D(strides=2))
-
     model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D(strides=2))
 
     model.add(HyperConv2D(32, (3, 3), activation='relu', algebra=algebra))
+    model.add(MaxPooling2D(strides=2))
+
+    model.add(HyperConv2D(64, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
-    model.add(HyperConv2D(64, (5, 5), activation='relu', algebra=algebra))
+    model.add(HyperConv2D(128, (5, 5), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
     model.add(Flatten())

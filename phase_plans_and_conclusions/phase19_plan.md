@@ -53,8 +53,6 @@ Models were so similar, so the same architecture was used for all of them.
 
 #### Convolutional Neural Network
 
-## CNN-RGB
-
 ```python
 def build_model(input_shape, num_classes, metrics):
     model = Sequential()
@@ -79,7 +77,7 @@ def build_model(input_shape, num_classes, metrics):
     return model
 ```
 
-## HyperComplex Convolutional Neural Network
+#### HyperComplex Convolutional Neural Network
 
 ```python
 def build_model(input_shape, num_classes, metrics, algebra):

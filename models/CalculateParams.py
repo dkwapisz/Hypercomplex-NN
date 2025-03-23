@@ -15,8 +15,12 @@ def calculateParamsHyperConv(filters, kernel_size, input_size, layer_before_flat
     # print(f"Dense: {dense_params}")
     print(f"Total params: {params_sum}")
 
+# CNN - 931432
 
-filters = (16, 32, 64, 128)
+#filters = (8, 16, 32, 64) # - params/4 -> 228 608
+#filters = (11, 22, 45, 90) # - params/2 -> 450 420
+filters = (16, 32, 64, 128) # - params -> 912 896
+
 layer_before_flatten_shape = (10, 10, 128)
 kernel_size = [(3, 3), (3, 3), (3, 3), (5, 5)]
 input_size = (100, 100, 4)
