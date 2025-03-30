@@ -12,7 +12,7 @@ for i in "${!TRAINING_SPLITS[@]}"; do
   ./startup.sh --default --num_gpus $NUM_GPUS --training_split "${TRAINING_SPLITS[$i]}" --validation_split "${VALIDATION_SPLITS[$i]}"
 
   if [ $? -ne 0 ]; then
-    echo "Error for splits: ${TRAINING_SPLITS[$i]} i ${VALIDATION_SPLITS[$i]}"
+    echo "Error for splits: ${TRAINING_SPLITS[$i]} and ${VALIDATION_SPLITS[$i]}"
     exit 1
   fi
 
