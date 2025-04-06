@@ -40,10 +40,10 @@ computational effort needed to train the entire phase.
 #### HSV
 
 - **CNN**: The HSV channels are transformed into 4 dimensions:
-    - **V**
-    - **exp(S) * cos(θ)**, where θ = H * 2π
-    - **exp(S) * sin(θ)**
-    - **sin(V * π)**
+    - **V** (Value)
+    - **S * cos(θ)** (where θ = H * 2π)
+    - **S * sin(θ)**
+    - **V * cos(θ)**
 
 #### YUV
 
