@@ -34,16 +34,13 @@ def build_model(input_shape, num_classes, metrics, algebra):
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
-    model.add(MaxPooling2D(strides=2))
-
-    model.add(HyperConv2D(32, (3, 3), activation='relu', algebra=algebra))
-    model.add(MaxPooling2D(strides=2))
-
-    model.add(HyperConv2D(64, (3, 3), activation='relu', algebra=algebra))
+    model.add(HyperConv2D(4, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
-    model.add(HyperConv2D(128, (5, 5), activation='relu', algebra=algebra))
+    model.add(HyperConv2D(8, (3, 3), activation='relu', algebra=algebra))
+    model.add(MaxPooling2D())
+
+    model.add(HyperConv2D(16, (3, 3), activation='relu', algebra=algebra))
     model.add(MaxPooling2D())
 
     model.add(Flatten())
@@ -56,10 +53,10 @@ def objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, 
     model = Sequential()
     model.add(Input(shape=input_shape))
 
-    num_layers = trial.suggest_int("num_layers", 2, 5)
-    filters_base = trial.suggest_categorical(f"filters_base_num", [2, 4, 8])
+    num_layers = trial.suggest_int("num_layers", 2, 6)
+    filters_base = trial.suggest_categorical(f"filters_base_num", [2, 4, 8, 16])
     for i in range(num_layers):
-        kernel_size_num = trial.suggest_categorical(f"kernels_size_{i}", [3, 5])
+        kernel_size_num = trial.suggest_categorical(f"kernels_size_{i}", [3, 5, 7])
         model.add(HyperConv2D(filters_base * (2 ** i), (kernel_size_num, kernel_size_num), padding='SAME',
                               activation='relu', algebra=algebra))
         model.add(MaxPooling2D())
@@ -68,7 +65,8 @@ def objective_hcnn(trial, train_dataset, val_dataset, input_shape, num_classes, 
     model.add(Dense(num_classes, activation='softmax'))
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=["accuracy"])
 
-    history = model.fit(train_dataset, validation_data=val_dataset, epochs=200, verbose=0, callbacks=[early_stopping_tuning])
+    history = model.fit(train_dataset, validation_data=val_dataset, epochs=200, verbose=0,
+                        callbacks=[early_stopping_tuning])
 
     return history.history['val_accuracy'][-1]
 
