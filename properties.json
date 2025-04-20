@@ -3,8 +3,8 @@
   "training_mode": {
       "all_cnn": false,
       "all_hypercomplex_cnn": false,
-      "phase15+": false,
-      "custom": true
+      "phase15+": true,
+      "custom": false
   },
 
   "cnn_models_preset": [
