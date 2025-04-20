@@ -11,7 +11,8 @@ for i in {1..5}; do
   fi
 
 
-  zip -r final_results$((i+1)).zip final_results
+  mv final_results final_results_$((i))
+  rm -rf final_results/*
   echo "----------------- FINISHED ITERATION $i -----------------"
 done
 

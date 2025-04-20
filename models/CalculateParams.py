@@ -19,11 +19,11 @@ def calculateParamsHyperConv(filters, kernel_size, input_size, layer_before_flat
 
 #filters = (8, 16, 32, 64) # - params/4 -> 228 608
 #filters = (11, 22, 45, 90) # - params/2 -> 450 420
-#filters = (16, 32, 64, 128) # - params -> 912 896
-filters = (4, 8, 16)
+filters = (16, 32, 64, 128) # - params -> 912 896
+#filters = (4, 8, 16)
 
-layer_before_flatten_shape = (10, 10, 64)
-kernel_size = [(3, 3), (3, 3), (3, 3)]
+layer_before_flatten_shape = (3, 3, 512)
+kernel_size = [(3, 3), (3, 3), (3, 3), (5, 5)]
 input_size = (100, 100, 4)
 num_classes = 8
 
