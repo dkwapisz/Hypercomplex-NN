@@ -10,10 +10,9 @@ for i in {1..5}; do
     exit 1
   fi
 
-
-  mv final_results final_results_$((i))
-  zip -r final_results_$((i)).zip final_results_$((i))
+  zip -r final_results_$((i)).zip final_results
   rm -rf final_results/*
+
   echo "----------------- FINISHED ITERATION $i -----------------"
 done
 
