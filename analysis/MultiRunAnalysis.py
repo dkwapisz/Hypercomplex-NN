@@ -32,6 +32,26 @@ def read_phase_data(run_phase, runs, only_hypercomplex=False):
 
     return data
 
+def read_phase_data_statistic(run_phase, runs, only_hypercomplex=False):
+    data = {run: [] for run in runs}
+    iterations = ["iteration1", "iteration2", "iteration3", "iteration4", "iteration5"]
+
+    for iteration in iterations:
+        for run in runs:
+            trained_models = os.listdir(os.path.join(run_phase, iteration, run, "results"))
+            for model in trained_models:
+                file_path = os.path.join(run_phase, iteration, run, "results", model, "training.json")
+                if os.path.exists(file_path):
+                    with open(file_path, 'r') as f:
+                        model_data = json.load(f)
+                        if only_hypercomplex:
+                            if model_data.get("model_name").get("type") == "HyperComplex":
+                                data[run].append(model_data)
+                        else:
+                            data[run].append(model_data)
+
+    return data
+
 
 def group_evaluation_by(data, runs, group_by_key, evaluation_key):
     grouped_evaluation = {run: {} for run in runs}
