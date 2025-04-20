@@ -4,7 +4,7 @@ from analysis.MultiRunAnalysis import evaluation_by, read_phase_data, RUNS_TO_TE
 
 phases_to_compare = []
 
-for phase in [f"phase{i}" for i in range(8, 15)]:
+for phase in [f"phase{i}" for i in range(21, 21)]:
     phases_to_compare.append(read_phase_data(phase, RUNS_TO_TEST, only_hypercomplex=False))
 
 def get_average_evaluation_between_phases_by_model(phases_data, phase_nums, run_labels, runs, evaluation_key="accuracy"):
@@ -39,5 +39,5 @@ def get_average_evaluation_between_phases_by_model(phases_data, phase_nums, run_
         f.write(model_averages_markdown)
 
 
-get_average_evaluation_between_phases_by_model(phases_to_compare, (8, 9, 10, 11, 12, 13, 14), RUN_LABELS_SPLIT_5_PLUS, RUNS_TO_TEST, "accuracy")
-get_average_evaluation_between_phases_by_model(phases_to_compare, (8, 9, 10, 11, 12, 13, 14), RUN_LABELS_SPLIT_5_PLUS, RUNS_TO_TEST, "F1-Score")
+get_average_evaluation_between_phases_by_model(phases_to_compare, (21), [70], RUNS_TO_TEST, "accuracy")
+# get_average_evaluation_between_phases_by_model(phases_to_compare, (21), [70], RUNS_TO_TEST, "F1-Score")

@@ -9,9 +9,9 @@ JSON_RESULT_FILE = "training.json"
 RUNS_TO_TEST = ["run1", "run2", "run3", "run4", "run5", "run6", "run7", "run8", "run9", "run10"]
 RUN_LABELS_SPLIT_1234 = [1, 3, 5, 10, 15, 20, 40, 50, 60, 80] # For phase 1, 2, 3, 4
 RUN_LABELS_SPLIT_5_PLUS = [1, 3, 5, 10, 20, 30, 40, 50, 60, 70] # For phase 5-14, 19-20
-RUN_LABELS_SPLIT_16_PLUS = [70] # For phase 16+
-start_phase = 14        # Inclusive
-end_phase = 14          # Inclusive
+RUN_LABELS_SPLIT_TUNING = [70] # For phase 16+
+start_phase = 20        # Inclusive
+end_phase = 20          # Inclusive
 # ---------------------------------------------------------
 
 def read_phase_data(run_phase, runs, only_hypercomplex=False):
@@ -81,7 +81,7 @@ def get_average_evaluation_grouped_by(data, runs, run_phase, run_labels, group_b
     df = pd.DataFrame(plot_data)
 
     fig = plt_exp.line(df, x="run_name", y=f"average_{evaluation_key}", color=f"{group_by_key}",
-                       title=f"Average {evaluation_key} per {group_by_key} - architecture 5",
+                       title=f"Average {evaluation_key} per {group_by_key} - optimized models",
                        labels={"run_name": "Percentage of data used for training", f"average_{evaluation_key}": f"Average {evaluation_key}",
                                f"{group_by_key}": f"{group_by_key}"})
 
@@ -102,8 +102,8 @@ def get_average_evaluation_by_model(data, runs, run_phase, run_labels, evaluatio
     df = pd.DataFrame(plot_data)
 
     fig = plt_exp.line(df, x="run_name", y=f"average_{evaluation_key}", color="model",
-                       title=f"Average {evaluation_key} per model - architecture 5",
-                       labels={"run_name": "Percentage of data used for training", f"average_{evaluation_key}": f"Average {evaluation_key}",
+                       title=f"Accuracy per model - optimized models",
+                       labels={"run_name": "Percentage of data used for training", f"average_{evaluation_key}": f"{evaluation_key}",
                                "model": "model"})
 
     fig.update_layout(xaxis_tickangle=-45, height=500, width=1000, xaxis=dict(tickmode='array',tickvals=run_labels, ticktext=run_labels))
