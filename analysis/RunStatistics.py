@@ -123,13 +123,15 @@ def get_average_and_std_evaluation_by_model(data, runs, run_phase, run_labels, e
 
     fig.write_image(os.path.join(run_phase, f"avg_std_{evaluation_key.lower()}_by_model_shaded_plot.png"))
 
-def compare_hypercomplex_models_between_phases_shaded(phase1_path, phase2_path, runs, run_labels, evaluation_key="accuracy"):
+def compare_hypercomplex_models_between_phases_shaded(phase1_path, phase2_path, phase3_path, runs, run_labels, evaluation_key="accuracy"):
     data_phase1 = read_phase_data_statistic(phase1_path, runs, only_hypercomplex=True)
     data_phase2 = read_phase_data_statistic(phase2_path, runs, only_hypercomplex=True)
+    data_phase3 = read_phase_data_statistic(phase3_path, runs, only_hypercomplex=True)
 
     combined_data = {
         f"{"HCNN/4"}": data_phase1,
-        f"{"HCNN/2"}": data_phase2
+        f"{"HCNN/2"}": data_phase2,
+        f"{"HCNN"}": data_phase3
     }
 
     combined_stats = defaultdict(lambda: defaultdict(list))
@@ -209,13 +211,15 @@ def compare_hypercomplex_models_between_phases_shaded(phase1_path, phase2_path, 
 
     fig.write_image(f"between_phases_results/comparison_{phase1_path}_vs_{phase2_path}_{evaluation_key}.png")
 
-def compare_hypercomplex_models_between_phases_errorbars(phase1_path, phase2_path, runs, run_labels, evaluation_key="accuracy"):
+def compare_hypercomplex_models_between_phases_errorbars(phase1_path, phase2_path, phase3_path, runs, run_labels, evaluation_key="accuracy"):
     data_phase1 = read_phase_data_statistic(phase1_path, runs, only_hypercomplex=True)
     data_phase2 = read_phase_data_statistic(phase2_path, runs, only_hypercomplex=True)
+    data_phase3 = read_phase_data_statistic(phase3_path, runs, only_hypercomplex=True)
 
     combined_data = {
         f"{"HCNN/4"}": data_phase1,
-        f"{"HCNN/2"}": data_phase2
+        f"{"HCNN/2"}": data_phase2,
+        f"{"HCNN"}": data_phase3
     }
 
     combined_stats = defaultdict(lambda: defaultdict(list))
@@ -286,6 +290,75 @@ def compare_hypercomplex_models_between_phases_errorbars(phase1_path, phase2_pat
     fig.write_image(f"between_phases_results/comparison_{phase1_path}_vs_{phase2_path}_{evaluation_key}_errorbars.png")
 
 
+def compare_hypercomplex_models_between_phases_average(phase1_path, phase2_path, phase3_path, runs, run_labels, evaluation_key="accuracy"):
+    data_phase1 = read_phase_data_statistic(phase1_path, runs, only_hypercomplex=True)
+    data_phase2 = read_phase_data_statistic(phase2_path, runs, only_hypercomplex=True)
+    data_phase3 = read_phase_data_statistic(phase3_path, runs, only_hypercomplex=False)
+
+    combined_data = {
+        f"HCNN/4": data_phase1,
+        f"HCNN/2": data_phase2,
+        f"HCNN": data_phase3
+    }
+
+    combined_stats = defaultdict(lambda: defaultdict(list))
+
+    for phase_name, phase_data in combined_data.items():
+        for iteration_data in phase_data.values():
+            for run_name, run_data in iteration_data.items():
+                for model in run_data:
+                    model_name = model["model_name"]
+                    # if model_name["type"] != "HyperComplex":
+                    #     continue
+                    eval_val = model["evaluation_result"][evaluation_key]
+                    group_key = f'{model_name["type"]}-{model_name["color_space"]}'
+                    if model_name["algebra"]:
+                        group_key += f'-{model_name["algebra"]}'
+                    group_key += f" ({phase_name})" if model_name["type"] == "HyperComplex" else ""
+                    combined_stats[group_key][run_name].append(eval_val)
+
+    fig = go.Figure()
+    colors = plotly.colors.qualitative.Plotly
+    model_names = list(combined_stats.keys())
+    color_map = {model: colors[i % len(colors)] for i, model in enumerate(model_names)}
+
+    for model_name in model_names:
+        run_values = combined_stats[model_name]
+        x, y = [], []
+
+        for run_name in runs:
+            if run_name in run_values:
+                run_label = run_labels[runs.index(run_name)]
+                values = run_values[run_name]
+                avg = np.mean(values)
+
+                x.append(run_label)
+                y.append(avg)
+
+        fig.add_trace(go.Scatter(
+            x=x,
+            y=y,
+            mode='lines+markers',
+            name=model_name,
+            line=dict(width=2, color=color_map[model_name])
+        ))
+
+    fig.update_layout(
+        title=f"Comparison of models for all three parameter ratios (1/4, 1/2, 1)",
+        xaxis=dict(
+            tickmode='array',
+            tickvals=run_labels,
+            ticktext=[str(v) for v in run_labels],
+            range=[0, 70]
+        ),
+        xaxis_title="Percentage of data used for training",
+        yaxis_title=f"Average {evaluation_key}",
+        height=800,
+        width=1200
+    )
+
+    fig.write_image(f"between_phases_results/comparison_{phase1_path}_vs_{phase2_path}_{evaluation_key}_average.png")
+
 RUN_LABELS_SPLIT_5_PLUS = [1, 3, 5, 10, 20, 30, 40, 50, 60, 70]
 RUNS = ["run1", "run2", "run3", "run4", "run5", "run6", "run7", "run8", "run9", "run10"]
 
@@ -295,5 +368,9 @@ get_average_and_std_evaluation_by_model(phase_data, RUNS, "phase26-h4", RUN_LABE
 phase_data = read_phase_data_statistic("phase27-h2", RUNS, only_hypercomplex=False)
 get_average_and_std_evaluation_by_model(phase_data, RUNS, "phase27-h2", RUN_LABELS_SPLIT_5_PLUS, "accuracy")
 
-compare_hypercomplex_models_between_phases_shaded("phase26-h4", "phase27-h2", RUNS, RUN_LABELS_SPLIT_5_PLUS, "accuracy")
-compare_hypercomplex_models_between_phases_errorbars("phase26-h4", "phase27-h2", RUNS, RUN_LABELS_SPLIT_5_PLUS, "accuracy")
+phase_data = read_phase_data_statistic("phase28-h", RUNS, only_hypercomplex=False)
+get_average_and_std_evaluation_by_model(phase_data, RUNS, "phase28-h", RUN_LABELS_SPLIT_5_PLUS, "accuracy")
+
+compare_hypercomplex_models_between_phases_shaded("phase26-h4", "phase27-h2", "phase28-h", RUNS, RUN_LABELS_SPLIT_5_PLUS, "accuracy")
+compare_hypercomplex_models_between_phases_errorbars("phase26-h4", "phase27-h2", "phase28-h", RUNS, RUN_LABELS_SPLIT_5_PLUS, "accuracy")
+compare_hypercomplex_models_between_phases_average("phase26-h4", "phase27-h2", "phase28-h", RUNS, RUN_LABELS_SPLIT_5_PLUS, "accuracy")
